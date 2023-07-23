@@ -1,4 +1,4 @@
-# Projeto de E-commerce com Vite
+# Projeto de E-commerce Bizzgu
 
 Este é um projeto de e-commerce baseado no Vite, uma ferramenta de construção rápida e eficiente, que permite criar aplicativos da web modernos com facilidade. Neste guia, explicaremos como configurar e executar o projeto usando o Yarn.
 
@@ -18,8 +18,8 @@ Siga as etapas abaixo para configurar e executar o projeto de e-commerce usando 
 Comece clonando este repositório para o seu computador:
 
 ```bash
-git clone https://github.com/seu-usuario/e-commerce-vite.git
-cd e-commerce-vite
+git clone https://github.com/luuizz/bizzgu.git
+cd bizzgu
 ```
 
 ### 2. Instale as dependências
@@ -38,7 +38,7 @@ Para iniciar o servidor de desenvolvimento, execute o seguinte comando:
 yarn dev
 ```
 
-O servidor de desenvolvimento do Vite começará a ser executado, e você poderá acessar o aplicativo em `http://localhost:3000`. À medida que você fizer alterações nos arquivos, o Vite aplicará o Hot Module Replacement (HMR) automaticamente, permitindo que você veja as alterações em tempo real no navegador.
+O servidor de desenvolvimento do Vite começará a ser executado, e você poderá acessar o aplicativo em `http://localhost:5173`. À medida que você fizer alterações nos arquivos, o Vite aplicará o Hot Module Replacement (HMR) automaticamente, permitindo que você veja as alterações em tempo real no navegador.
 
 ### 4. Crie a versão de produção
 
@@ -69,6 +69,4 @@ O projeto de e-commerce utiliza uma estrutura simples com os seguintes diretóri
 
 ## Conclusão
 
-Parabéns! Agora você tem um projeto de e-commerce configurado e rodando com o Vite e o Yarn. Sinta-se à vontade para personalizar e expandir este projeto de acordo com suas necessidades específicas.
-
-Divirta-se construindo seu e-commerce com a eficiência do Vite e a confiabilidade do Yarn! 🛒🚀
+Parabéns! Agora você tem o meu projeto configurado certinho e pronto para ser visualizado e editado!

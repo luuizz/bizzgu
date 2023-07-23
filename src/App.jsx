@@ -1,28 +1,15 @@
 import React, { useState } from 'react'
+import GlobalStyle from './styles/Global'
+import { Header } from './components/Header'
+import { NavBar } from './components/NavBar'
 
 function App() {
 
-  const [termos, setTermos] = useState(false);
-
-  function handleChange({target}) {
-    setTermos(target.checked)
-  }
-
   return (
     <>
-
-      <label htmlFor="">
-        <input 
-        type="checkbox" 
-        value='Termos'
-        checked={termos}
-        onChange={handleChange}
-        />
-        Aceitar termos de privacidade
-      </label>
-      {
-        termos && <p>Ele aceitou os termos de privacidade.</p>
-      }
+      <GlobalStyle />
+      <Header />
+      <NavBar />
     </>
   )
 }

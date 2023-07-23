@@ -1,6 +1,6 @@
 {
   "homepage": "https://luuizz.github.io/bizzgu",
-  "name": "bizzgut",
+  "name": "bizzgu",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.2",
+    "styled-components": "^6.0.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.14",
