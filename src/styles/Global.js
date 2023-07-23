@@ -35,6 +35,7 @@ const GlobalStyle = createGlobalStyle`
         --white: #fff;
         --white-100: #fefdff;
         --white-500: #f2f2f2;
+        --white-600: #f1f1f7;
 
         //Grayscale
         --gray-50: #e7e6e8;
@@ -47,10 +48,14 @@ const GlobalStyle = createGlobalStyle`
         --gray-700: #0b0510;
         --gray-800: #09040d;
         --gray-900: #07030a;
+
+
+        //Fonts
+        --font-red-hat: 'Red Hat Display', sans-serif;
     }
 
     h1, h2, h3, h4 {
-        font-family: 'Red Hat Display', sans-serif;
+        font-family: var(--font-red-hat);
         line-height: 120%;
     }
 
@@ -69,6 +74,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     body {
+        background-color: var(--white-600);
         &::-webkit-scrollbar {
             background-color: var(--gray-600);
             height: 0.5rem;

@@ -5,6 +5,7 @@ export const NavLinks = styled.section`
     height: 4rem;
     display: flex;
     align-items: center;
+    background-color: var(--white);
     .container {
         display: flex;
         justify-content: space-between;
