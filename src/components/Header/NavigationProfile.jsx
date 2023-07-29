@@ -1,7 +1,7 @@
 import { StylesGroupProfile } from './styles'
 import iconWishList from '/src/assets/icon-wishlist.svg'
 import iconAccount from '/src/assets/icon-account.svg'
-import iconCarrinho from '/src/assets/icon-chart.svg'
+import { CartWidget } from './CartWidget'
 
 export function NavigationProfile() {
     return (
@@ -21,7 +21,7 @@ export function NavigationProfile() {
 
                 <li>
                     <a href="#">
-                        <img src={iconCarrinho} alt="Ícone de uma sacola" title='Carrinho'/>
+                        <CartWidget />
                     </a>
                 </li>
             </StylesGroupProfile>
