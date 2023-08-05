@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import bgSlide01 from '/src/assets/bg-slide-desktop.svg'
 
 export const StyleSlide = styled.section`
     overflow: hidden;
@@ -7,7 +8,7 @@ export const StyleSlide = styled.section`
             height: 43.3rem;
             .slide-01 {
                 padding-top: 8rem;
-                background: url("/src/assets/bg-slide-desktop.svg") no-repeat;
+                background: url(${bgSlide01}) no-repeat;
                 background-size: cover;
                 .container {
                     display: flex;
