@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import bgSlide01 from '/src/assets/bg-slide-desktop.svg'
+import prevButton from '/src/assets/swiper-prev.svg'
+import nextButton from '/src/assets/swiper-next.svg'
 
 export const StyleSlide = styled.section`
     overflow: hidden;
@@ -66,13 +68,13 @@ export const StyleSlide = styled.section`
 
     .swiper-button-next {
         &:after {
-            content: url("/src/assets/swiper-next.svg");
+            content: url(${nextButton});
         }
     }
 
     .swiper-button-prev {
         &:after {
-            content: url("/src/assets/swiper-prev.svg")
+            content: url(${prevButton})
         }
     }
 `
