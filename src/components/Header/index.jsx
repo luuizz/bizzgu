@@ -1,5 +1,5 @@
 import { StylesHeader, StylesLogo, StyleGroupLeftSide } from './styles'
-import { NavigationProfile } from '/src/components/Header/NavigationProfile'
+import { NavigationProfile } from './NavigationProfile'
 import { LocalizationHeader } from './LocalizationHeader'
 import imagemLogo from '/src/assets/logo-theme-light.svg'
 import { SearchHeader } from './SearchHeader'
