@@ -1,3 +1,4 @@
+import { CardProduct } from '../CardProduct'
 import { ItemCount } from './ItemCount'
 import { MostPopulars } from './styles'
 import { TitleSection } from './TitleSection'
@@ -10,11 +11,7 @@ export function ItemList() {
                 <TitleSection
                 title="Mais vendidos"
                 />
-                <ItemCount
-                stock="5"
-                initial="1"
-                onAdd={(count) => console.log(`Adicionado ${count} produtos ao carrinho`)}
-                />
+                <CardProduct />
             </div>
         </MostPopulars>
         </>

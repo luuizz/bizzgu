@@ -24,6 +24,7 @@ export const StyleTitleSection = styled.div`
 export const StyleWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: center;
 `
 
 export const StyleButton = styled.button`
@@ -45,11 +46,12 @@ export const Count = styled.span`
 `
 
 export const StyleButtonChart = styled.button`
+    margin-top: 0.8rem;
     background-color: transparent;
     border: 1px solid var(--primary);
     cursor: pointer;
     line-height: 4rem;
-    padding: 0 1.6rem;
+    padding: 0 4rem;
     border-radius: 1rem;
     color: var(--primary);
     transition: all .3s ease;
