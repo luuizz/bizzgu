@@ -110,3 +110,25 @@ export const StylesLocalization = styled.div`
 export const StyleGroupLeftSide = styled.div`
     display: flex;
 `
+
+export const StyleModalLocalization = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.3);
+    transition: all .3s ease;
+    z-index: 20;
+    .modal {
+        background-color: var(--white);
+        position:  absolute;
+        width: 50rem;
+        height: 50rem;
+        color: var(--primary);
+        border-radius: 1rem;
+    }
+`
