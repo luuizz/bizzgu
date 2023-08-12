@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import {} from './styles'
 
 const linksArrayMegaMenu = [
@@ -19,7 +20,7 @@ export function MegaMenu({closeMegaMenu}) {
                                 {
                                     linksArrayMegaMenu.map((link, index) => (
                                     <li key={index}>
-                                        <a href={link.url} title={`Ir para ${link.title}`}>
+                                        <Link to={link.url} title={`Ir para ${link.title}`}>
                                             <div className="image">
                                                 <img src={link.urlImage} alt={link.altImage} />
                                             </div>
@@ -27,7 +28,7 @@ export function MegaMenu({closeMegaMenu}) {
                                                 <strong>{link.title}</strong>
                                                 <p>{link.description}</p>
                                             </div>
-                                        </a>
+                                        </Link>
                                     </li>
                                     ))
                                 }

@@ -1,5 +1,5 @@
-import { StyleBtnPrimary } from './style'
+import { Link } from 'react-router-dom';
 
-export function BtnPrimary({txt, url}) {
-    return <StyleBtnPrimary className="btn-primary" src={url}>{txt}</StyleBtnPrimary>
+export function BtnPrimary({ txt, url }) {
+    return <Link to={url} className="btn-primary">{txt}</Link> 
 }

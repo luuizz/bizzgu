@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'
 import { StylesHeader, StylesLogo, StyleGroupLeftSide } from './styles'
 import { NavigationProfile } from './NavigationProfile'
 import { LocalizationHeader } from './LocalizationHeader'
@@ -23,9 +24,9 @@ export function Header() {
             <StylesHeader>
                 <div className="container">
                     <StylesLogo className="logo">
-                        <a href="/" title='Página Inicial'>
+                        <Link to="/" title='Página Inicial'>
                             <img src={imagemLogo} alt="Logo" />
-                        </a>
+                        </Link>
                     </StylesLogo>
                     <div className="contentHeader">
                         <StyleGroupLeftSide>

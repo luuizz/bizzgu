@@ -1,19 +1,12 @@
-import { CardProduct } from '../CardProduct'
-import { ItemCount } from './ItemCount'
-import { MostPopulars } from './styles'
-import { TitleSection } from './TitleSection'
+import { Item } from '../Item'
+import {StyleGroupList } from './style'
 
 export function ItemList() {
     return (
         <>
-        <MostPopulars>
-            <div className="container">
-                <TitleSection
-                title="Mais vendidos"
-                />
-                <CardProduct />
-            </div>
-        </MostPopulars>
+            <StyleGroupList className="group">
+                <Item />
+            </StyleGroupList>
         </>
     )
 }

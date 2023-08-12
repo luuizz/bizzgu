@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Categories } from './styles'
 
 const linksNavArray = [
@@ -18,7 +19,7 @@ export function NavigationCategories() {
                     {
                         linksNavArray.map((link, index) => (
                             <li key={index}>
-                                <a href={link.url} title={link.txtTitle}>{link.text}</a>
+                                <Link to={link.url} title={link.txtTitle}>{link.text}</Link>
                             </li>
                         ))
                     }

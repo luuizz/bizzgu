@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { StylesGroupProfile } from './styles'
 import iconWishList from '/src/assets/icon-wishlist.svg'
 import iconAccount from '/src/assets/icon-account.svg'
@@ -8,21 +9,21 @@ export function NavigationProfile() {
         <>
             <StylesGroupProfile>
                 <li>
-                    <a href="#">
+                    <Link to="/lista-desejos">
                         <img src={iconWishList} alt="Ícone de um coração" title='Lista de desejos'/>
-                    </a>
+                    </Link>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <Link to="/login">
                         <img src={iconAccount} alt="Ícone de um usuário com um círculo em volta" title='Conta'/>
-                    </a>
+                    </Link>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <Link to="/carrinho-compras">
                         <CartWidget />
-                    </a>
+                    </Link>
                 </li>
             </StylesGroupProfile>
         </>
