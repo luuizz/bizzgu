@@ -10,6 +10,7 @@ export function Router() {
     return (
         <Routes>
             <Route path='/' element={<Home />} />
+            <Route path="/produto/:id" element={<ItemDetail />} />
             <Route path='/item' element={<ItemDetail />} />
             <Route path='/lista-desejos' element={<WishList />} />
             <Route path='/busca' element={<Search />} />

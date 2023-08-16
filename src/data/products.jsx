@@ -14,7 +14,7 @@ export const products = [
     {
         id: 2,
         nome: 'PlayStation 5 825GB 1 Controle Branco Sony',
-        descrição: 'Item01',
+        descrição: 'Para você que é fanático por games, jogar não tem limites! A Sony apresenta o PlayStation 5 2022 na cor branca. Ele tem SSD com 825GB de armazenamento, 1 controle Dualsense e o jogo God of War Ragnarok instalado. O PlayStation 5 oferece novas possibilidades de jogabilidade que você nunca imaginou. Reproduza jogos para PS5 e PS4 em Blu-ray Disc.',
         preço: 3894.05,
         imgUrl: img2,
         stock: 5,

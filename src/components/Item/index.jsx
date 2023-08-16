@@ -6,10 +6,11 @@ import favoriteIcon from '/src/assets/heart.svg'
 import shareSocial from '/src/assets/icon-share.svg'
 
 export function Item() {
+    const MaisAcessados = products.slice(0,4);
     return (
         <>
-        {products.map((item) => (
-            <Link to={`/produto/${item.urlSlug}`} className='item-list' key={item.id}>
+        {MaisAcessados.map((item) => (
+            <Link to={`/produto/${item.id}`} className='item-list' key={item.id}>
                 <div className="image">
                     <img src={item.imgUrl} alt={item.nome} />
                 </div>
