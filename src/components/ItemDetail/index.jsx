@@ -1,7 +1,7 @@
 import React from "react"
-import { products } from "../../data/products"
 import starsReview from '/src/assets/stars.svg'
 import { ItemCount } from "../ItemListContainer/ItemCount"
+import { ThumbsItem } from "./ThumbsItem"
 
 export function ItemDetail({item}) {
     return (
@@ -12,26 +12,20 @@ export function ItemDetail({item}) {
                         <div className="destaque">
                             <img src={item.imgUrl} alt={item.nome} />
                         </div>
-                        <div className="thumbs">
-                            <button>
-                                <img src="" alt="" />
-                            </button>
-
-                            <button>
-                                <img src="" alt="" />
-                            </button>
-
-                            <button>
-                                <img src="" alt="" />
-                            </button>
-                        </div>
+                    <ThumbsItem />
                     </div>
                     <div className="infos">
                         <h1>{item.nome}</h1>
                         <p>{item.descrição}</p>
                         <img src={starsReview} alt="" />
                         <h3>{item.preço.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h3>
-                        <ItemCount className="item-detail" />
+                    {item.stock > 0 && (
+                        <ItemCount
+                        stock={item.stock.toString()}
+                        initial="1"
+                        onAdd={(count) => console.log(`Adicionado ${count} produtos ao carrinho`)}
+                        />
+                    )}
                         <div className="share">
                             <ul>
                                 <li>

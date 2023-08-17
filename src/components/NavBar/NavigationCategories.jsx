@@ -1,15 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Categories } from './styles'
-
-const linksNavArray = [
-    { text: 'Celulares', url: '/celulares', txtTitle: 'Ir para Celulares' },
-    { text: 'Games', url: '/games', txtTitle: 'Ir para Games' },
-    { text: 'Eletrodomésticos', url: '/eletrodomesticos', txtTitle: 'Ir para Eletrodomésticos' },
-    { text: 'Esporte & Lazer', url: '/moveis', txtTitle: 'Ir para Esporte & Lazer' },
-    { text: 'SmarTV', url: '/smartv', txtTitle: 'Ir para SmarTV' },
-    { text: 'Supermercado', url: '/supermercado', txtTitle: 'Ir para Supermercado' },
-    { text: 'Bebês & Infantil', url: '/bebes-infantil', txtTitle: 'Ir para Bebês & Infantil' }
-]
+import { categories } from '../../data/categories'
 
 export function NavigationCategories() {
     return (
@@ -17,9 +8,9 @@ export function NavigationCategories() {
             <Categories>
                 <ul>
                     {
-                        linksNavArray.map((link, index) => (
+                        categories.map((category, index) => (
                             <li key={index}>
-                                <Link to={link.url} title={link.txtTitle}>{link.text}</Link>
+                                <Link to={`/categoria/${category.slug}`} title={`Ir para ${category.name}`}>{category.name}</Link>
                             </li>
                         ))
                     }

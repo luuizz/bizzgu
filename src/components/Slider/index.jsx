@@ -25,7 +25,7 @@ export function Slide() {
                                     <h2>Seu smartphone vive travando?</h2>
                                     <span>Você merece um upgrade!</span>
                                     <BtnPrimary
-                                    url="/celulares"
+                                    url="categoria/celulares"
                                     txt="Faça o upgrade já!"
                                     />
                                 </div>

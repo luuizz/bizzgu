@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom'
 import { ItemDetailContainer } from "../components/ItemDetailContainer";
 
 export function ItemDetail() {
-    const { id } = useParams();
+    const { slug } = useParams();
 
     return (
         <>
-            <ItemDetailContainer />
+            <ItemDetailContainer productSlug={slug} />
         </>
     )
 }

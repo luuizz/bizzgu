@@ -40,12 +40,12 @@ export const Categories = styled.nav `
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 4.2rem;
+        gap: 4.1rem;
         li {
             a {
                 color: var(--gray-400);
                 font-family: 'Red Hat Display', sans-serif;
-                font-size: 1.6rem;
+                font-size: 1.5rem;
                 font-weight: 500;
                 transition: color .3s ease;
                 &:hover {

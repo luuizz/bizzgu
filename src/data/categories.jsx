@@ -1,0 +1,58 @@
+export const categories = [
+    {
+        id: 40,
+        titulo: 'Página de celulares',
+        name: 'Celulares',
+        info1: 'Página de celulares',
+        slug: 'celulares',
+    },
+    {
+        id: 41,
+        titulo: 'Página de Games',
+        name: 'Games',
+        info1: 'Página de Games',
+        slug: 'games',
+    },
+    {
+        id: 42,
+        titulo: 'Página de Eletrodomésticos',
+        name: 'Eletrodomésticos',
+        info1: 'Página de Eletrodomésticos',
+        slug: 'eletrodomesticos',
+    },
+    {
+        id: 43,
+        titulo: 'Página de Esporte & Lazer',
+        name: 'Esporte & Lazer',
+        info1: 'Página de Esporte & Lazer',
+        slug: 'esporte-lazer',
+    },
+    {
+        id: 44,
+        titulo: 'Página de móveis',
+        name: 'Móveis',
+        info1: 'Página de Móveis',
+        slug: 'moveis',
+    },
+    {
+        id: 45,
+        titulo: 'Página de SmarTV',
+        name: 'SmartTV',
+        info1: 'Página de SmartTV',
+        slug: 'smarttv',
+    },
+    {
+        id: 46,
+        titulo: 'Página de Supermercado',
+        name: 'Supermercado',
+        info1: 'Página de Supermercado',
+        slug: 'supermercado',
+    },
+    {
+        id: 47,
+        titulo: 'Página de Bebês & Infantil',
+        name: 'Bebês & Infantil',
+        info1: 'Página de Bebês & Infantil',
+        slug: 'bebes-infantil',
+    },
+]

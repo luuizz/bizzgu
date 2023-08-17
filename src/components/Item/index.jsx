@@ -10,7 +10,7 @@ export function Item() {
     return (
         <>
         {MaisAcessados.map((item) => (
-            <Link to={`/produto/${item.id}`} className='item-list' key={item.id}>
+            <Link to={`/produto/${item.urlSlug}`} className='item-list' key={item.id}>
                 <div className="image">
                     <img src={item.imgUrl} alt={item.nome} />
                 </div>
@@ -28,13 +28,6 @@ export function Item() {
                     <span>{item.nome}</span>
                     <h3>{item.preço.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h3>
                 </div>
-                {item.stock > 0 && (
-                    <ItemCount
-                    stock={item.stock.toString()}
-                    initial="1"
-                    onAdd={(count) => console.log(`Adicionado ${count} produtos ao carrinho`)}
-                    />
-                )}
             </Link>
         ))}
         </>
