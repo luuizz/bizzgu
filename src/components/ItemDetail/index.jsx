@@ -2,11 +2,14 @@ import React from "react"
 import starsReview from '/src/assets/stars.svg'
 import { ItemCount } from "../ItemListContainer/ItemCount"
 import { ThumbsItem } from "./ThumbsItem"
+import { StyleItemDetail } from './style'
+import ShareImg from '/src/assets/icon-share-2.svg'
+import WishListIcon from '/src/assets/icon-heart.svg'
 
 export function ItemDetail({item}) {
     return (
         <>
-            <section>
+            <StyleItemDetail>
                 <div className="container">
                     <div className="images">
                         <div className="destaque">
@@ -26,22 +29,29 @@ export function ItemDetail({item}) {
                         onAdd={(count) => console.log(`Adicionado ${count} produtos ao carrinho`)}
                         />
                     )}
-                        <div className="share">
-                            <ul>
-                                <li>
-                                    <img src="" alt="" />
+                    <div className="share">
+                        <ul>
+                            <li>
+                                <button>
+                                    <span className="icon">
+                                        <img src={WishListIcon} alt="Ícone de um coração" />
+                                    </span>
                                     <span>Lista de desejos</span>
-                                </li>
-
-                                <li>
-                                    <img src="" alt="" />
+                                </button>
+                            </li>
+                            <li>
+                                <button>
+                                    <span className="icon">
+                                        <img src={ShareImg} alt="Imagem de Compartilhamento nas redes sociais" />
+                                    </span>
                                     <span>Compartilhe nas redes sociais</span>
-                                </li>
-                            </ul>
-                        </div>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                     </div>
                 </div>
-            </section>
+            </StyleItemDetail>
         </>
     )
 }
