@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import {} from './styles'
 
@@ -11,26 +10,28 @@ export function MegaMenu({closeMegaMenu}) {
         <>
             <section>
                 <div className="container">
-                    <button onClick={closeMegaMenu}>
-                        <img src="" alt="Fechar" title='Fechar' />
-                    </button>
+                    <div className="close">
+                        <button onClick={closeMegaMenu}>
+                            <img src="" alt="Fechar" title='Fechar' />
+                        </button>
+                    </div>
                     <div className="content">
                         <div className="main">
                             <ul>
                                 {
-                                    linksArrayMegaMenu.map((link, index) => (
-                                    <li key={index}>
-                                        <Link to={link.url} title={`Ir para ${link.title}`}>
-                                            <div className="image">
-                                                <img src={link.urlImage} alt={link.altImage} />
-                                            </div>
-                                            <div className="texts">
-                                                <strong>{link.title}</strong>
-                                                <p>{link.description}</p>
-                                            </div>
-                                        </Link>
-                                    </li>
-                                    ))
+                                linksArrayMegaMenu.map((link, index) => (
+                                <li key={index}>
+                                    <Link to={link.url} title={`Ir para ${link.title}`}>
+                                        <div className="image">
+                                            <img src={link.urlImage} alt={link.altImage} />
+                                        </div>
+                                        <div className="texts">
+                                            <strong>{link.title}</strong>
+                                            <p>{link.description}</p>
+                                        </div>
+                                    </Link>
+                                </li>
+                                ))
                                 }
                             </ul>
                         </div>

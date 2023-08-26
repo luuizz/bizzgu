@@ -126,9 +126,86 @@ export const StyleModalLocalization = styled.div`
     .modal {
         background-color: var(--white);
         position:  absolute;
-        width: 50rem;
-        height: 50rem;
+        width: 44.8rem;
+        height: 47rem;
         color: var(--primary);
-        border-radius: 1rem;
+        border-radius: 1.5rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: animeUp 0.3s forwards;
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            border-bottom: 1px solid var(--white-500);
+            padding: 1.5rem 1.6rem 1.5rem 0;
+            button {
+                cursor: pointer;
+                img {
+                    max-width: 3.2rem;
+                }
+            }
+        }
+        .content {
+            padding: 3.2rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            img {
+                max-width: 3.2rem;
+            }
+            h3 {
+                font-size: 2.3rem;
+                font-family: var(--font-red-hat);
+                color: var(--gray-800);
+                margin-bottom: 0.8rem;
+                margin-top: 1.6rem;
+            }
+            p {
+                color: var(--gray-400);
+                font-size: 1.6rem;
+                text-align: center;
+                margin-bottom: 1.6rem;
+            }
+            form {
+                input {
+                    width: 38.6rem;
+                }
+            }
+        }
+        .bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            span {
+                color: var(--gray-400);
+                font-size: 1.6rem;
+                margin-bottom: 2.4rem;
+            }
+            a {
+                background-color: var(--primary);
+                color: var(--white);
+                line-height: 5.1rem;
+                border-radius: 1rem;
+                font-size: 1.8rem;
+                text-align: center;
+                font-weight: 500;
+                font-family: var(--font-red-hat);
+                width: 38.7rem;
+                cursor: pointer;
+                transition: background .3s ease;
+                &:hover {
+                    background-color: var(--gray-800);
+                }
+            }
+        }
+    }
+
+    @keyframes animeUp {
+        100% {
+            opacity: 1;
+            transform: initial;
+        } 
     }
 `

@@ -31,7 +31,9 @@ export function Header() {
                     <div className="contentHeader">
                         <StyleGroupLeftSide>
                             <LocalizationHeader toggleModal={toggleModal} />
-                            <SearchHeader />
+                            <SearchHeader
+                            textHolder={'O que você procura?'}
+                            />
                         </StyleGroupLeftSide>
                         <NavigationProfile />
                     </div>
