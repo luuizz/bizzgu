@@ -5,6 +5,7 @@ import GlobalStyle from './styles/Global'
 import { Header } from './components/Header'
 import { NavBar } from './components/NavBar'
 import { Footer } from './components/Footer'
+import { CartProvider } from './context/CartContext'
 
 function App() {
 
@@ -13,7 +14,9 @@ function App() {
       <GlobalStyle />
       <Header />
       <NavBar />
-      <Router />
+      <CartProvider>
+        <Router />
+      </CartProvider>
       <Footer />
     </BrowserRouter>
   )

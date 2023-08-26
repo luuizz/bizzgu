@@ -1,4 +1,5 @@
 import React from "react"
+import { useCart } from '/src/context/CartContext'
 import starsReview from '/src/assets/stars.svg'
 import { ItemCount } from "../ItemListContainer/ItemCount"
 import { ThumbsItem } from "./ThumbsItem"
@@ -7,6 +8,16 @@ import ShareImg from '/src/assets/icon-share-2.svg'
 import WishListIcon from '/src/assets/icon-heart.svg'
 
 export function ItemDetail({item}) {
+    const { addItem, isInCart, cartItems } = useCart();
+
+    const handleAddToCart = (count) => {
+        if (!isInCart(item.id)) {
+            addItem(item, count);
+            console.log(`Adicionado ${count} produtos ao carrinho`);
+        } else {
+            console.log('Este produto já está no carrinho.');
+        }
+    };
     return (
         <>
             <StyleItemDetail>
@@ -26,7 +37,7 @@ export function ItemDetail({item}) {
                         <ItemCount
                         stock={item.stock.toString()}
                         initial="1"
-                        onAdd={(count) => console.log(`Adicionado ${count} produtos ao carrinho`)}
+                        onAdd={handleAddToCart}
                         />
                     )}
                     <div className="share">
