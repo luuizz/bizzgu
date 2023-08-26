@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ItemCount } from "../ItemListContainer/ItemCount";
+import { BtnSecondary } from '../Global/ButtonSecondary'
 import { products } from '../../data/products';
 import starsReview from '/src/assets/stars.svg'
 import favoriteIcon from '/src/assets/heart.svg'
@@ -28,6 +28,10 @@ export function Item() {
                     <span>{item.nome}</span>
                     <h3>{item.preço.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h3>
                 </div>
+                <BtnSecondary
+                txt="Comprar"
+                url={`/produto/${item.urlSlug}`}
+                />
             </Link>
         ))}
         </>

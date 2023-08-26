@@ -108,6 +108,24 @@ const GlobalStyle = createGlobalStyle`
         }
     }
 
+    .btn-secondary {
+        cursor: pointer;
+        background-color: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+        line-height: 2rem;
+        padding: 1rem 4rem;
+        font-size: 1.5rem;
+        font-family: var(--font-red-hat);
+        text-align: center;
+        border-radius: 1rem;
+        transition: all .3s ease;
+        &:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+    }
+
     .item-list {
         background-color: var(--white);
     padding: 1.6rem 3.1rem 2.4rem;
