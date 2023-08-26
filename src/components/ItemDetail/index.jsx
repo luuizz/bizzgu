@@ -1,5 +1,5 @@
-import React from "react"
-import { useCart } from '/src/context/CartContext'
+import React, { useState } from "react"
+import { useCart } from "../../context/CartContext"
 import starsReview from '/src/assets/stars.svg'
 import { ItemCount } from "../ItemListContainer/ItemCount"
 import { ThumbsItem } from "./ThumbsItem"
@@ -8,7 +8,7 @@ import ShareImg from '/src/assets/icon-share-2.svg'
 import WishListIcon from '/src/assets/icon-heart.svg'
 
 export function ItemDetail({item}) {
-    const { addItem, isInCart, cartItems } = useCart();
+    const { addItem, isInCart} = useCart();
 
     const handleAddToCart = (count) => {
         if (!isInCart(item.id)) {

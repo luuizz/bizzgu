@@ -21,9 +21,7 @@ export function NavigationProfile() {
                 </li>
 
                 <li>
-                    <Link to="/carrinho-compras">
-                        <CartWidget />
-                    </Link>
+                    <CartWidget />
                 </li>
             </StylesGroupProfile>
         </>

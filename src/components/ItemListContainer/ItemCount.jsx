@@ -3,8 +3,8 @@ import { StyleWrapper, StyleButton, Count, StyleButtonChart } from './styles'
 import IconRemove from '/src/assets/icon-subtract-circle.svg'
 import IconAdd from '/src/assets/icon-plus-circle.svg'
 
-export function ItemCount ({ stock, initial, onAdd }) {
-    const [count, setCount] = useState(parseInt(initial));
+export function ItemCount ({ stock, onAdd }) {
+    const [count, setCount] = useState(1); // Inicializa a contagem com 1
 
     const handleIncrease = () => {
         if (count < parseInt(stock)) {

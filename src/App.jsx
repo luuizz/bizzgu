@@ -11,13 +11,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <GlobalStyle />
-      <Header />
-      <NavBar />
       <CartProvider>
+        <GlobalStyle />
+        <Header />
+        <NavBar />
         <Router />
+        <Footer />  
       </CartProvider>
-      <Footer />
     </BrowserRouter>
   )
 }
