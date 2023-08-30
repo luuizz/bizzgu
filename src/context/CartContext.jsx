@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
+import { products } from '../data/products'
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
     const [cartItems, setCartItems] = useState([]);
-    console.log('cartItems in CartProvider:', cartItems);
 
     const addItem = (item, quantity) => {
         const verifyItem = cartItems.find(cartItem => cartItem.id === item.id);

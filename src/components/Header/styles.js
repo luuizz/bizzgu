@@ -209,3 +209,23 @@ export const StyleModalLocalization = styled.div`
         } 
     }
 `
+
+export const StyleCard = styled.div`
+    position: relative;
+    .item-count {
+        font-family: var(--font-red-hat);
+        background-color: var(--primary);
+        color: var(--white);
+        font-size: 0.85rem;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 12rem;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: -0.5rem;
+        right: -1rem;
+    }
+`
