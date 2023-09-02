@@ -1,5 +1,8 @@
 import img1 from '../assets/images/1.png';
 import img2 from '../assets/images/2.webp';
+import thumb0101 from '../assets/images/ThumbsItem/1-1.webp'
+import thumb0102 from '../assets/images/ThumbsItem/1-1.webp'
+import thumb0103 from '../assets/images/ThumbsItem/1-1.webp'
 import thumb0201 from '../assets/images/ThumbsItem/2-1.webp'
 import thumb0202 from '../assets/images/ThumbsItem/2-2.webp'
 import thumb0203 from '../assets/images/ThumbsItem/2-3.webp'
@@ -9,13 +12,13 @@ export const products = [
         id: 1,
         category: 'celular',
         nome: 'Smartphone Samsung Galaxy S21 FE 256GB Violeta 5G Octa-Core 8GB  RAM 6,4” Câm. Tripla + Selfie 32MP',
-        descrição: 'Item01',
+        descrição: 'Para você que está a procura de um novo smartphone, precisa conhecer o Samsung Galaxy S21 FE violeta com tecnologia 5G. Ele tem 256GB de armazenamento interno, processador Octa-Core, 8GB de memória RAM e tela infinita de 6,4" com display Dynamic Amoled 2X. Para alimentar suas redes sociais com fotos arrasadoras, ele possui câmera traseira tripla de 12MP + 12MP + 8MP com Zoom digital de 10x e selfie de 32MP com abertura F2.2 e flash frontal.',
         preço: 2299,
         imgUrl: img1,
-        imgThumb01: '',
-        imgThumb02: '',
-        imgThumb03: '',
-        stock: 5,
+        imgThumb01: thumb0101,
+        imgThumb02: thumb0102,
+        imgThumb03: thumb0103,
+        stock: 1,
     },
     {
         id: 2,
@@ -44,7 +47,7 @@ export const products = [
     {
         id: 4,
         category: '',
-        nome: 'Celular',
+        nome: 'tvs',
         descrição: 'Item01',
         preço: 19.99,
         imgUrl: '',
@@ -56,7 +59,7 @@ export const products = [
     {
         id: 5,
         category: '',
-        nome: 'Celular',
+        nome: 'supermercado',
         descrição: 'Item01',
         preço: 19.99,
         imgUrl: '',
@@ -68,7 +71,7 @@ export const products = [
     {
         id: 6,
         category: '',
-        nome: 'Celular',
+        nome: 'esporte',
         descrição: 'Item01',
         preço: 19.99,
         imgUrl: '',

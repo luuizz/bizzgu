@@ -4,6 +4,7 @@ import { products } from '../../data/products';
 import starsReview from '/src/assets/stars.svg'
 import favoriteIcon from '/src/assets/heart.svg'
 import shareSocial from '/src/assets/icon-share.svg'
+import Skeleton from 'react-loading-skeleton';
 
 export function Item() {
     const MaisAcessados = products.slice(0,4);

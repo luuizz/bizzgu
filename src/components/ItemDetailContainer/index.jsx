@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { ItemDetail } from "../ItemDetail"
 import { products } from "../../data/products"
+import { SkeletonTheme } from "react-loading-skeleton";
+
 
 export function ItemDetailContainer({productSlug }) {
     
@@ -21,11 +23,13 @@ export function ItemDetailContainer({productSlug }) {
 
     return (
         <>
+        <SkeletonTheme>
             {Item ? (
-                <ItemDetail item={Item} />
-            ) : (
-                <p>Carregando</p>
+                    <ItemDetail item={Item} />
+                ) : (
+                    <p>Carregando</p>
             )}
+        </SkeletonTheme>
         </>
     )
 }

@@ -6,6 +6,7 @@ import { ThumbsItem } from "./ThumbsItem"
 import { StyleItemDetail } from './style'
 import ShareImg from '/src/assets/icon-share-2.svg'
 import WishListIcon from '/src/assets/icon-heart.svg'
+import Skeleton from "react-loading-skeleton"
 
 export function ItemDetail({item}) {
     const { addItem, isInCart} = useCart();
@@ -29,10 +30,10 @@ export function ItemDetail({item}) {
                     <ThumbsItem />
                     </div>
                     <div className="infos">
-                        <h1>{item.nome}</h1>
-                        <p>{item.descrição}</p>
+                        <h1>{item.nome || <Skeleton width={200}/>}</h1>
+                        <p>{item.descrição || <Skeleton width={200}/>}</p>
                         <img src={starsReview} alt="" />
-                        <h3>{item.preço.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h3>
+                        <h3>{item.preço.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })|| <Skeleton width={200}/>}</h3>
                     {item.stock > 0 && (
                         <ItemCount
                         stock={item.stock.toString()}

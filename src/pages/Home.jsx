@@ -1,5 +1,6 @@
 import { ItemListContainer } from "../components/ItemListContainer";
 import { Slide } from "../components/Slider";
+import { Orders } from "../data/oders";
 
 
 export function Home() {
@@ -7,6 +8,7 @@ export function Home() {
         <>
             <Slide />
             <ItemListContainer />
+            <Orders />
         </>
     )
 }
