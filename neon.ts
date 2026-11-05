@@ -12,8 +12,9 @@ export default defineConfig({
         'product-images': { access: 'public_read' },
     },
 
+    // O identificador da função só aceita letras minúsculas e números (até 20)
     functions: {
-        'product-images': {
+        productimages: {
             name: 'Upload de imagens de produtos',
             source: './functions/product-images.ts',
             env: {
