@@ -17,7 +17,7 @@ export default defineConfig({
             name: 'Upload de imagens de produtos',
             source: './functions/product-images.ts',
             env: {
-                // Endereço(s) do site, separados por vírgula. Ex.: https://luuizz.github.io,http://localhost:5173
+                // Endereço(s) do site, separados por vírgula. Ex.: https://bizzgu.vercel.app,http://localhost:5173
                 ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS!,
                 BUCKET_NAME: 'product-images',
             },

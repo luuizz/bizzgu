@@ -2,6 +2,8 @@ import { BrowserRouter } from 'react-router-dom'
 import { Router } from './Router'
 import GlobalStyle from './styles/Global'
 import { IconContext } from '@phosphor-icons/react'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { ScrollToTop } from './components/ScrollToTop'
 import { SetupNotice } from './components/SetupNotice'
 import { AuthProvider } from './context/AuthProvider'
@@ -34,6 +36,9 @@ function App() {
                             <IconContext.Provider value={iconDefaults}>
                                 <Router />
                             </IconContext.Provider>
+                            {/* Métricas da Vercel: visitas e desempenho real (só coletam no site publicado) */}
+                            <Analytics />
+                            <SpeedInsights />
                         </WishlistProvider>
                     </CartProvider>
                 </AuthProvider>
