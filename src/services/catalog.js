@@ -44,6 +44,8 @@ export async function getProducts({ categoryId, search, featured, onSale, sort =
     return unwrap(await query)
 }
 
+// Sem filtro de "ativo": o banco (RLS) só devolve produtos inativos para admins,
+// o que permite ao painel pré-visualizar um produto antes de publicá-lo
 export async function getProductBySlug(slug) {
-    return unwrap(await api.from('products').select(PRODUCT_FIELDS).eq('slug', slug).eq('active', true).maybeSingle())
+    return unwrap(await api.from('products').select(PRODUCT_FIELDS).eq('slug', slug).maybeSingle())
 }

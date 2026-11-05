@@ -36,16 +36,17 @@ const Placeholder = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background:
-        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.5), transparent 55%),
-        linear-gradient(135deg, var(--primary-100), var(--primary-50));
+    container-type: size;
+    background: linear-gradient(135deg, var(--white-600), var(--primary-50));
     border-radius: inherit;
     span {
         font-family: var(--font-red-hat);
-        font-weight: 700;
-        font-size: 3.2rem;
+        font-weight: 500;
+        /* proporcional à miniatura: discreto numa thumb de lista, maior na página do produto */
+        font-size: clamp(1rem, 18cqmin, 2.8rem);
         color: var(--primary);
-        opacity: 0.55;
-        letter-spacing: 0.2rem;
+        opacity: 0.35;
+        letter-spacing: 0.08em;
+        line-height: 1;
     }
 `
