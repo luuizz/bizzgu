@@ -5,7 +5,7 @@
   "buildCommand": "yarn build",
   "outputDirectory": "dist",
   "git": { "deploymentEnabled": false },
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
   "headers": [
     {
       "source": "/assets/(.*)",

@@ -25,7 +25,7 @@ const empty = {
 }
 
 const MAX_IMAGES = 6
-const MAX_SIZE = 5 * 1024 * 1024
+const MAX_SIZE = 4 * 1024 * 1024
 
 export function ProductForm() {
     const { id } = useParams()
@@ -83,7 +83,7 @@ export function ProductForm() {
         const list = [...files].slice(0, MAX_IMAGES - form.images.length)
         const invalid = list.find((file) => !file.type.startsWith('image/') || file.size > MAX_SIZE)
         if (invalid) {
-            toast.show('Envie apenas imagens de até 5 MB.', 'danger')
+            toast.show('Envie apenas imagens de até 4 MB.', 'danger')
             return
         }
         setUploading(list.length)
@@ -264,7 +264,7 @@ export function ProductForm() {
                         <p className="help">
                             Até {MAX_IMAGES} imagens. A primeira é a capa.{' '}
                             {canUploadImages
-                                ? 'Envie arquivos (JPG, PNG ou WebP, máx. 5 MB) ou cole o link de uma imagem.'
+                                ? 'Envie arquivos (JPG, PNG ou WebP, máx. 4 MB) ou cole o link de uma imagem.'
                                 : 'Cole o link de uma imagem já publicada. Para enviar arquivos, configure a função de upload (veja o README).'}
                         </p>
                     </Card>

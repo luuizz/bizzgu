@@ -3,7 +3,6 @@ import { createClient } from '@neon/neon-js/supabase'
 // Endereços do projeto no Neon (Console → Auth e Console → Data API)
 const authUrl = import.meta.env.VITE_NEON_AUTH_URL
 const dataApiUrl = import.meta.env.VITE_NEON_DATA_API_URL
-const uploadUrl = import.meta.env.VITE_UPLOAD_FUNCTION_URL
 
 export const isApiConfigured = Boolean(authUrl && dataApiUrl)
 
@@ -17,8 +16,11 @@ export const api = isApiConfigured
     })
     : null
 
-// Upload de imagens: opcional, feito pela Neon Function em functions/product-images.ts
-export const UPLOAD_FUNCTION_URL = uploadUrl || ''
+// Upload de imagens pelo painel: Vercel Function em api/images.js (Vercel Blob).
+// No site publicado fica em /api/images. No `yarn dev` não existe (a menos que
+// VITE_UPLOAD_FUNCTION_URL aponte para ela), e o painel aceita imagens por link.
+export const UPLOAD_FUNCTION_URL = import.meta.env.VITE_UPLOAD_FUNCTION_URL
+    || (import.meta.env.PROD ? `${import.meta.env.BASE_URL}api/images` : '')
 
 // JWT do usuário logado (o mesmo que a Data API recebe)
 export async function getAccessToken() {
