@@ -10,34 +10,25 @@ const GlobalStyle = createGlobalStyle`
         list-style: none;
         font-family: 'Inter', sans-serif;
     }
-    
-    .container {
-        margin: 0 auto;
-        width: 100%;
-        max-width: 124.6rem;
-        padding: 0 1.5rem;
-    }
-
-    html, body {
-        font-size: 62.5%;
-    }
 
     :root {
-        //Brand Colors
+        /* Brand Colors */
         --primary: #693CEA;
+        --primary-50: #f3effe;
+        --primary-100: #e4dbfc;
         --secondary: #0011ff;
 
-        //Violet
+        /* Violet */
         --violet-700: #4b2ba6;
         --violet-800: #3a2181;
 
-        //White
+        /* White */
         --white: #fff;
         --white-100: #fefdff;
         --white-500: #f2f2f2;
         --white-600: #f1f1f7;
 
-        //Grayscale
+        /* Grayscale */
         --gray-50: #e7e6e8;
         --gray-100: #b5b2b7;
         --gray-200: #918d94;
@@ -49,23 +40,86 @@ const GlobalStyle = createGlobalStyle`
         --gray-800: #09040d;
         --gray-900: #07030a;
 
+        /* Feedback */
+        --success: #1a8754;
+        --success-50: #e6f5ed;
+        --warning: #b26b00;
+        --warning-50: #fff4e0;
+        --danger: #d1293d;
+        --danger-50: #fdecee;
+        --info: #2563eb;
+        --info-50: #e8f0fe;
 
-        //Fonts
+        /* Fonts */
         --font-red-hat: 'Red Hat Display', sans-serif;
+
+        --radius: 1rem;
+        --shadow-sm: 0 0.1rem 0.3rem rgba(16, 7, 23, 0.06);
+        --shadow: 0 0.8rem 2.4rem rgba(16, 7, 23, 0.08);
     }
 
-    h1, h2, h3, h4 {
+    html, body {
+        font-size: 62.5%;
+    }
+
+    body {
+        background-color: var(--white-600);
+        color: var(--gray-700);
+        -webkit-font-smoothing: antialiased;
+        &::-webkit-scrollbar {
+            background-color: var(--gray-600);
+            height: 0.5rem;
+            width: 0.5rem;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 0.4rem;
+        }
+        &::-webkit-scrollbar-track {
+            border-radius: .4rem;
+        }
+    }
+
+    #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    main {
+        flex: 1;
+    }
+
+    .container {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 124.6rem;
+        padding: 0 1.5rem;
+    }
+
+    h1, h2, h3, h4, h5 {
         font-family: var(--font-red-hat);
         line-height: 120%;
+        color: var(--gray-800);
     }
 
     p {
         line-height: 150%;
     }
 
+    a {
+        color: inherit;
+    }
+
     button {
         background-color: transparent;
         border: 0;
+        font: inherit;
+        color: inherit;
+    }
+
+    button:not(:disabled) {
+        cursor: pointer;
     }
 
     img {
@@ -73,22 +127,26 @@ const GlobalStyle = createGlobalStyle`
         display: block;
     }
 
-    body {
-        background-color: var(--white-600);
-        &::-webkit-scrollbar {
-            background-color: var(--gray-600);
-            height: 0.5rem;
-            width: 0.5rem;
-        }
+    input, select, textarea {
+        font: inherit;
+    }
 
-        &::-webkit-scrollbar-thumb {
-            background-color: var(--primary);
-            border-radius: 0.4rem;
-        }
+    /* Foco visível só para navegação por teclado */
+    :focus-visible {
+        outline: 0.2rem solid var(--primary);
+        outline-offset: 0.2rem;
+        border-radius: 0.4rem;
+    }
 
-        &::-webkit-scrollbar-track {
-            border-radius: .4rem;
-        }
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
     }
 
     .btn-primary {
@@ -109,6 +167,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     .btn-secondary {
+        display: inline-block;
         cursor: pointer;
         background-color: transparent;
         color: var(--primary);
@@ -126,85 +185,12 @@ const GlobalStyle = createGlobalStyle`
         }
     }
 
-    .item-list {
-        background-color: var(--white);
-    padding: 1.6rem 3.1rem 2.4rem;
-    width: 100%;
-    max-width: 28rem;
-    display: flex;
-    flex-direction: column;
-    border-radius: 1rem;
-    cursor: pointer;
-    &:hover {
-        .image {
-            img {
-                transform: scale(1.05);
-            }
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
         }
     }
-    .image {
-        margin-bottom: 2.4rem;
-        overflow: hidden;
-        width: 21.8rem;
-        height: 18.4rem;
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform .3s ease, -webkit-transform .3s ease;
-        }
-    }
-    .middle {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        margin-bottom: 2.1rem;
-        .review {
-            display: flex;
-            align-items: center;
-            img {
-                max-width: 11.2rem;
-                margin-right: 0.8rem;
-            }
-            span {
-                font-family: var(--font-red-hat);
-                font-size: 1.6rem;
-                line-height: 120%;
-                font-weight: 600;
-                color: var(--violet-800);
-            }
-        }
-        .share {
-            display: flex;
-            img {
-                &:not(:last-child) {
-                    margin-right: 1.6rem;
-                }
-            }
-        }
-    }
-    .info {
-        margin-bottom: 1.6rem;
-        span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            font-size: 1.6rem;
-            color: var(--gray-700);
-            line-height: 120%;
-            margin-bottom: 2.4rem;
-            height: 5.7rem;
-        }
-        h3 {
-            color: var(--gray-700);
-            font-size: 3rem;
-            font-family: var(--font-red-hat);
-        }
-    }
-    }
-
 `
 
-export default GlobalStyle;
+export default GlobalStyle

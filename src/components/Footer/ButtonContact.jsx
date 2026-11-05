@@ -1,8 +1,8 @@
-import {StyleButtonContact} from './style'
+import { StyleButtonContact } from './style'
 
-export function ButtonContact({title, txt}) {
+export function ButtonContact({ title, txt, href }) {
     return (
-        <StyleButtonContact>
+        <StyleButtonContact as="a" href={href}>
             <strong>{title}</strong>
             <span>{txt}</span>
         </StyleButtonContact>

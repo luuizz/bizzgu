@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { NavigationCategories } from './NavigationCategories'
-import { NavLinks, AllCategories } from './styles'
+import { NavLinks, AllCategories, NavWrapper } from './styles'
+import { MegaMenu } from './MegaMenu'
 import MenuCategories from '/src/assets/icon-menu.svg'
-import { MegaMenu } from './MegaMenu';
 
 export function NavBar() {
+    const [showMegaMenu, setShowMegaMenu] = useState(false)
+    const location = useLocation()
 
-    const [showMegaMenu, setshowMegaMenu] = useState(false);
-
-    const toggleMegaMenu = () => {
-        setshowMegaMenu(!showMegaMenu);
-    };
-
-    const closeMegaMenu = () => {
-        setshowMegaMenu(false);
-    }
+    useEffect(() => setShowMegaMenu(false), [location.pathname])
 
     return (
-        <>
+        <NavWrapper>
             <NavLinks>
                 <div className="container">
                     <AllCategories>
-                        <button type='button' title='Todas as categorias' onClick={toggleMegaMenu}>
-                            <img src={MenuCategories} alt="Icone de 3 traços simbolizando um menu hamburguer" />
+                        <button
+                            type="button"
+                            title="Todas as categorias"
+                            onClick={() => setShowMegaMenu((open) => !open)}
+                            aria-expanded={showMegaMenu}
+                        >
+                            <img src={MenuCategories} alt="" />
                             <span>Todas as categorias</span>
                         </button>
                     </AllCategories>
                     <NavigationCategories />
                 </div>
             </NavLinks>
-            {showMegaMenu && <MegaMenu closeMegaMenu={closeMegaMenu} />}
-        </>
+            {showMegaMenu && <MegaMenu closeMegaMenu={() => setShowMegaMenu(false)} />}
+        </NavWrapper>
     )
 }

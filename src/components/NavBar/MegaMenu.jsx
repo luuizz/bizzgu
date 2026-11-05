@@ -1,43 +1,40 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import {} from './styles'
+import { StyleMegaMenu } from './styles'
+import { useCategories } from '../../hooks/useCategories'
+import imgMegaMenu from '/src/assets/img-megaMenu.jpg'
 
-const linksArrayMegaMenu = [
-    { title: 'Item1', url:'/item1', urlImage: '/src/assets/', altImage: 'Icone', description: 'Textinho1' }
-]
+export function MegaMenu({ closeMegaMenu }) {
+    const categories = useCategories()
 
-export function MegaMenu({closeMegaMenu}) {
+    useEffect(() => {
+        const onKey = (event) => event.key === 'Escape' && closeMegaMenu()
+        window.addEventListener('keydown', onKey)
+        return () => window.removeEventListener('keydown', onKey)
+    }, [closeMegaMenu])
+
     return (
-        <>
-            <section>
+        <StyleMegaMenu>
+            <div className="backdrop" onClick={closeMegaMenu} aria-hidden="true" />
+            <div className="panel">
                 <div className="container">
-                    <div className="close">
-                        <button onClick={closeMegaMenu}>
-                            <img src="" alt="Fechar" title='Fechar' />
-                        </button>
-                    </div>
                     <div className="content">
-                        <div className="main">
-                            <ul>
-                                {
-                                linksArrayMegaMenu.map((link, index) => (
-                                <li key={index}>
-                                    <Link to={link.url} title={`Ir para ${link.title}`}>
-                                        <div className="image">
-                                            <img src={link.urlImage} alt={link.altImage} />
-                                        </div>
-                                        <div className="texts">
-                                            <strong>{link.title}</strong>
-                                            <p>{link.description}</p>
-                                        </div>
+                        <ul>
+                            {categories.map((category) => (
+                                <li key={category.id}>
+                                    <Link to={`/categoria/${category.slug}`} onClick={closeMegaMenu}>
+                                        <strong>{category.name}</strong>
+                                        {category.description && <p>{category.description}</p>}
                                     </Link>
                                 </li>
-                                ))
-                                }
-                            </ul>
-                        </div>
+                            ))}
+                        </ul>
+                        <Link to="/categoria/eletrodomesticos" className="banner" onClick={closeMegaMenu}>
+                            <img src={imgMegaMenu} alt="Oferta: Geladeira Electrolux Frost Free" />
+                        </Link>
                     </div>
                 </div>
-            </section>
-        </>
+            </div>
+        </StyleMegaMenu>
     )
 }
