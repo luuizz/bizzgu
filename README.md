@@ -34,7 +34,7 @@ E-commerce completo feito com **React + Vite** no front-end e **Neon** no back-e
 
 ## Tecnologias
 
-React 18 · Vite 4 · React Router 6 · styled-components · Swiper · [Phosphor Icons](https://phosphoricons.com) (variante duotone) · Neon (`@neon/neon-js`: Neon Auth + Data API) · GitHub Actions + GitHub Pages
+React 18 · Vite 4 · React Router 6 · styled-components · Swiper · [Phosphor Icons](https://phosphoricons.com) (variante duotone) · Neon (`@neon/neon-js`: Neon Auth + Data API) · GitHub Actions + Vercel (Analytics e Speed Insights)
 
 ---
 
@@ -46,7 +46,7 @@ React 18 · Vite 4 · React Router 6 · styled-components · Swiper · [Phosphor
 2. No Console do projeto, **ative o Auth (Neon Auth)** e depois a **Data API**. A Data API usa o Neon Auth para validar quem está logado.
 3. Nas configurações do Auth, adicione os endereços que podem usar o login (domínios confiáveis):
    - `http://localhost:5173` (desenvolvimento)
-   - `https://luuizz.github.io` (site publicado)
+   - `https://bizzgu.vercel.app` (site publicado, ou o seu domínio)
 
 > A ordem importa: ative Auth e Data API **antes** de criar as tabelas. Eles criam a tabela de usuários, os papéis `authenticated`/`anonymous` e a função `auth.user_id()`, que o schema usa. Se faltar algo, a migration para com uma mensagem explicando o que ativar.
 
@@ -105,10 +105,10 @@ Sem este passo, o admin adiciona imagens **colando o link** de uma imagem já pu
 1. Instale a [Neon CLI](https://neon.com/docs/reference/neon-cli) e rode `neon link` na pasta do projeto.
 2. Crie um arquivo `.env.neon` com os endereços do site:
    ```
-   ALLOWED_ORIGINS=http://localhost:5173,https://luuizz.github.io
+   ALLOWED_ORIGINS=http://localhost:5173,https://bizzgu.vercel.app
    ```
-3. Rode `neon deploy --env .env.neon`. Isso cria o bucket `product-images` e a função, conforme o `neon.ts`.
-4. Rode `neon functions get product-images`, copie o `invocation_url` e coloque no `.env.local`:
+3. Rode `neon deploy --env .env.neon`. Isso cria o bucket `product-images` e a função `productimages`, conforme o `neon.ts`.
+4. Rode `neon functions get productimages`, copie o `invocation_url` e coloque no `.env.local`:
    ```
    VITE_UPLOAD_FUNCTION_URL=https://...
    ```
@@ -122,8 +122,8 @@ Sem este passo, o admin adiciona imagens **colando o link** de uma imagem já pu
 O site é publicado automaticamente. Ninguém roda deploy na mão: o código passa por uma esteira de branches e o que chega na `main` vai para o ar.
 
 ```
-feature/minha-mudanca ──PR──▶ dev ──PR──▶ main ──▶ GitHub Actions ──▶ site no ar
-      (local)            (integração)   (produção)    migrations + build + publicação
+feature/minha-mudanca ──PR──▶ dev ──PR──▶ main ──▶ GitHub Actions ──▶ Vercel
+      (local)            (integração)   (produção)    migrations → build → publicação
 ```
 
 | Branch | Para quê | O que roda |
@@ -141,39 +141,59 @@ git switch -c feature/nova-coisa
 git push -u origin feature/nova-coisa      # abra o PR para a dev
 ```
 
-Depois de juntar uma ou mais features na `dev`, abra um PR **dev → main**. Ao fazer o merge, o workflow `Deploy` aplica as migrations pendentes no banco de produção, gera o build e publica no GitHub Pages.
+Depois de juntar uma ou mais features na `dev`, abra um PR **dev → main**. Ao fazer o merge, o workflow `Deploy` aplica as migrations pendentes no banco de produção, gera o build e publica na Vercel. O site só é publicado se as migrations passarem, então banco e código nunca ficam fora de sincronia.
 
 **Mudou o banco?** Crie um arquivo **novo** em `database/migrations/` (ex.: `0003_cupom_desconto.sql`) e rode `yarn db:migrate` localmente. Nunca edite uma migration que já foi aplicada: o controle é pelo nome do arquivo, então a alteração não seria aplicada de novo. Cada arquivo roda numa transação; se der erro, nada dele fica no banco e o deploy para antes de publicar o site.
 
-### Configuração única no GitHub
+### Configuração única
 
-0. **Ative os workflows:** eles estão em `.github/workflows-para-ativar/` e precisam ser movidos para `.github/workflows/` por você (o GitHub exige uma permissão especial para criar workflows). Os comandos estão no `README.md` daquela pasta.
-1. **Settings → Pages → Source:** escolha **GitHub Actions**.
-2. **Settings → Secrets and variables → Actions:**
-   - aba **Variables**: `VITE_NEON_AUTH_URL`, `VITE_NEON_DATA_API_URL` (e `VITE_UPLOAD_FUNCTION_URL`, se usar o upload). São endereços públicos, vão dentro do site.
-   - aba **Secrets**: `NEON_DATABASE_URL` com a connection string do banco de produção. Sem ele, o deploy publica o site mas pula as migrations (com um aviso).
-3. **Settings → Branches → Add branch ruleset** (ou *branch protection*) para a `main`: exija pull request e os checks **Lint e build**, **Migrations (Postgres de teste)** e **Origem do PR**. Assim nada entra na `main` sem passar pela `dev`.
-4. Opcional: deixe a `dev` como branch padrão (**Settings → General → Default branch**) para que novos PRs já abram apontando para ela.
-5. No Neon Auth, mantenha `https://luuizz.github.io` nos domínios confiáveis.
+**Na Vercel** (plano Hobby, gratuito):
 
-Para publicar de novo sem mudança de código (ex.: depois de trocar uma variável), use **Actions → Deploy → Run workflow**.
+1. Na pasta do projeto, rode `npx vercel@65 link` e responda: criar um projeto novo, nome `bizzgu`. Isso cria a pasta `.vercel/` (fica fora do Git) com o arquivo `project.json`, que tem o `orgId` e o `projectId`.
+2. Em [vercel.com/account/tokens](https://vercel.com/account/tokens), crie um token para o GitHub Actions.
+3. No projeto da Vercel, aba **Analytics** e aba **Speed Insights**: clique em **Enable** nas duas.
+
+O `vercel.json` já define build, rotas, cache e headers de segurança, e desliga o deploy automático da própria Vercel: quem publica é o GitHub Actions, depois das migrations.
+
+**No GitHub** (Settings → Secrets and variables → Actions):
+
+| Aba | Nome | Valor |
+|---|---|---|
+| Variables | `VITE_NEON_AUTH_URL` | Auth URL do Neon |
+| Variables | `VITE_NEON_DATA_API_URL` | API URL da Data API do Neon |
+| Variables | `VITE_SITE_URL` | opcional: endereço final do site, se não for `https://bizzgu.vercel.app` |
+| Variables | `VITE_UPLOAD_FUNCTION_URL` | opcional: só se usar o upload de imagens |
+| Secrets | `NEON_DATABASE_URL` | connection string do banco de produção (sem `-pooler`) |
+| Secrets | `VERCEL_TOKEN` | o token do passo 2 |
+| Secrets | `VERCEL_ORG_ID` | `orgId` do `.vercel/project.json` |
+| Secrets | `VERCEL_PROJECT_ID` | `projectId` do `.vercel/project.json` |
+
+**Proteção da `main`** (Settings → Rules → Rulesets): exija pull request e os checks **Lint e build**, **Migrations (Postgres de teste)** e **Origem do PR**, sem "require branches to be up to date".
+
+**No Neon Auth:** adicione o endereço da Vercel (`https://bizzgu.vercel.app` ou o seu domínio) nos domínios confiáveis.
+
+Para publicar de novo sem mudança de código (ex.: depois de trocar uma variável), use **Actions → Deploy → Run workflow**. Se algo der errado em produção, o painel da Vercel permite voltar para a versão anterior com um clique (**Deployments → ⋯ → Promote**).
+
+### Domínio próprio (opcional)
+
+No projeto da Vercel, **Settings → Domains → Add** (ex.: `bizzgu.seudominio.com.br`) e siga as instruções de DNS. Depois, cadastre o domínio nos domínios confiáveis do Neon Auth e defina a variável `VITE_SITE_URL` no GitHub com o endereço novo, para a imagem de compartilhamento apontar para ele.
 
 ### Banco separado para desenvolvimento (opcional)
 
 Para não misturar testes locais com os dados de produção, crie uma **branch `dev` no Neon** (Console → Branches), ative Auth e Data API nela e use os endereços e a connection string dessa branch no seu `.env.local`. O `NEON_DATABASE_URL` do GitHub continua apontando para a branch principal (produção).
 
-### Outras hospedagens (Vercel / Netlify)
+### Imagem de compartilhamento
 
-Defina as variáveis `VITE_NEON_AUTH_URL`, `VITE_NEON_DATA_API_URL` (e `VITE_UPLOAD_FUNCTION_URL`, se usar) e `VITE_BASE_PATH=/` no painel da hospedagem. O `vercel.json` já redireciona todas as rotas para o `index.html`. Adicione o domínio da hospedagem nos domínios confiáveis do Neon Auth e no `ALLOWED_ORIGINS` da função. As migrations continuam rodando pelo workflow ou pelo `yarn db:migrate`.
+`public/og-image.png` (1200×630) aparece quando o link é compartilhado no WhatsApp, LinkedIn etc. As tags ficam no `index.html` e usam o `VITE_SITE_URL`.
 
 ---
 
 ## Estrutura
 
 ```
-.github/workflows/   (hoje em workflows-para-ativar/, veja o passo 0 do deploy)
+.github/workflows/
   ci.yml             lint, build e teste das migrations em todo PR
-  deploy.yml         migrations + build + GitHub Pages ao entrar na main
+  deploy.yml         migrations + build + Vercel ao entrar na main
 database/
   migrations/        0001_schema.sql (tabelas, RLS, funções), 0002_seed.sql...
   ci/neon-stub.sql   simula o Neon Auth/Data API no Postgres do CI

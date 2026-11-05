@@ -1,26 +1,25 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
-import { copyFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 
-// O GitHub Pages não conhece as rotas do React Router: servimos o mesmo
-// index.html como 404.html para que links diretos (ex.: /produto/x) funcionem.
-const spaFallback = () => ({
-    name: 'spa-fallback-404',
-    apply: 'build',
-    closeBundle() {
-        copyFileSync(resolve('dist/index.html'), resolve('dist/404.html'))
-    },
-})
+// Endereço público do site, usado nas tags de compartilhamento (Open Graph)
+const DEFAULT_SITE_URL = 'https://bizzgu.vercel.app'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '')
+    const siteUrl = (env.VITE_SITE_URL || DEFAULT_SITE_URL).replace(/\/$/, '')
 
     return {
-        plugins: [react(), spaFallback()],
-        // Em produção o site fica em luuizz.github.io/bizzgu/. Para Vercel/Netlify use VITE_BASE_PATH=/
-        base: command === 'build' ? env.VITE_BASE_PATH || '/bizzgu/' : '/',
+        plugins: [
+            react(),
+            {
+                name: 'site-url',
+                // 'pre': troca antes do Vite processar o HTML (o % quebraria a leitura das URLs)
+                transformIndexHtml: { order: 'pre', handler: (html) => html.replaceAll('%SITE_URL%', siteUrl) },
+            },
+        ],
+        // Na Vercel o site fica na raiz. Para hospedar numa subpasta, use VITE_BASE_PATH=/pasta/
+        base: env.VITE_BASE_PATH || '/',
         build: {
             rollupOptions: {
                 output: {
