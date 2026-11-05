@@ -24,7 +24,7 @@ E-commerce completo feito com **React + Vite** no front-end e **Neon** no back-e
 - Pedidos: filtro por status, busca e avanço de status (pago → enviado → entregue, ou cancelado)
 - Produtos: cadastro e edição com imagens (upload para o Vercel Blob ou link), além de ativar/desativar e destacar direto na tabela
 - Categorias: criar, editar, ordenar e excluir
-- Banners da home: arte pronta (desktop + celular) ou texto + imagem, com pré-visualização, ordem do carrossel e agendamento (início/fim)
+- Banners da home: artes para computador (1920×480) e celular (1080×1080), com pré-visualização, link, ordem do carrossel e agendamento (início/fim)
 - Clientes: lista com nº de pedidos e promoção a administrador
 
 **Segurança (no banco de dados)**
@@ -78,7 +78,8 @@ O comando aplica, em ordem, os arquivos de `database/migrations/` que ainda não
 |---|---|
 | `0001_schema.sql` | Tabelas, regras de segurança e funções |
 | `0002_seed.sql` | 8 categorias e 18 produtos de exemplo |
-| `0003_banners.sql` | Banners da home (com os 2 banners iniciais) |
+| `0003_banners.sql` | Banners da home |
+| `0004_banners_so_imagem.sql` | Banners passam a ser só imagem; 3 banners iniciais com artes prontas |
 
 > Já rodou esses arquivos antes pelo SQL Editor? Use `yarn db:migrate --baseline` uma vez para marcá-los como aplicados sem rodar de novo.
 

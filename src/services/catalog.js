@@ -52,7 +52,7 @@ export async function getProductBySlug(slug) {
 
 // ---------- Banners da home ----------
 // O banco (RLS) já filtra: visitantes só recebem banners ativos e dentro do período
-const BANNER_FIELDS = 'id, layout, title, subtitle, cta_label, link, image, image_mobile, active, starts_at, ends_at'
+const BANNER_FIELDS = 'id, title, link, image, image_mobile, active, starts_at, ends_at'
 
 export async function getHomeBanners() {
     const banners = unwrap(await api.from('banners').select(BANNER_FIELDS).eq('active', true).order('position').order('id'))
