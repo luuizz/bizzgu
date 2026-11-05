@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom'
+import { Check, CreditCard, HouseLine, Receipt, Truck, XCircle } from '@phosphor-icons/react'
 import styled from 'styled-components'
 import { ProductImage } from './product/ProductImage'
 import { ORDER_FLOW, PAYMENT_METHODS, formatBRL, formatDateTime, maskCep, maskPhone } from '../lib/format'
 
 const stepDates = { pending: 'created_at', paid: 'paid_at', shipped: 'shipped_at', delivered: 'delivered_at' }
+const stepIcons = { pending: Receipt, paid: CreditCard, shipped: Truck, delivered: HouseLine }
 const stepLabels = { pending: 'Pedido realizado', paid: 'Pagamento aprovado', shipped: 'Enviado', delivered: 'Entregue' }
 
 export function OrderTimeline({ order }) {
     if (order.status === 'canceled') {
         return (
             <Canceled>
-                <strong>Pedido cancelado</strong>
+                <strong><XCircle size={22} /> Pedido cancelado</strong>
                 <span>{formatDateTime(order.canceled_at)} · os itens voltaram para o estoque.</span>
             </Canceled>
         )
@@ -22,9 +24,10 @@ export function OrderTimeline({ order }) {
         <Timeline>
             {ORDER_FLOW.map((step, index) => {
                 const state = index < currentIndex ? 'done' : index === currentIndex ? 'current' : 'todo'
+                const StepIcon = state === 'done' ? Check : stepIcons[step]
                 return (
                     <li key={step} className={state}>
-                        <span className="dot" aria-hidden="true">{index < currentIndex || index === currentIndex ? '✓' : index + 1}</span>
+                        <span className="dot" aria-hidden="true"><StepIcon size={18} weight={state === 'todo' ? 'duotone' : 'fill'} /></span>
                         <div>
                             <strong>{stepLabels[step]}</strong>
                             <small>{order[stepDates[step]] ? formatDateTime(order[stepDates[step]]) : 'Aguardando'}</small>
@@ -141,7 +144,7 @@ const Canceled = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    strong { font-size: 1.6rem; }
+    strong { font-size: 1.6rem; display: inline-flex; align-items: center; gap: 0.8rem; }
     span { font-size: 1.4rem; }
 `
 

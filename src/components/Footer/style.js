@@ -54,7 +54,13 @@ export const StyleFooter = styled.footer`
                     display: flex;
                     li {
                         &:not(:last-child) {
-                            margin-right: 3rem;
+                            margin-right: 2.4rem;
+                        }
+                        a {
+                            display: flex;
+                            color: var(--white);
+                            transition: color .2s ease, transform .2s ease;
+                            &:hover { color: var(--primary-100); transform: translateY(-0.2rem); }
                         }
                     }
                 }

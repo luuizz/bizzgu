@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ShareNetwork } from '@phosphor-icons/react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Section } from '../components/layout'
@@ -14,7 +15,6 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { getProductBySlug, getProducts } from '../services/catalog'
 import { FREE_SHIPPING_FROM, discountPercent, formatBRL, installments } from '../lib/format'
 import { NotFound } from './NotFound'
-import ShareImg from '/src/assets/icon-share-2.svg'
 
 export function ItemDetail() {
     const { slug } = useParams()
@@ -169,7 +169,7 @@ function ProductView({ product }) {
                         <div className="share">
                             <WishlistButton product={product} withLabel />
                             <button type="button" onClick={share}>
-                                <img src={ShareImg} alt="" />
+                                <ShareNetwork size={22} />
                                 <span>Compartilhar</span>
                             </button>
                         </div>

@@ -5,8 +5,7 @@ import { Button, Input } from '../ui'
 import { useAuth } from '../../hooks/useAuth'
 import { lookupCep } from '../../services/cep'
 import { maskCep } from '../../lib/format'
-import IconMap from '/src/assets/icon-local-modal.svg'
-import IconClose from '/src/assets/icon-close.svg'
+import { MapPinArea, X } from '@phosphor-icons/react'
 
 export function ModalLocalization({ closeModal, onConfirm }) {
     const { user } = useAuth()
@@ -41,11 +40,11 @@ export function ModalLocalization({ closeModal, onConfirm }) {
             <div className="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-localizacao">
                 <div className="top">
                     <button type="button" onClick={closeModal} title="Fechar">
-                        <img src={IconClose} alt="Fechar" />
+                        <X size={24} aria-label="Fechar" />
                     </button>
                 </div>
                 <div className="content">
-                    <img src={IconMap} alt="" />
+                    <span className="map-icon"><MapPinArea size={44} /></span>
                     <h3 id="titulo-localizacao">Qual a sua localização?</h3>
                     <p>Informe seu CEP para ver as condições de entrega da sua região.</p>
                     <form onSubmit={handleSubmit}>

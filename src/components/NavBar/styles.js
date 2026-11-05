@@ -21,10 +21,8 @@ export const AllCategories = styled.div`
         display: flex;
         width: 20.8rem;
         align-items: center;
-        img {
-            max-width: 2.4rem;
-            margin-right: 0.8rem;
-        }
+        gap: 0.8rem;
+        color: var(--violet-700);
         span {
             color: var(--violet-800);
             font-size: 1.6rem;

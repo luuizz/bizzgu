@@ -1,4 +1,5 @@
 import { useParams, useSearchParams } from 'react-router-dom'
+import { Package } from '@phosphor-icons/react'
 import { Page } from '../components/layout'
 import { ProductGrid } from '../components/product/ProductGrid'
 import { SortSelect } from '../components/product/SortSelect'
@@ -46,6 +47,7 @@ export function Categoria() {
                 {products.error && <ErrorState error={products.error} onRetry={products.reload} />}
                 {!products.error && !loadingProducts && list.length === 0 ? (
                     <EmptyState
+                        icon={Package}
                         title="Nenhum produto por aqui ainda"
                         description="Estamos preparando novidades para este departamento."
                         action={<ButtonLink to="/" $variant="secondary">Ver outros produtos</ButtonLink>}

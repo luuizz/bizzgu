@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { StylesSearchHeader } from './styles'
-import iconSearch from '/src/assets/icon-search.svg'
+import { MagnifyingGlass } from '@phosphor-icons/react'
 
 export function SearchHeader() {
     const navigate = useNavigate()
@@ -31,7 +31,7 @@ export function SearchHeader() {
                 autoComplete="off"
             />
             <button type="submit" title="Buscar">
-                <img src={iconSearch} alt="Buscar" />
+                <MagnifyingGlass size={22} aria-label="Buscar" />
             </button>
         </StylesSearchHeader>
     )

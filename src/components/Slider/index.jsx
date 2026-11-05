@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { StyleSlide } from './style'
 import ImageIphone from '/src/assets/iphones.png'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -25,10 +27,18 @@ const slides = [
 ]
 
 export function Slide() {
+    const prevRef = useRef(null)
+    const nextRef = useRef(null)
+
     return (
         <StyleSlide>
             <Swiper
-                navigation
+                // Setas próprias (Phosphor) no lugar das padrão do Swiper
+                navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+                onBeforeInit={(swiper) => {
+                    swiper.params.navigation.prevEl = prevRef.current
+                    swiper.params.navigation.nextEl = nextRef.current
+                }}
                 slidesPerView={1}
                 rewind
                 autoplay={{ delay: 6000, disableOnInteraction: true }}
@@ -54,6 +64,12 @@ export function Slide() {
                     </SwiperSlide>
                 ))}
             </Swiper>
+            <button ref={prevRef} type="button" className="slider-nav prev" aria-label="Slide anterior">
+                <CaretLeft size={28} weight="bold" />
+            </button>
+            <button ref={nextRef} type="button" className="slider-nav next" aria-label="Próximo slide">
+                <CaretRight size={28} weight="bold" />
+            </button>
         </StyleSlide>
     )
 }
