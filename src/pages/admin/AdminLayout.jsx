@@ -12,6 +12,7 @@ import {
     Receipt,
     SignOut,
     SquaresFour,
+    Tag,
     Storefront,
     UserCircle,
     UsersThree,
@@ -37,6 +38,7 @@ const groups = [
         links: [
             { to: '/admin/produtos', label: 'Produtos', icon: Package },
             { to: '/admin/categorias', label: 'Categorias', icon: SquaresFour },
+            { to: '/admin/tags', label: 'Tags', icon: Tag },
         ],
     },
     {
@@ -56,6 +58,7 @@ const crumbLabels = {
     categorias: 'Categorias',
     clientes: 'Clientes',
     banners: 'Banners',
+    tags: 'Tags',
 }
 
 function useCrumbs(pathname) {
@@ -64,11 +67,13 @@ function useCrumbs(pathname) {
     parts.forEach((part, index) => {
         const to = `/admin/${parts.slice(0, index + 1).join('/')}`
         const parent = parts[index - 1]
-        const isNew = part === 'novo'
+        const isNew = part === 'novo' || part === 'nova'
         const label = crumbLabels[part] || {
             pedidos: 'Detalhes do pedido',
             produtos: isNew ? 'Novo produto' : 'Editar produto',
             banners: isNew ? 'Novo banner' : 'Editar banner',
+            categorias: isNew ? 'Nova categoria' : 'Editar categoria',
+            tags: isNew ? 'Nova tag' : 'Editar tag',
         }[parent] || part
         crumbs.push({ label, to })
     })

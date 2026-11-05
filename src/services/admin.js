@@ -40,15 +40,17 @@ export const ADMIN_PRODUCT_SORTS = {
     updated: { label: 'Editados recentemente', column: 'updated_at', ascending: false },
 }
 
-export async function listAllProducts({ search, categoryId, sort = 'recent' } = {}) {
+export async function listAllProducts({ search, categoryId, tagId, sort = 'recent' } = {}) {
     const order = ADMIN_PRODUCT_SORTS[sort] || ADMIN_PRODUCT_SORTS.recent
+    const fields = 'id, name, slug, price, compare_at_price, stock, images, featured, active, category:categories(id, name)'
     let query = api
         .from('products')
-        .select('id, name, slug, price, compare_at_price, stock, images, featured, active, category:categories(id, name)')
+        .select(tagId ? `${fields}, product_tags!inner(tag_id)` : fields)
         .order(order.column, { ascending: order.ascending })
         .order('id', { ascending: false })
 
     if (categoryId) query = query.eq('category_id', categoryId)
+    if (tagId) query = query.eq('product_tags.tag_id', tagId)
     if (search) {
         const term = search.replace(/[,()%*\\:"]/g, ' ').trim()
         if (term) query = query.or(`name.ilike.%${term}%,slug.ilike.%${term}%`)
@@ -57,7 +59,15 @@ export async function listAllProducts({ search, categoryId, sort = 'recent' } = 
 }
 
 export async function getProductById(id) {
-    return unwrap(await api.from('products').select('*').eq('id', id).maybeSingle())
+    return unwrap(await api.from('products').select('*, tags(id, name, slug)').eq('id', id).maybeSingle())
+}
+
+// Troca as tags do produto pela lista informada
+export async function setProductTags(productId, tagIds) {
+    unwrap(await api.from('product_tags').delete().eq('product_id', productId))
+    if (tagIds.length) {
+        unwrap(await api.from('product_tags').insert(tagIds.map((tagId) => ({ product_id: productId, tag_id: tagId }))))
+    }
 }
 
 export async function saveProduct(id, values) {
@@ -98,7 +108,7 @@ export async function uploadImage(file, folder = 'products') {
 export const uploadProductImage = (file) => uploadImage(file, 'products')
 
 // Apaga do Blob as imagens enviadas pelo painel (links externos e as de public/ ficam)
-const isUploadedImage = (url) => /^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\/(products|banners|blog)\//.test(url)
+const isUploadedImage = (url) => /^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\/(products|banners|categories|blog)\//.test(url)
 
 export async function removeUploadedImages(urls) {
     if (!canUploadImages) return
@@ -108,20 +118,53 @@ export async function removeUploadedImages(urls) {
 
 export const removeProductImages = removeUploadedImages
 
-// ---------- Categorias ----------
-export async function listCategoriesWithCount() {
-    return unwrap(await api.from('categories').select('*, products(count)').order('sort_order').order('name'))
+// ---------- Taxonomia: categorias e tags ----------
+// Mesmas telas e funções para os dois tipos de termo, como no WordPress
+export const TAXONOMIES = {
+    categories: { table: 'categories', count: 'products(count)', order: ['sort_order', 'name'] },
+    tags: { table: 'tags', count: 'product_tags(count)', order: ['name'] },
 }
 
-export async function saveCategory(id, values) {
-    const query = id
-        ? api.from('categories').update(values).eq('id', id)
-        : api.from('categories').insert(values)
+export async function listTerms(kind, { search } = {}) {
+    const taxonomy = TAXONOMIES[kind]
+    let query = api.from(taxonomy.table).select(`*, ${taxonomy.count}`)
+    taxonomy.order.forEach((column) => { query = query.order(column) })
+    if (search) {
+        const term = search.replace(/[,()%*\\:"]/g, ' ').trim()
+        if (term) query = query.or(`name.ilike.%${term}%,slug.ilike.%${term}%`)
+    }
+    const rows = unwrap(await query)
+    // count chega como [{ count: n }]
+    return rows.map(({ products, product_tags: links, ...row }) => ({ ...row, count: (products || links)?.[0]?.count ?? 0 }))
+}
+
+export async function getTerm(kind, id) {
+    const taxonomy = TAXONOMIES[kind]
+    const row = unwrap(await api.from(taxonomy.table).select(`*, ${taxonomy.count}`).eq('id', id).maybeSingle())
+    if (!row) return null
+    const { products, product_tags: links, ...term } = row
+    return { ...term, count: (products || links)?.[0]?.count ?? 0 }
+}
+
+export async function saveTerm(kind, id, values) {
+    const table = TAXONOMIES[kind].table
+    const query = id ? api.from(table).update(values).eq('id', id) : api.from(table).insert(values)
     return unwrap(await query.select().single())
 }
 
-export async function deleteCategory(id) {
-    return unwrap(await api.from('categories').delete().eq('id', id))
+export async function deleteTerm(kind, id) {
+    return unwrap(await api.from(TAXONOMIES[kind].table).delete().eq('id', id))
+}
+
+export async function listAllTags() {
+    return unwrap(await api.from('tags').select('id, name, slug').order('name'))
+}
+
+// Cria a tag na hora (campo de tags do produto); se o slug já existir, reaproveita
+export async function createTag(name, slug) {
+    const existing = unwrap(await api.from('tags').select('id, name, slug').eq('slug', slug).maybeSingle())
+    if (existing) return existing
+    return unwrap(await api.from('tags').insert({ name, slug }).select('id, name, slug').single())
 }
 
 // ---------- Clientes ----------

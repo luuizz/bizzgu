@@ -8,7 +8,8 @@ import { Alert, Button, Card, Checkbox, ErrorState, Field, Input, Loader, Select
 import { useCategories } from '../../hooks/useCategories'
 import { useToast } from '../../hooks/useToast'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
-import { canUploadImages, deleteProduct, getProductById, removeProductImages, saveProduct, uploadProductImage } from '../../services/admin'
+import { canUploadImages, deleteProduct, getProductById, removeProductImages, saveProduct, setProductTags, uploadProductImage } from '../../services/admin'
+import { TagInput } from '../../components/admin/TagInput'
 import { slugify } from '../../lib/format'
 
 const empty = {
@@ -22,6 +23,7 @@ const empty = {
     images: [],
     featured: false,
     active: true,
+    tags: [],
 }
 
 const MAX_IMAGES = 6
@@ -156,6 +158,7 @@ export function ProductForm() {
                 featured: form.featured,
                 active: form.active,
             })
+            await setProductTags(saved.id, form.tags.map((tag) => tag.id))
             // Só apaga do Storage as imagens removidas depois que o produto foi salvo
             removeProductImages(removedUploads).catch(() => {})
             toast.show(isNew ? 'Produto cadastrado!' : 'Produto atualizado!', 'success')
@@ -306,6 +309,9 @@ export function ProductForm() {
                                     <option value="">Sem categoria</option>
                                     {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
                                 </Select>
+                            </Field>
+                            <Field label="Tags" htmlFor="tags" hint="Enter para adicionar. Gerencie todas em Catálogo → Tags.">
+                                <TagInput id="tags" value={form.tags} onChange={(tags) => setForm((prev) => ({ ...prev, tags }))} />
                             </Field>
                             <Checkbox label="Ativo (visível na loja)" checked={form.active} onChange={set('active')} />
                             <Checkbox label="Destaque na página inicial" checked={form.featured} onChange={set('featured')} />

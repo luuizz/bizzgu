@@ -8,6 +8,8 @@ import { useAsync } from '../hooks/useAsync'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { getCategoryBySlug, getProducts } from '../services/catalog'
 import { NotFound } from './NotFound'
+import { imageUrl } from '../lib/format'
+import styled from 'styled-components'
 
 export function Categoria() {
     const { slug } = useParams()
@@ -32,11 +34,14 @@ export function Categoria() {
     return (
         <Page>
             <div className="container">
-                <div className="page-head">
-                    <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: category.data.name }]} />
-                    <PageTitle>{category.data.name}</PageTitle>
-                    {category.data.description && <p>{category.data.description}</p>}
-                </div>
+                <Head className="page-head">
+                    {category.data.image && <img src={imageUrl(category.data.image)} alt="" className="cover" />}
+                    <div>
+                        <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: category.data.name }]} />
+                        <PageTitle>{category.data.name}</PageTitle>
+                        {category.data.description && <p>{category.data.description}</p>}
+                    </div>
+                </Head>
 
                 <SortSelect
                     count={loadingProducts ? null : list.length}
@@ -59,3 +64,11 @@ export function Categoria() {
         </Page>
     )
 }
+
+const Head = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 2.4rem;
+    .cover { width: 9.6rem; height: 9.6rem; border-radius: 1.6rem; object-fit: cover; background: var(--white); flex-shrink: 0; }
+    @media (max-width: 600px) { .cover { width: 6.4rem; height: 6.4rem; } }
+`

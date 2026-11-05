@@ -22,9 +22,16 @@ export async function getCategoryBySlug(slug) {
     return unwrap(await api.from('categories').select('*').eq('slug', slug).maybeSingle())
 }
 
-export async function getProducts({ categoryId, search, featured, onSale, sort = 'relevance', limit, ids, excludeId } = {}) {
-    let query = api.from('products').select(PRODUCT_FIELDS).eq('active', true)
+export async function getTagBySlug(slug) {
+    return unwrap(await api.from('tags').select('id, name, slug, description').eq('slug', slug).maybeSingle())
+}
 
+export async function getProducts({ categoryId, tagId, search, featured, onSale, sort = 'relevance', limit, ids, excludeId } = {}) {
+    // Filtro por tag: junta com product_tags (inner = só produtos que têm a tag)
+    const fields = tagId ? `${PRODUCT_FIELDS}, product_tags!inner(tag_id)` : PRODUCT_FIELDS
+    let query = api.from('products').select(fields).eq('active', true)
+
+    if (tagId) query = query.eq('product_tags.tag_id', tagId)
     if (categoryId) query = query.eq('category_id', categoryId)
     if (featured) query = query.eq('featured', true)
     if (onSale) query = query.not('compare_at_price', 'is', null)
@@ -47,7 +54,7 @@ export async function getProducts({ categoryId, search, featured, onSale, sort =
 // Sem filtro de "ativo": o banco (RLS) só devolve produtos inativos para admins,
 // o que permite ao painel pré-visualizar um produto antes de publicá-lo
 export async function getProductBySlug(slug) {
-    return unwrap(await api.from('products').select(PRODUCT_FIELDS).eq('slug', slug).maybeSingle())
+    return unwrap(await api.from('products').select(`${PRODUCT_FIELDS}, tags(id, name, slug)`).eq('slug', slug).maybeSingle())
 }
 
 // ---------- Banners da home ----------
