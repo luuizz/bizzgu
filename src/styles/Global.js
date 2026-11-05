@@ -49,6 +49,8 @@ const GlobalStyle = createGlobalStyle`
         --danger-50: #fdecee;
         --info: #2563eb;
         --info-50: #e8f0fe;
+        --neutral: #5f5964;
+        --neutral-50: #efeef1;
 
         /* Fonts */
         --font-red-hat: 'Red Hat Display', sans-serif;

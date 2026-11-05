@@ -63,9 +63,10 @@ export async function deleteProduct(id) {
 // aceita imagens por link.
 export const canUploadImages = Boolean(UPLOAD_FUNCTION_URL)
 
-async function callUploadFunction(method, body, contentType) {
+async function callUploadFunction(method, body, contentType, folder) {
     const token = await getAccessToken()
-    const response = await fetch(UPLOAD_FUNCTION_URL, {
+    const url = folder ? `${UPLOAD_FUNCTION_URL}?pasta=${folder}` : UPLOAD_FUNCTION_URL
+    const response = await fetch(url, {
         method,
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': contentType },
         body,
@@ -75,19 +76,24 @@ async function callUploadFunction(method, body, contentType) {
     return data
 }
 
-export async function uploadProductImage(file) {
-    const { url } = await callUploadFunction('POST', file, file.type)
+// folder: 'products' | 'banners' | 'blog'
+export async function uploadImage(file, folder = 'products') {
+    const { url } = await callUploadFunction('POST', file, file.type, folder)
     return url
 }
 
-// Apaga do Blob as imagens enviadas pelo painel (links externos e as de public/ ficam)
-const isUploadedImage = (url) => /^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\/products\//.test(url)
+export const uploadProductImage = (file) => uploadImage(file, 'products')
 
-export async function removeProductImages(urls) {
+// Apaga do Blob as imagens enviadas pelo painel (links externos e as de public/ ficam)
+const isUploadedImage = (url) => /^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\/(products|banners|blog)\//.test(url)
+
+export async function removeUploadedImages(urls) {
     if (!canUploadImages) return
     const uploaded = urls.filter(isUploadedImage)
     await Promise.allSettled(uploaded.map((url) => callUploadFunction('DELETE', JSON.stringify({ url }), 'application/json')))
 }
+
+export const removeProductImages = removeUploadedImages
 
 // ---------- Categorias ----------
 export async function listCategoriesWithCount() {
@@ -121,4 +127,32 @@ export async function listUsers({ search } = {}) {
 
 export async function setUserRole(userId, role) {
     return unwrap(await api.rpc('admin_set_role', { p_user_id: userId, p_role: role }))
+}
+
+// ---------- Banners ----------
+export async function listBanners() {
+    return unwrap(await api.from('banners').select('*').order('position').order('id'))
+}
+
+export async function getBannerById(id) {
+    return unwrap(await api.from('banners').select('*').eq('id', id).maybeSingle())
+}
+
+export async function saveBanner(id, values) {
+    if (!id) {
+        // Novo banner entra no fim da fila
+        const last = unwrap(await api.from('banners').select('position').order('position', { ascending: false }).limit(1))
+        values = { ...values, position: (last[0]?.position ?? 0) + 1 }
+    }
+    const query = id ? api.from('banners').update(values).eq('id', id) : api.from('banners').insert(values)
+    return unwrap(await query.select().single())
+}
+
+export async function deleteBanner(id) {
+    return unwrap(await api.from('banners').delete().eq('id', id))
+}
+
+// Reordena gravando a posição de cada banner conforme a lista recebida
+export async function reorderBanners(ids) {
+    await Promise.all(ids.map((id, index) => api.from('banners').update({ position: index + 1 }).eq('id', id).then(unwrap)))
 }

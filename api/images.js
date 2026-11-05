@@ -1,6 +1,7 @@
 // Vercel Function: upload e remoção de imagens de produtos no Vercel Blob.
 //
-// POST   /api/images  (corpo = o arquivo, Content-Type = tipo da imagem) → { url }
+// POST   /api/images?pasta=products  (corpo = o arquivo, Content-Type = tipo da imagem) → { url }
+//        pastas permitidas: products, banners, blog
 // DELETE /api/images  (corpo = { "url": "..." })                         → { ok: true }
 //
 // Só administradores da loja podem usar. Quem decide é o próprio banco: a função
@@ -22,6 +23,8 @@ const TYPES = {
     'image/gif': 'gif',
 }
 
+const FOLDERS = ['products', 'banners', 'blog']
+
 const json = (status, body) => Response.json(body, { status })
 
 export async function isAdmin(request) {
@@ -40,11 +43,13 @@ export async function isAdmin(request) {
     }
 }
 
-// Só apaga arquivos do Blob da loja, dentro de products/
+// Só apaga arquivos do Blob da loja, dentro das pastas do painel
 export function isOwnBlob(url) {
     try {
         const { protocol, hostname, pathname } = new URL(url)
-        return protocol === 'https:' && hostname.endsWith('.public.blob.vercel-storage.com') && pathname.startsWith('/products/')
+        return protocol === 'https:'
+            && hostname.endsWith('.public.blob.vercel-storage.com')
+            && FOLDERS.some((folder) => pathname.startsWith(`/${folder}/`))
     } catch {
         return false
     }
@@ -69,7 +74,10 @@ export async function POST(request) {
     if (body.byteLength === 0) return json(400, { error: 'Arquivo vazio.' })
     if (body.byteLength > MAX_SIZE) return json(413, { error: 'A imagem deve ter no máximo 4 MB.' })
 
-    const blob = await put(`products/${new Date().getFullYear()}/imagem.${ext}`, body, {
+    const requested = new URL(request.url).searchParams.get('pasta') || 'products'
+    if (!FOLDERS.includes(requested)) return json(400, { error: 'Pasta inválida.' })
+
+    const blob = await put(`${requested}/${new Date().getFullYear()}/imagem.${ext}`, body, {
         access: 'public',
         contentType: type,
         addRandomSuffix: true,
