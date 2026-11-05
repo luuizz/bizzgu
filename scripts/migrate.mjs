@@ -7,9 +7,9 @@
 //
 // Lê DATABASE_URL do ambiente ou do .env.local. Cada arquivo roda numa
 // transação: se der erro, nada daquele arquivo fica no banco.
-import { readFileSync, readdirSync, existsSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import {existsSync, readdirSync, readFileSync} from 'node:fs'
+import {dirname, join} from 'node:path'
+import {fileURLToPath} from 'node:url'
 import pg from 'pg'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -35,7 +35,7 @@ if (!url) {
 
 const files = readdirSync(dir).filter((name) => /^\d{4}_.+\.sql$/.test(name)).sort()
 const isLocal = /@(localhost|127\.0\.0\.1)[:/]/.test(url)
-const client = new pg.Client({ connectionString: url, ssl: isLocal ? false : { rejectUnauthorized: true } })
+const client = new pg.Client({connectionString: url, ssl: isLocal ? false : {rejectUnauthorized: true}})
 
 await client.connect()
 try {
@@ -50,7 +50,7 @@ try {
     // Evita duas execuções ao mesmo tempo (ex.: dois deploys seguidos)
     await client.query('select pg_advisory_lock(hashtext($1))', ['bizzgu-migrations'])
 
-    const { rows } = await client.query('select version from app_migrations.applied')
+    const {rows} = await client.query('select version from app_migrations.applied')
     const done = new Set(rows.map((row) => row.version))
     const pending = files.filter((name) => !done.has(name))
 
@@ -78,6 +78,8 @@ try {
             }
         }
         console.log(`${pending.length} migration(s) aplicada(s).`)
+        await client.query("notify pgrst, 'reload schema'").catch(() => {
+        })
     }
 } catch (error) {
     console.error(error.message)
