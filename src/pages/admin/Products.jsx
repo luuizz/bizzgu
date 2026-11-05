@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Eye, Package, PencilSimple, Plus } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
@@ -10,16 +11,29 @@ import { useAsync } from '../../hooks/useAsync'
 import { useCategories } from '../../hooks/useCategories'
 import { useToast } from '../../hooks/useToast'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
-import { ADMIN_PRODUCT_SORTS, listAllProducts, saveProduct } from '../../services/admin'
+import { ADMIN_PRODUCT_SORTS, listAllProducts, listAllTags, saveProduct } from '../../services/admin'
 import { formatBRL } from '../../lib/format'
 
 export function Products() {
     useDocumentTitle('Produtos · Admin')
     const categories = useCategories()
     const toast = useToast()
+    // Filtros iniciais pela URL: /admin/produtos?categoria=3 ou ?tag=5 (links da taxonomia)
+    const [params, setParams] = useSearchParams()
+    const tags = useAsync(() => listAllTags(), [])
     const [search, setSearch] = useState('')
-    const [categoryId, setCategoryId] = useState('')
-    const [query, setQuery] = useState({ search: '', categoryId: '', sort: 'recent' })
+    const [categoryId, setCategoryId] = useState(params.get('categoria') || '')
+    const [query, setQuery] = useState({ search: '', categoryId: params.get('categoria') || '', tagId: params.get('tag') || '', sort: 'recent' })
+
+    const setTag = (tagId) => {
+        setQuery((prev) => ({ ...prev, tagId }))
+        setParams((prev) => {
+            const next = new URLSearchParams(prev)
+            if (tagId) next.set('tag', tagId)
+            else next.delete('tag')
+            return next
+        }, { replace: true })
+    }
 
     const products = useAsync(() => listAllProducts(query), [query])
     const rows = products.data || []
@@ -58,6 +72,15 @@ export function Products() {
                     >
                         <option value="">Todas as categorias</option>
                         {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
+                    </Select>
+                    <Select
+                        value={query.tagId}
+                        onChange={(event) => setTag(event.target.value)}
+                        aria-label="Filtrar por tag"
+                        style={{ maxWidth: '20rem', height: '4.2rem' }}
+                    >
+                        <option value="">Todas as tags</option>
+                        {(tags.data || []).map((tag) => <option key={tag.id} value={tag.id}>{tag.name}</option>)}
                     </Select>
                     <Input type="search" placeholder="Buscar por nome" value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Buscar produtos" />
                     <Select

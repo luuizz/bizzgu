@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { EyeSlash, PencilSimple, ShareNetwork } from '@phosphor-icons/react'
+import { EyeSlash, PencilSimple, ShareNetwork, Tag } from '@phosphor-icons/react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Section } from '../components/layout'
@@ -191,6 +191,14 @@ function ProductView({ product }) {
                                 <p>{product.description}</p>
                             </div>
                         )}
+
+                        {product.tags?.length > 0 && (
+                            <ul className="product-tags" aria-label="Tags do produto">
+                                {product.tags.map((tag) => (
+                                    <li key={tag.id}><Link to={`/tag/${tag.slug}`}><Tag size={16} /> {tag.name}</Link></li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                 </div>
             </div>
@@ -308,6 +316,26 @@ const Wrapper = styled.section`
             img { width: 1.8rem; }
             span { font-size: 1.5rem; color: var(--gray-300); }
             &:hover span { color: var(--primary); }
+        }
+    }
+    .product-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-top: 2.4rem;
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            height: 3.2rem;
+            padding: 0 1.2rem;
+            border-radius: 2rem;
+            background: var(--primary-50);
+            color: var(--primary);
+            font-size: 1.35rem;
+            font-weight: 600;
+            transition: background .2s ease, color .2s ease;
+            &:hover { background: var(--primary); color: var(--white); }
         }
     }
     .description {

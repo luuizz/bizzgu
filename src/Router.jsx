@@ -5,6 +5,7 @@ import { Loader } from './components/ui'
 import { StoreLayout } from './components/StoreLayout'
 import { Home } from './pages/Home'
 import { Categoria } from './pages/Categoria'
+import { TagPage } from './pages/TagPage'
 import { ItemDetail } from './pages/ItemDetail'
 import { Search } from './pages/Search'
 import { Chart } from './pages/Chart'
@@ -31,7 +32,8 @@ const AdminOrders = lazy(() => import('./pages/admin/Orders').then((m) => ({ def
 const AdminOrderDetail = lazy(() => import('./pages/admin/OrderDetail').then((m) => ({ default: m.OrderDetail })))
 const AdminProducts = lazy(() => import('./pages/admin/Products').then((m) => ({ default: m.Products })))
 const AdminProductForm = lazy(() => import('./pages/admin/ProductForm').then((m) => ({ default: m.ProductForm })))
-const AdminCategories = lazy(() => import('./pages/admin/Categories').then((m) => ({ default: m.Categories })))
+const AdminTermsList = lazy(() => import('./pages/admin/Taxonomy').then((m) => ({ default: m.TermsList })))
+const AdminTermForm = lazy(() => import('./pages/admin/Taxonomy').then((m) => ({ default: m.TermForm })))
 const AdminBanners = lazy(() => import('./pages/admin/Banners').then((m) => ({ default: m.Banners })))
 const AdminBannerForm = lazy(() => import('./pages/admin/BannerForm').then((m) => ({ default: m.BannerForm })))
 const AdminNotFound = lazy(() => import('./pages/admin/AdminNotFound').then((m) => ({ default: m.AdminNotFound })))
@@ -50,7 +52,12 @@ export function Router() {
                         <Route path="produtos" element={<AdminProducts />} />
                         <Route path="produtos/novo" element={<AdminProductForm />} />
                         <Route path="produtos/:id" element={<AdminProductForm />} />
-                        <Route path="categorias" element={<AdminCategories />} />
+                        <Route path="categorias" element={<AdminTermsList kind="categories" />} />
+                        <Route path="categorias/nova" element={<AdminTermForm kind="categories" />} />
+                        <Route path="categorias/:id" element={<AdminTermForm kind="categories" />} />
+                        <Route path="tags" element={<AdminTermsList kind="tags" />} />
+                        <Route path="tags/nova" element={<AdminTermForm kind="tags" />} />
+                        <Route path="tags/:id" element={<AdminTermForm kind="tags" />} />
                         <Route path="clientes" element={<AdminCustomers />} />
                         <Route path="banners" element={<AdminBanners />} />
                         <Route path="banners/novo" element={<AdminBannerForm />} />
@@ -63,6 +70,7 @@ export function Router() {
                 <Route element={<StoreLayout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/categoria/:slug" element={<Categoria />} />
+                    <Route path="/tag/:slug" element={<TagPage />} />
                     <Route path="/produto/:slug" element={<ItemDetail />} />
                     <Route path="/busca" element={<Search />} />
                     <Route path="/carrinho-compras" element={<Chart />} />
