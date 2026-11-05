@@ -36,7 +36,7 @@ from (values
    3999.00, 4599.00, 12, array[]::text[], true),
   ('celulares',  'Motorola Moto G84 5G 256GB Grafite', 'motorola-moto-g84-5g-256gb',
    'Tela pOLED de 6,5" com 120Hz, 12GB de RAM, câmera de 50MP com OIS e som Dolby Atmos.',
-   1499.00, null, 20, array[]::text[], false),
+   1499.00, null, 20, array[]::text[], true),
 
   ('games',      'Controle DualSense Midnight Black', 'controle-dualsense-midnight-black',
    'Controle sem fio para PS5 com resposta tátil, gatilhos adaptáveis e microfone embutido.',
@@ -50,7 +50,7 @@ from (values
    2799.90, 3299.00, 4, array[]::text[], true),
   ('eletrodomesticos', 'Air Fryer Mondial 4L Preta', 'air-fryer-mondial-4l',
    'Frite, asse e doure sem óleo. Cesto antiaderente de 4 litros e timer de 60 minutos.',
-   349.90, 429.90, 25, array[]::text[], false),
+   349.90, 429.90, 25, array[]::text[], true),
 
   ('esporte-lazer', 'Bicicleta Aro 29 Caloi Explorer Sport 21 Marchas', 'bicicleta-caloi-explorer-aro-29',
    'Quadro em alumínio, suspensão dianteira, freios a disco mecânicos e câmbio Shimano de 21 velocidades.',
@@ -71,7 +71,7 @@ from (values
    2599.00, 2999.00, 7, array[]::text[], true),
   ('smarttv',    'Smart TV Samsung 43" Crystal UHD 4K', 'smart-tv-samsung-43-crystal-4k',
    'Processador Crystal 4K, HDR e Tizen com acesso rápido a streaming e games na nuvem.',
-   1799.00, null, 11, array[]::text[], false),
+   1799.00, null, 11, array[]::text[], true),
 
   ('supermercado', 'Café em Grãos Especial 1kg', 'cafe-em-graos-especial-1kg',
    'Torra média, notas de chocolate e caramelo. 100% arábica do Sul de Minas.',

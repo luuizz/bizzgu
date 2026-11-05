@@ -1,0 +1,6 @@
+import { createContext } from 'react'
+
+export const AuthContext = createContext(null)
+export const CartContext = createContext(null)
+export const WishlistContext = createContext(null)
+export const ToastContext = createContext(null)

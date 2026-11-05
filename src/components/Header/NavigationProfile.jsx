@@ -1,29 +1,27 @@
 import { Link } from 'react-router-dom'
 import { StylesGroupProfile } from './styles'
-import iconWishList from '/src/assets/icon-wishlist.svg'
-import iconAccount from '/src/assets/icon-account.svg'
 import { CartWidget } from './CartWidget'
+import { AccountMenu } from './AccountMenu'
+import { useWishlist } from '../../hooks/useWishlist'
+import iconWishList from '/src/assets/icon-wishlist.svg'
 
 export function NavigationProfile() {
+    const { count } = useWishlist()
+
     return (
-        <>
-            <StylesGroupProfile>
-                <li>
-                    <Link to="/lista-desejos">
-                        <img src={iconWishList} alt="Ícone de um coração" title='Lista de desejos'/>
-                    </Link>
-                </li>
-
-                <li>
-                    <Link to="/login">
-                        <img src={iconAccount} alt="Ícone de um usuário com um círculo em volta" title='Conta'/>
-                    </Link>
-                </li>
-
-                <li>
-                    <CartWidget />
-                </li>
-            </StylesGroupProfile>
-        </>
+        <StylesGroupProfile>
+            <li className="badge-holder">
+                <Link to="/lista-desejos" title="Lista de desejos">
+                    <img src={iconWishList} alt="Lista de desejos" />
+                    {count > 0 && <span className="item-count">{count}</span>}
+                </Link>
+            </li>
+            <li>
+                <AccountMenu />
+            </li>
+            <li>
+                <CartWidget />
+            </li>
+        </StylesGroupProfile>
     )
 }

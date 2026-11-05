@@ -20,6 +20,18 @@ export const StyleButtonContact = styled.button`
     }
 `
 
+const responsive = `
+    @media (max-width: 1000px) {
+        .container .center { flex-direction: column; gap: 4rem; }
+        .container .center .links { grid-gap: 4rem; }
+    }
+    @media (max-width: 700px) {
+        .container .top, .container .bottom { flex-direction: column; align-items: flex-start; gap: 2.4rem; }
+        .container .top .right-area { flex-direction: column; gap: 1.6rem; }
+        .container .center .links { grid-template-columns: repeat(2, 1fr); }
+    }
+`
+
 export const StyleFooter = styled.footer`
     padding: 4rem 0;
     background-color: var(--gray-500);
@@ -31,9 +43,6 @@ export const StyleFooter = styled.footer`
             border-bottom: 0.2rem solid var(--gray-400);
             margin-bottom: 4.8rem;
             padding-bottom: 3.2rem;
-            .left-area {
-
-            }
             .right-area {
                 display: flex;
                 span {
@@ -113,6 +122,8 @@ export const StyleFooter = styled.footer`
             }
         }
     }
+
+    ${responsive}
 
     @keyframes bgs {
         0% {

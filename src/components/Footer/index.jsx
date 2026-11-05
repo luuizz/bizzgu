@@ -11,83 +11,36 @@ import TwitterLogo from '/src/assets/logo-twitter.svg'
 
 const linksFooter = [
     {
-        title: 'Home',
+        title: 'Departamentos',
         links: [
-            {
-                label: 'Política de Privacidade',
-                to: '/politica-privacidade',
-            },
-            {
-                label: 'Termos de Uso',
-                to: '/termos-uso',
-            },
-            {
-                label: 'Política de Privacidade',
-                to: '/politica-privacidade',
-            },
-            {
-                label: 'Meus pedidos',
-                to: '/meus-pedidos',
-            }
+            { label: 'Celulares', to: '/categoria/celulares' },
+            { label: 'Games', to: '/categoria/games' },
+            { label: 'SmartTV', to: '/categoria/smarttv' },
+            { label: 'Eletrodomésticos', to: '/categoria/eletrodomesticos' },
         ],
     },
     {
-        title: 'Blog',
+        title: 'Minha conta',
         links: [
-            {
-                label: 'Tecnologia',
-                to: '/blog/categoria/tecnologia',
-            },
-            {
-                label: 'Bem-Estar',
-                to: '/blog/categoria/bem-estar',
-            },
-            {
-                label: 'Esportes & Lazer',
-                to: '/blog/categoria/esportes-lazer',
-            },
-            {
-                label: 'Casa & Jardim',
-                to: '/blog/categoria/casa-jardim',
-            }
+            { label: 'Meus pedidos', to: '/minha-conta/pedidos' },
+            { label: 'Meus dados', to: '/minha-conta/dados' },
+            { label: 'Lista de desejos', to: '/lista-desejos' },
+            { label: 'Carrinho', to: '/carrinho-compras' },
         ],
     },
     {
         title: 'Nossas políticas',
         links: [
-            {
-                label: 'Política de Entrega',
-                to: '/politica-entrega',
-            },
-            {
-                label: 'Política de Privacidade',
-                to: '/politica-privacidade',
-            },
-            {
-                label: 'Política de Reembolso',
-                to: '/politica-reembolso',
-            },
-            {
-                label: 'Trocas e Devoluções',
-                to: '/troca-devolucao',
-            },
-            {
-                label: 'Termos de Uso',
-                to: '/termos-uso',
-            }
+            { label: 'Política de Entrega', to: '/institucional/entrega' },
+            { label: 'Trocas e Devoluções', to: '/institucional/trocas-devolucoes' },
+            { label: 'Política de Privacidade', to: '/institucional/privacidade' },
         ],
     },
     {
         title: 'Institucional',
         links: [
-            {
-                label: 'Conheça a bizzgu',
-                to: '/quem-somos',
-            },
-            {
-                label: 'Trabalhe conosco',
-                to: '/jobs',
-            }
+            { label: 'Conheça a Bizzgu', to: '/institucional/sobre' },
+            { label: 'Ofertas', to: '/busca?ofertas=1' },
         ],
     },
 ]
@@ -96,22 +49,27 @@ const SocialNetwork = [
     {
         title: 'Youtube',
         urlImage: YoutubeLogo,
+        url: 'https://www.youtube.com/',
     },
     {
         title: 'LinkedIn',
         urlImage: LinkedinLogo,
+        url: 'https://www.linkedin.com/',
     },
     {
         title: 'Facebook',
         urlImage: FacebookLogo,
+        url: 'https://www.facebook.com/',
     },
     {
         title: 'Instagram',
         urlImage: InstagramLogo,
+        url: 'https://www.instagram.com/',
     },
     {
-        title: 'Twitter',
+        title: 'X (Twitter)',
         urlImage: TwitterLogo,
+        url: 'https://x.com/',
     },
 ]
 
@@ -129,9 +87,9 @@ export function Footer() {
                         <span>Acompanhe nas redes</span>
                         <ul>
                         {
-                            SocialNetwork.map((image, index) => (
-                                <li key={index}>
-                                    <a href="#" title={`Ir para ${image.title}`}>
+                            SocialNetwork.map((image) => (
+                                <li key={image.title}>
+                                    <a href={image.url} target="_blank" rel="noreferrer" title={`Ir para ${image.title}`}>
                                         <img src={image.urlImage} alt={image.title} />
                                     </a>
                                 </li>
@@ -143,13 +101,13 @@ export function Footer() {
                 <div className="center">
                     <div className="links">
                         {
-                            linksFooter.map((items, index) => (
-                                <div key={index} className="list-item">
+                            linksFooter.map((items) => (
+                                <div key={items.title} className="list-item">
                                     <h5>{items.title}</h5>
                                     <ul>
                                         {
-                                            items.links.map((link, index) => (
-                                                <li key={index}>
+                                            items.links.map((link) => (
+                                                <li key={link.label}>
                                                     <Link to={link.to}>
                                                         {link.label}
                                                     </Link>
@@ -165,16 +123,18 @@ export function Footer() {
                         <ButtonContact
                         title="Atendimento:"
                         txt="oi@bizzgu.com.br (24 horas)"
+                        href="mailto:oi@bizzgu.com.br"
                         />
                         <ButtonContact
                         title="Imprensa:"
                         txt="contato@bizzgu.com.br"
+                        href="mailto:contato@bizzgu.com.br"
                         />
                     </div>
                 </div>
                 <div className="bottom">
                     <div className="left-area">
-                        <span className="ft-txt">©2023 bizzgu - Todos os direitos reservados</span>
+                        <span className="ft-txt">©{new Date().getFullYear()} Bizzgu - Projeto de portfólio, sem vendas reais</span>
                     </div>
                     <div className="right-area">
                         <span className="ft-txt">Desenvolvido por:</span>
