@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { ShareNetwork } from '@phosphor-icons/react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { EyeSlash, PencilSimple, ShareNetwork } from '@phosphor-icons/react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Section } from '../components/layout'
 import { ProductImage } from '../components/product/ProductImage'
@@ -67,6 +67,10 @@ function ProductView({ product }) {
     }, [available])
 
     const addToCart = () => {
+        if (!product.active) {
+            toast.show('Pré-visualização: ative o produto no painel para vendê-lo.', 'danger')
+            return false
+        }
         const added = cart.addItem(product, quantity)
         if (added === 0) {
             toast.show('Você já tem todo o estoque deste produto no carrinho.', 'danger')
@@ -102,6 +106,13 @@ function ProductView({ product }) {
     return (
         <Wrapper>
             <div className="container">
+                {!product.active && (
+                    <PreviewBar role="status">
+                        <EyeSlash size={22} />
+                        <span><strong>Pré-visualização.</strong> Este produto está inativo e só aparece para administradores.</span>
+                        <Link to={`/admin/produtos/${product.id}`}><PencilSimple size={18} /> Editar produto</Link>
+                    </PreviewBar>
+                )}
                 <Breadcrumb
                     items={[
                         { label: 'Início', to: '/' },
@@ -186,6 +197,22 @@ function ProductView({ product }) {
         </Wrapper>
     )
 }
+
+const PreviewBar = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    padding: 1.2rem 1.6rem;
+    margin-bottom: 2rem;
+    border-radius: 1.2rem;
+    background: var(--warning-50, #fff6e0);
+    color: var(--gray-700);
+    font-size: 1.4rem;
+    svg { flex-shrink: 0; }
+    span { flex: 1; min-width: 20rem; }
+    a { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 600; color: var(--primary); }
+`
 
 const Wrapper = styled.section`
     padding-top: 3.2rem;

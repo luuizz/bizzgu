@@ -44,6 +44,20 @@ export async function getProducts({ categoryId, search, featured, onSale, sort =
     return unwrap(await query)
 }
 
+// Sem filtro de "ativo": o banco (RLS) só devolve produtos inativos para admins,
+// o que permite ao painel pré-visualizar um produto antes de publicá-lo
 export async function getProductBySlug(slug) {
-    return unwrap(await api.from('products').select(PRODUCT_FIELDS).eq('slug', slug).eq('active', true).maybeSingle())
+    return unwrap(await api.from('products').select(PRODUCT_FIELDS).eq('slug', slug).maybeSingle())
+}
+
+// ---------- Banners da home ----------
+// O banco (RLS) já filtra: visitantes só recebem banners ativos e dentro do período
+const BANNER_FIELDS = 'id, layout, title, subtitle, cta_label, link, image, image_mobile, active, starts_at, ends_at'
+
+export async function getHomeBanners() {
+    const banners = unwrap(await api.from('banners').select(BANNER_FIELDS).eq('active', true).order('position').order('id'))
+    // Para admins o banco devolve também os fora do período; a home mostra o mesmo que o visitante vê
+    const now = Date.now()
+    return banners.filter((banner) => (!banner.starts_at || new Date(banner.starts_at) <= now)
+        && (!banner.ends_at || new Date(banner.ends_at) > now))
 }
