@@ -11,7 +11,7 @@ const pages = {
         title: 'Conheça a Bizzgu',
         body: [
             'A Bizzgu é um e-commerce de demonstração criado como projeto de portfólio. Nenhuma venda é real e nenhum valor é cobrado.',
-            'O projeto usa React com Vite no front-end e Supabase (PostgreSQL, autenticação e armazenamento de imagens) no back-end, com regras de segurança aplicadas direto no banco de dados.',
+            'O projeto usa React com Vite no front-end e Neon (PostgreSQL, Neon Auth e Data API) no back-end, com regras de segurança aplicadas direto no banco de dados.',
         ],
     },
     entrega: {

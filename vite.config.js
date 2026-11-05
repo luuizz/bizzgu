@@ -26,7 +26,7 @@ export default defineConfig(({ command, mode }) => {
                 output: {
                     manualChunks: {
                         react: ['react', 'react-dom', 'react-router-dom'],
-                        supabase: ['@supabase/supabase-js'],
+                        neon: ['@neon/neon-js/supabase'],
                     },
                 },
             },

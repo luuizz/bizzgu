@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase'
+import { api } from '../lib/api'
 import { unwrap } from './unwrap'
 
 const PRODUCT_FIELDS = 'id, name, slug, description, price, compare_at_price, stock, images, featured, active, category_id, category:categories(id, name, slug)'
@@ -15,15 +15,15 @@ export const SORT_OPTIONS = {
 const sanitizeTerm = (term) => term.replace(/[,()%*\\:"]/g, ' ').trim()
 
 export async function getCategories() {
-    return unwrap(await supabase.from('categories').select('*').order('sort_order').order('name'))
+    return unwrap(await api.from('categories').select('*').order('sort_order').order('name'))
 }
 
 export async function getCategoryBySlug(slug) {
-    return unwrap(await supabase.from('categories').select('*').eq('slug', slug).maybeSingle())
+    return unwrap(await api.from('categories').select('*').eq('slug', slug).maybeSingle())
 }
 
 export async function getProducts({ categoryId, search, featured, onSale, sort = 'relevance', limit, ids, excludeId } = {}) {
-    let query = supabase.from('products').select(PRODUCT_FIELDS).eq('active', true)
+    let query = api.from('products').select(PRODUCT_FIELDS).eq('active', true)
 
     if (categoryId) query = query.eq('category_id', categoryId)
     if (featured) query = query.eq('featured', true)
@@ -45,5 +45,5 @@ export async function getProducts({ categoryId, search, featured, onSale, sort =
 }
 
 export async function getProductBySlug(slug) {
-    return unwrap(await supabase.from('products').select(PRODUCT_FIELDS).eq('slug', slug).eq('active', true).maybeSingle())
+    return unwrap(await api.from('products').select(PRODUCT_FIELDS).eq('slug', slug).eq('active', true).maybeSingle())
 }

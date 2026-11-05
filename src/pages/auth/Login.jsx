@@ -41,6 +41,7 @@ export function Login() {
         >
             <form onSubmit={handleSubmit}>
                 {location.state?.registered && <Alert $tone="success">Conta criada! Agora é só entrar.</Alert>}
+                {location.state?.passwordReset && <Alert $tone="success">Senha alterada! Entre com a nova senha.</Alert>}
                 {error && <Alert $tone="danger">{error}</Alert>}
                 <Field label="E-mail" htmlFor="email">
                     <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
