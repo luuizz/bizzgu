@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 import bgSlide01 from '/src/assets/bg-slide-desktop.svg'
-import prevButton from '/src/assets/swiper-prev.svg'
-import nextButton from '/src/assets/swiper-next.svg'
 
 export const StyleSlide = styled.section`
     overflow: hidden;
@@ -69,8 +67,25 @@ export const StyleSlide = styled.section`
         }
     }
 
-    .swiper-button-next:after { content: url(${nextButton}); }
-    .swiper-button-prev:after { content: url(${prevButton}); }
+    .slider-nav {
+        position: absolute;
+        top: 50%;
+        z-index: 2;
+        transform: translateY(-50%);
+        width: 5.2rem;
+        height: 5.2rem;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: var(--white);
+        background: rgba(255, 255, 255, 0.12);
+        border: 0.1rem solid rgba(255, 255, 255, 0.24);
+        backdrop-filter: blur(0.4rem);
+        transition: background .2s ease;
+        &:hover { background: var(--primary); border-color: var(--primary); }
+        &.prev { left: 2.4rem; }
+        &.next { right: 2.4rem; }
+    }
 
     @media (max-width: 900px) {
         .swiper .swiper-wrapper {
@@ -86,6 +101,6 @@ export const StyleSlide = styled.section`
                 .container .right { display: none; }
             }
         }
-        .swiper-button-next, .swiper-button-prev { transform: scale(0.7); }
+        .slider-nav { width: 4rem; height: 4rem; &.prev { left: 1.2rem; } &.next { right: 1.2rem; } }
     }
 `

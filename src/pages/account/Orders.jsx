@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Receipt } from '@phosphor-icons/react'
 import styled from 'styled-components'
 import { DashHeader } from '../../components/DashboardLayout'
 import { OrderList } from '../../components/OrderList'
@@ -49,6 +50,7 @@ export function Orders() {
 
                 {orders.loading ? <Loader /> : orders.error ? <ErrorState error={orders.error} onRetry={orders.reload} /> : list.length === 0 ? (
                     <EmptyState
+                        icon={Receipt}
                         title="Nenhum pedido por aqui"
                         action={filter === 'all' && <ButtonLink to="/">Ir às compras</ButtonLink>}
                     />

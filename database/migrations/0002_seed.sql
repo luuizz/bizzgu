@@ -1,6 +1,6 @@
 -- =============================================================================
 -- Bizzgu — dados de exemplo (categorias e produtos)
--- Rode depois das migrations. Caminhos de imagem sem "http" apontam para a
+-- Aplicado logo depois do schema (0001). Caminhos de imagem sem "http" apontam para a
 -- pasta public/ do site; imagens enviadas pelo painel usam a URL do Storage.
 -- =============================================================================
 insert into public.categories (name, slug, description, sort_order) values

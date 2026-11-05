@@ -184,8 +184,8 @@ export const Spinner = styled.span`
     animation: ${spin} 0.7s linear infinite;
 `
 
-export const Loader = ({ label = 'Carregando...' }) => (
-    <LoaderWrapper role="status">
+export const Loader = ({ label = 'Carregando...', fullScreen = false }) => (
+    <LoaderWrapper role="status" $full={fullScreen}>
         <Spinner $size={3} />
         <span>{label}</span>
     </LoaderWrapper>
@@ -198,13 +198,15 @@ const LoaderWrapper = styled.div`
     justify-content: center;
     gap: 1.2rem;
     padding: 6rem 0;
+    min-height: ${({ $full }) => ($full ? '100vh' : 'auto')};
     color: var(--primary);
     span { font-size: 1.5rem; color: var(--gray-300); }
 `
 
-export const EmptyState = ({ image, title, description, action }) => (
+export const EmptyState = ({ image, icon: Icon, title, description, action }) => (
     <EmptyWrapper>
         {image && <img src={image} alt="" />}
+        {!image && Icon && <span className="icon"><Icon size={40} /></span>}
         <h3>{title}</h3>
         {description && <p>{description}</p>}
         {action}
@@ -219,6 +221,16 @@ const EmptyWrapper = styled.div`
     padding: 6rem 1.6rem;
     gap: 1.2rem;
     img { max-width: 24rem; margin-bottom: 1.6rem; }
+    .icon {
+        display: grid;
+        place-items: center;
+        width: 8rem;
+        height: 8rem;
+        border-radius: 50%;
+        background: var(--primary-50);
+        color: var(--primary);
+        margin-bottom: 0.8rem;
+    }
     h3 { font-size: 2.4rem; }
     p { font-size: 1.6rem; color: var(--gray-300); max-width: 48rem; margin-bottom: 1.2rem; }
 `

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Heart, Lightning, Package } from '@phosphor-icons/react'
 
 export function AuthLayout({ title, subtitle, children, footer }) {
     return (
@@ -12,9 +13,9 @@ export function AuthLayout({ title, subtitle, children, footer }) {
             <aside>
                 <h2>Compre com tranquilidade</h2>
                 <ul>
-                    <li>Acompanhe seus pedidos em tempo real</li>
-                    <li>Salve produtos na lista de desejos</li>
-                    <li>Checkout rápido com seus dados salvos</li>
+                    <li><Package size={24} /> Acompanhe seus pedidos em tempo real</li>
+                    <li><Heart size={24} /> Salve produtos na lista de desejos</li>
+                    <li><Lightning size={24} /> Checkout rápido com seus dados salvos</li>
                 </ul>
             </aside>
         </Wrapper>
@@ -61,8 +62,9 @@ const Wrapper = styled.section`
         li {
             font-size: 1.6rem;
             display: flex;
+            align-items: center;
             gap: 1.2rem;
-            &::before { content: '✓'; font-weight: 700; }
+            svg { flex-shrink: 0; }
         }
     }
     @media (max-width: 800px) {

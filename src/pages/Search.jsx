@@ -1,4 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
+import { MagnifyingGlass } from '@phosphor-icons/react'
 import { Page } from '../components/layout'
 import { ProductGrid } from '../components/product/ProductGrid'
 import { SortSelect } from '../components/product/SortSelect'
@@ -38,6 +39,7 @@ export function Search() {
                 {products.error && <ErrorState error={products.error} onRetry={products.reload} />}
                 {!products.error && !products.loading && list.length === 0 ? (
                     <EmptyState
+                        icon={MagnifyingGlass}
                         title="Nenhum produto encontrado"
                         description={q ? `Não encontramos nada para "${q}". Confira a ortografia ou tente termos mais gerais.` : undefined}
                         action={<ButtonLink to="/" $variant="secondary">Voltar para a loja</ButtonLink>}

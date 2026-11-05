@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { UsersThree } from '@phosphor-icons/react'
 import { DashHeader } from '../../components/DashboardLayout'
 import { Badge, Card, EmptyState, ErrorState, Input, Loader, Table, TableScroll } from '../../components/ui'
 import { Toolbar } from './Orders'
@@ -49,7 +50,7 @@ export function Customers() {
                 </Toolbar>
 
                 {users.loading && !users.data ? <Loader /> : users.error ? <ErrorState error={users.error} onRetry={users.reload} /> : rows.length === 0 ? (
-                    <EmptyState title="Nenhuma conta encontrada" />
+                    <EmptyState icon={UsersThree} title="Nenhuma conta encontrada" />
                 ) : (
                     <TableScroll>
                         <Table>

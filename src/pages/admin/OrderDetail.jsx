@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ArrowLeft } from '@phosphor-icons/react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { CardTitle, DashHeader } from '../../components/DashboardLayout'
@@ -56,7 +57,7 @@ export function OrderDetail() {
         <>
             <DashHeader>
                 <div>
-                    <Link to="/admin/pedidos" className="back">← Pedidos</Link>
+                    <Link to="/admin/pedidos" className="back"><ArrowLeft size={18} /> Pedidos</Link>
                     <h1>Pedido {formatOrderNumber(data.id)}</h1>
                     <p>Realizado em {formatDateTime(data.created_at)}</p>
                 </div>

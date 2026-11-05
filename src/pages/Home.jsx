@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { CreditCard, PixLogo, ShieldCheck, Truck } from '@phosphor-icons/react'
 import styled from 'styled-components'
 import { Slide } from '../components/Slider'
 import { ProductGrid } from '../components/product/ProductGrid'
@@ -11,10 +12,10 @@ import { getProducts } from '../services/catalog'
 import { FREE_SHIPPING_FROM, formatBRL } from '../lib/format'
 
 const benefits = [
-    { title: 'Frete grátis', text: `Em compras acima de ${formatBRL(FREE_SHIPPING_FROM)}` },
-    { title: 'Até 10x sem juros', text: 'No cartão de crédito' },
-    { title: 'Pix com aprovação na hora', text: 'Seu pedido sai mais rápido' },
-    { title: 'Compra segura', text: 'Seus dados protegidos' },
+    { icon: Truck, title: 'Frete grátis', text: `Em compras acima de ${formatBRL(FREE_SHIPPING_FROM)}` },
+    { icon: CreditCard, title: 'Até 10x sem juros', text: 'No cartão de crédito' },
+    { icon: PixLogo, title: 'Pix com aprovação na hora', text: 'Seu pedido sai mais rápido' },
+    { icon: ShieldCheck, title: 'Compra segura', text: 'Seus dados protegidos' },
 ]
 
 export function Home() {
@@ -29,10 +30,13 @@ export function Home() {
 
             <div className="container">
                 <Benefits>
-                    {benefits.map((benefit) => (
-                        <li key={benefit.title}>
-                            <strong>{benefit.title}</strong>
-                            <span>{benefit.text}</span>
+                    {benefits.map(({ icon: Icon, title, text }) => (
+                        <li key={title}>
+                            <i aria-hidden="true"><Icon size={26} /></i>
+                            <div>
+                                <strong>{title}</strong>
+                                <span>{text}</span>
+                            </div>
                         </li>
                     ))}
                 </Benefits>
@@ -89,11 +93,21 @@ const Benefits = styled.ul`
     li {
         background: var(--white);
         border-radius: 1.2rem;
-        padding: 2rem 2.4rem;
+        padding: 2rem;
         display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-        border-left: 0.4rem solid var(--primary);
+        align-items: center;
+        gap: 1.4rem;
+        div { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+    }
+    i {
+        display: grid;
+        place-items: center;
+        width: 4.8rem;
+        height: 4.8rem;
+        border-radius: 1.2rem;
+        flex-shrink: 0;
+        color: var(--primary);
+        background: var(--primary-50);
     }
     strong { font-family: var(--font-red-hat); font-size: 1.7rem; color: var(--gray-800); }
     span { font-size: 1.4rem; color: var(--gray-300); }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Package } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { DashHeader } from '../../components/DashboardLayout'
@@ -62,7 +63,7 @@ export function Products() {
                 </Toolbar>
 
                 {products.loading && !products.data ? <Loader /> : products.error ? <ErrorState error={products.error} onRetry={products.reload} /> : rows.length === 0 ? (
-                    <EmptyState title="Nenhum produto encontrado" action={<ButtonLink to="/admin/produtos/novo">Cadastrar produto</ButtonLink>} />
+                    <EmptyState icon={Package} title="Nenhum produto encontrado" action={<ButtonLink to="/admin/produtos/novo">Cadastrar produto</ButtonLink>} />
                 ) : (
                     <TableScroll>
                         <Table>
