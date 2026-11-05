@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Receipt } from '@phosphor-icons/react'
 import { Link, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { DashHeader } from '../../components/DashboardLayout'
@@ -62,7 +63,7 @@ export function Orders() {
                 </Toolbar>
 
                 {orders.loading ? <Loader /> : orders.error ? <ErrorState error={orders.error} onRetry={orders.reload} /> : rows.length === 0 ? (
-                    <EmptyState title="Nenhum pedido encontrado" />
+                    <EmptyState icon={Receipt} title="Nenhum pedido encontrado" />
                 ) : (
                     <>
                         <TableScroll>

@@ -1,19 +1,6 @@
+import { Heart } from '@phosphor-icons/react'
 import styled, { css } from 'styled-components'
 import { useWishlist } from '../../hooks/useWishlist'
-
-export function HeartIcon({ filled }) {
-    return (
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <path
-                d="M12 20.5s-7.5-4.6-9.6-9.2C.9 8 2.9 4 6.6 4c2.2 0 3.6 1.2 4.4 2.5h2C13.8 5.2 15.2 4 17.4 4c3.7 0 5.7 4 4.2 7.3-2.1 4.6-9.6 9.2-9.6 9.2Z"
-                fill={filled ? 'currentColor' : 'none'}
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinejoin="round"
-            />
-        </svg>
-    )
-}
 
 export function WishlistButton({ product, withLabel = false, className }) {
     const wishlist = useWishlist()
@@ -36,7 +23,7 @@ export function WishlistButton({ product, withLabel = false, className }) {
             $saved={saved}
             $withLabel={withLabel}
         >
-            <HeartIcon filled={saved} />
+            <Heart size={withLabel ? 24 : 20} weight={saved ? 'fill' : 'duotone'} />
             {withLabel && <span>{saved ? 'Na lista de desejos' : 'Lista de desejos'}</span>}
         </StyledButton>
     )

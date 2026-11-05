@@ -10,9 +10,10 @@ export function DashboardLayout({ title, subtitle, links, footer, variant = 'lig
                     {subtitle && <span>{subtitle}</span>}
                 </div>
                 <nav>
-                    {links.map((link) => (
-                        <NavLink key={link.to} to={link.to} end={link.end}>
-                            {link.label}
+                    {links.map(({ to, end, label, icon: Icon }) => (
+                        <NavLink key={to} to={to} end={end}>
+                            {Icon && <Icon size={22} />}
+                            <span>{label}</span>
                         </NavLink>
                     ))}
                 </nav>
@@ -57,6 +58,9 @@ const Wrapper = styled.div`
         flex-direction: column;
         gap: 0.4rem;
         a {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
             padding: 1.1rem 1.2rem;
             border-radius: 0.8rem;
             font-size: 1.5rem;
@@ -76,7 +80,14 @@ const Wrapper = styled.div`
         border-top: 0.1rem solid var(--white-500);
         padding: 1.6rem 0.8rem 0;
         font-size: 1.4rem;
-        a, button { color: var(--gray-300); font-size: 1.4rem; &:hover { color: var(--primary); } }
+        a, button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--gray-300);
+            font-size: 1.4rem;
+            &:hover { color: var(--primary); }
+        }
     }
     .dark .foot { border-color: var(--gray-400); a, button { color: var(--gray-100); } }
     .content { min-width: 0; display: flex; flex-direction: column; gap: 2.4rem; }
@@ -109,7 +120,7 @@ export const DashHeader = styled.header`
     flex-wrap: wrap;
     h1 { font-size: 2.8rem; letter-spacing: -0.05rem; }
     p { font-size: 1.5rem; color: var(--gray-300); margin-top: 0.6rem; }
-    .back { display: inline-block; font-size: 1.4rem; font-weight: 600; color: var(--primary); margin-bottom: 0.8rem; }
+    .back { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1.4rem; font-weight: 600; color: var(--primary); margin-bottom: 0.8rem; }
     .actions { display: flex; gap: 1.2rem; flex-wrap: wrap; }
 `
 
@@ -121,9 +132,12 @@ export const StatGrid = styled.div`
     @media (max-width: 480px) { grid-template-columns: 1fr; }
 `
 
-export const Stat = ({ label, value, hint, tone }) => (
+export const Stat = ({ label, value, hint, tone, icon: Icon }) => (
     <StatCard $tone={tone}>
-        <span>{label}</span>
+        <div className="top">
+            <span>{label}</span>
+            {Icon && <i aria-hidden="true"><Icon size={22} /></i>}
+        </div>
         <strong>{value}</strong>
         {hint && <small>{hint}</small>}
     </StatCard>
@@ -137,6 +151,17 @@ const StatCard = styled.div`
     flex-direction: column;
     gap: 0.6rem;
     border-top: 0.3rem solid ${({ $tone }) => ($tone ? `var(--${$tone})` : 'var(--primary)')};
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; }
+    i {
+        display: grid;
+        place-items: center;
+        width: 4rem;
+        height: 4rem;
+        border-radius: 1rem;
+        flex-shrink: 0;
+        color: ${({ $tone }) => ($tone ? `var(--${$tone})` : 'var(--primary)')};
+        background: ${({ $tone }) => ($tone ? `var(--${$tone}-50)` : 'var(--primary-50)')};
+    }
     span { font-size: 1.35rem; color: var(--gray-300); font-weight: 500; }
     strong { font-family: var(--font-red-hat); font-size: 2.8rem; color: var(--gray-800); letter-spacing: -0.05rem; }
     small { font-size: 1.3rem; color: var(--gray-200); }

@@ -44,8 +44,7 @@ export const StylesGroupProfile = styled.ul`
     align-items: center;
     gap: 2.4rem;
     flex-shrink: 0;
-    a { display: flex; align-items: center; }
-    img { width: 2.4rem; }
+    a, > li > div > button { display: flex; align-items: center; color: var(--primary); }
     .badge-holder a { position: relative; }
     .item-count {
         font-family: var(--font-red-hat);
@@ -104,8 +103,8 @@ export const StylesSearchHeader = styled.form`
         top: 0;
         right: 0;
         transition: opacity .3s ease;
-        &:hover { opacity: 0.5; }
-        img { width: 2.4rem; height: 2.4rem; }
+        color: var(--primary);
+        &:hover { opacity: 0.6; }
     }
 `
 
@@ -118,10 +117,9 @@ export const StylesLocalization = styled.div`
     button {
         display: flex;
         align-items: center;
-        img {
-            width: 2.4rem;
-            &:not(:last-child) { margin-right: 0.8rem; }
-        }
+        gap: 0.8rem;
+        color: var(--primary);
+        .dropdown { color: var(--gray-300); }
         p {
             display: flex;
             flex-direction: column;
@@ -185,14 +183,22 @@ export const StyleModalLocalization = styled.div`
             justify-content: flex-end;
             border-bottom: 1px solid var(--white-500);
             padding: 1.5rem 1.6rem;
-            button img { max-width: 3.2rem; }
+            button { display: flex; color: var(--primary); }
         }
         .content {
             padding: 3.2rem 3rem 0;
             display: flex;
             align-items: center;
             flex-direction: column;
-            > img { max-width: 3.2rem; }
+            .map-icon {
+                display: grid;
+                place-items: center;
+                width: 7.2rem;
+                height: 7.2rem;
+                border-radius: 50%;
+                background: var(--primary-50);
+                color: var(--primary);
+            }
             h3 {
                 font-size: 2.3rem;
                 color: var(--gray-800);

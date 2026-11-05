@@ -3,11 +3,7 @@ import { StyleFooter } from './style'
 import { ButtonContact } from './ButtonContact'
 import LogoThemeDark from '/src/assets/logo-theme-dark.svg'
 import LogoLuiz from '/src/assets/logo-luiz-ricardodsgn.svg'
-import YoutubeLogo from '/src/assets/logo-youtube.svg'
-import LinkedinLogo from '/src/assets/logo-linkedin.svg'
-import FacebookLogo from '/src/assets/logo-facebook.svg'
-import InstagramLogo from '/src/assets/logo-instagram.svg'
-import TwitterLogo from '/src/assets/logo-twitter.svg'
+import { FacebookLogo, InstagramLogo, LinkedinLogo, XLogo, YoutubeLogo } from '@phosphor-icons/react'
 
 const linksFooter = [
     {
@@ -48,27 +44,27 @@ const linksFooter = [
 const SocialNetwork = [
     {
         title: 'Youtube',
-        urlImage: YoutubeLogo,
+        icon: YoutubeLogo,
         url: 'https://www.youtube.com/',
     },
     {
         title: 'LinkedIn',
-        urlImage: LinkedinLogo,
+        icon: LinkedinLogo,
         url: 'https://www.linkedin.com/',
     },
     {
         title: 'Facebook',
-        urlImage: FacebookLogo,
+        icon: FacebookLogo,
         url: 'https://www.facebook.com/',
     },
     {
         title: 'Instagram',
-        urlImage: InstagramLogo,
+        icon: InstagramLogo,
         url: 'https://www.instagram.com/',
     },
     {
         title: 'X (Twitter)',
-        urlImage: TwitterLogo,
+        icon: XLogo,
         url: 'https://x.com/',
     },
 ]
@@ -87,10 +83,10 @@ export function Footer() {
                         <span>Acompanhe nas redes</span>
                         <ul>
                         {
-                            SocialNetwork.map((image) => (
-                                <li key={image.title}>
-                                    <a href={image.url} target="_blank" rel="noreferrer" title={`Ir para ${image.title}`}>
-                                        <img src={image.urlImage} alt={image.title} />
+                            SocialNetwork.map(({ title, url, icon: Icon }) => (
+                                <li key={title}>
+                                    <a href={url} target="_blank" rel="noreferrer" title={`Ir para ${title}`}>
+                                        <Icon size={28} aria-label={title} />
                                     </a>
                                 </li>
                             ))

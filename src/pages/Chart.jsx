@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ArrowLeft, Trash } from '@phosphor-icons/react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { Page } from '../components/layout'
@@ -89,8 +90,8 @@ export function Chart() {
                             ))}
                         </ul>
                         <div className="footer">
-                            <Link to="/">← Continuar comprando</Link>
-                            <button type="button" onClick={cart.clear}>Esvaziar carrinho</button>
+                            <Link to="/"><ArrowLeft size={18} /> Continuar comprando</Link>
+                            <button type="button" onClick={cart.clear}><Trash size={18} /> Esvaziar carrinho</button>
                         </div>
                     </div>
 
@@ -149,6 +150,7 @@ export const Layout = styled.div`
         padding: 2rem 0 1.6rem;
         border-top: 0.1rem solid var(--gray-50);
         font-size: 1.45rem;
+        a, button { display: inline-flex; align-items: center; gap: 0.6rem; }
         a { color: var(--primary); font-weight: 600; }
         button { color: var(--gray-200); &:hover { color: var(--danger); } }
     }

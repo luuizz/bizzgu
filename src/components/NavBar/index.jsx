@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { NavigationCategories } from './NavigationCategories'
 import { NavLinks, AllCategories, NavWrapper } from './styles'
 import { MegaMenu } from './MegaMenu'
-import MenuCategories from '/src/assets/icon-menu.svg'
+import { List } from '@phosphor-icons/react'
 
 export function NavBar() {
     const [showMegaMenu, setShowMegaMenu] = useState(false)
@@ -22,7 +22,7 @@ export function NavBar() {
                             onClick={() => setShowMegaMenu((open) => !open)}
                             aria-expanded={showMegaMenu}
                         >
-                            <img src={MenuCategories} alt="" />
+                            <List size={24} />
                             <span>Todas as categorias</span>
                         </button>
                     </AllCategories>

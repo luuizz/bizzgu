@@ -19,7 +19,7 @@ E-commerce completo feito com **React + Vite** no front-end e **Neon** no back-e
 - Pagamento simulado e cancelamento de pedidos pendentes
 - Edição de nome e telefone
 
-**Painel administrativo** (`/admin`)
+**Painel administrativo** (`/admin`): layout próprio de dashboard, separado da loja (menu lateral, barra superior com breadcrumb e menu do usuário, menu recolhível no celular)
 - Faturamento, ticket médio, gráfico de vendas dos últimos 30 dias, mais vendidos e estoque baixo
 - Pedidos: filtro por status, busca e avanço de status (pago → enviado → entregue, ou cancelado)
 - Produtos: cadastro e edição com imagens (por link ou, com a função opcional, por upload), além de ativar/desativar e destacar direto na tabela
@@ -34,7 +34,7 @@ E-commerce completo feito com **React + Vite** no front-end e **Neon** no back-e
 
 ## Tecnologias
 
-React 18 · Vite 4 · React Router 6 · styled-components · Swiper · Neon (`@neon/neon-js`: Neon Auth + Data API)
+React 18 · Vite 4 · React Router 6 · styled-components · Swiper · [Phosphor Icons](https://phosphoricons.com) (variante duotone) · Neon (`@neon/neon-js`: Neon Auth + Data API) · GitHub Actions + GitHub Pages
 
 ---
 
@@ -48,29 +48,41 @@ React 18 · Vite 4 · React Router 6 · styled-components · Swiper · Neon (`@n
    - `http://localhost:5173` (desenvolvimento)
    - `https://luuizz.github.io` (site publicado)
 
-> A ordem importa: ative Auth e Data API **antes** de rodar o SQL. Eles criam a tabela de usuários, os papéis `authenticated`/`anonymous` e a função `auth.user_id()`, que o schema usa. Se faltar algo, o SQL para com uma mensagem explicando o que ativar.
+> A ordem importa: ative Auth e Data API **antes** de criar as tabelas. Eles criam a tabela de usuários, os papéis `authenticated`/`anonymous` e a função `auth.user_id()`, que o schema usa. Se faltar algo, a migration para com uma mensagem explicando o que ativar.
 
-### 2. Crie as tabelas e os dados de exemplo
-
-No Console, abra o **SQL Editor** e rode, **nesta ordem**, o conteúdo de cada arquivo:
-
-| Ordem | Arquivo | O que faz |
-|---|---|---|
-| 1 | `database/schema.sql` | Tabelas, regras de segurança e funções |
-| 2 | `database/seed.sql` | 8 categorias e 18 produtos de exemplo |
-
-### 3. Conecte o site ao Neon
+### 2. Conecte o projeto ao Neon
 
 ```bash
 cp .env.example .env.local
 ```
 
-Preencha o `.env.local` com a **Auth URL** (página do Auth no Console) e a **API URL** (página da Data API).
+Preencha o `.env.local` com:
 
-### 4. Instale e rode
+| Variável | Onde achar no Console do Neon |
+|---|---|
+| `VITE_NEON_AUTH_URL` | página do **Auth** |
+| `VITE_NEON_DATA_API_URL` | página da **Data API** |
+| `DATABASE_URL` | botão **Connect** (connection string). Usada só pelo `yarn db:migrate`, nunca vai para o navegador |
+
+### 3. Crie as tabelas e os dados de exemplo
 
 ```bash
 yarn install
+yarn db:migrate
+```
+
+O comando aplica, em ordem, os arquivos de `database/migrations/` que ainda não rodaram nesse banco:
+
+| Arquivo | O que faz |
+|---|---|
+| `0001_schema.sql` | Tabelas, regras de segurança e funções |
+| `0002_seed.sql` | 8 categorias e 18 produtos de exemplo |
+
+> Já rodou esses arquivos antes pelo SQL Editor? Use `yarn db:migrate --baseline` uma vez para marcá-los como aplicados sem rodar de novo.
+
+### 4. Rode o site
+
+```bash
 yarn dev
 ```
 
@@ -84,7 +96,7 @@ Crie sua conta pelo site (`/cadastro`). O perfil é criado no primeiro acesso, e
 update public.profiles set role = 'admin' where email = 'seu-email@exemplo.com';
 ```
 
-Recarregue a página: o menu da conta passa a mostrar **Painel administrativo**. Depois disso, novos admins podem ser promovidos pelo próprio painel, em **Clientes**.
+Recarregue a página: o menu da conta passa a mostrar **Painel administrativo** (`/admin`). Depois disso, novos admins podem ser promovidos pelo próprio painel, em **Clientes**.
 
 ### 6. (Opcional) Upload de imagens pelo painel
 
@@ -105,30 +117,68 @@ Sem este passo, o admin adiciona imagens **colando o link** de uma imagem já pu
 
 ---
 
-## Deploy
+## Fluxo de trabalho e deploy
 
-### GitHub Pages (padrão do projeto)
+O site é publicado automaticamente. Ninguém roda deploy na mão: o código passa por uma esteira de branches e o que chega na `main` vai para o ar.
 
-O build já sai configurado para `https://luuizz.github.io/bizzgu/` e gera um `404.html`, para que links diretos como `/produto/...` funcionem.
-
-```bash
-yarn deploy
+```
+feature/minha-mudanca ──PR──▶ dev ──PR──▶ main ──▶ GitHub Actions ──▶ site no ar
+      (local)            (integração)   (produção)    migrations + build + publicação
 ```
 
-O comando usa os endereços do seu `.env.local` no build e publica a pasta `dist` na branch `gh-pages`. Lembre de adicionar `https://luuizz.github.io` nos domínios confiáveis do Neon Auth.
+| Branch | Para quê | O que roda |
+|---|---|---|
+| `feature/*` | Cada mudança nova, saindo da `dev` | — |
+| `dev` | Integração: junta as features testadas localmente | **CI** em todo PR e push: lint, build e teste das migrations num Postgres limpo |
+| `main` | Produção. Só recebe PR vindo da `dev` | **CI** no PR (inclui checagem de origem) e **Deploy** após o merge |
 
-### Vercel / Netlify
+**No dia a dia:**
 
-Defina as variáveis `VITE_NEON_AUTH_URL`, `VITE_NEON_DATA_API_URL` (e `VITE_UPLOAD_FUNCTION_URL`, se usar) e `VITE_BASE_PATH=/` no painel da hospedagem. O `vercel.json` já redireciona todas as rotas para o `index.html`. Adicione o domínio da hospedagem nos domínios confiáveis do Neon Auth e no `ALLOWED_ORIGINS` da função.
+```bash
+git switch dev && git pull
+git switch -c feature/nova-coisa
+# ... código, yarn dev, yarn lint ...
+git push -u origin feature/nova-coisa      # abra o PR para a dev
+```
+
+Depois de juntar uma ou mais features na `dev`, abra um PR **dev → main**. Ao fazer o merge, o workflow `Deploy` aplica as migrations pendentes no banco de produção, gera o build e publica no GitHub Pages.
+
+**Mudou o banco?** Crie um arquivo **novo** em `database/migrations/` (ex.: `0003_cupom_desconto.sql`) e rode `yarn db:migrate` localmente. Nunca edite uma migration que já foi aplicada: o controle é pelo nome do arquivo, então a alteração não seria aplicada de novo. Cada arquivo roda numa transação; se der erro, nada dele fica no banco e o deploy para antes de publicar o site.
+
+### Configuração única no GitHub
+
+0. **Ative os workflows:** eles estão em `.github/workflows-para-ativar/` e precisam ser movidos para `.github/workflows/` por você (o GitHub exige uma permissão especial para criar workflows). Os comandos estão no `README.md` daquela pasta.
+1. **Settings → Pages → Source:** escolha **GitHub Actions**.
+2. **Settings → Secrets and variables → Actions:**
+   - aba **Variables**: `VITE_NEON_AUTH_URL`, `VITE_NEON_DATA_API_URL` (e `VITE_UPLOAD_FUNCTION_URL`, se usar o upload). São endereços públicos, vão dentro do site.
+   - aba **Secrets**: `NEON_DATABASE_URL` com a connection string do banco de produção. Sem ele, o deploy publica o site mas pula as migrations (com um aviso).
+3. **Settings → Branches → Add branch ruleset** (ou *branch protection*) para a `main`: exija pull request e os checks **Lint e build**, **Migrations (Postgres de teste)** e **Origem do PR**. Assim nada entra na `main` sem passar pela `dev`.
+4. Opcional: deixe a `dev` como branch padrão (**Settings → General → Default branch**) para que novos PRs já abram apontando para ela.
+5. No Neon Auth, mantenha `https://luuizz.github.io` nos domínios confiáveis.
+
+Para publicar de novo sem mudança de código (ex.: depois de trocar uma variável), use **Actions → Deploy → Run workflow**.
+
+### Banco separado para desenvolvimento (opcional)
+
+Para não misturar testes locais com os dados de produção, crie uma **branch `dev` no Neon** (Console → Branches), ative Auth e Data API nela e use os endereços e a connection string dessa branch no seu `.env.local`. O `NEON_DATABASE_URL` do GitHub continua apontando para a branch principal (produção).
+
+### Outras hospedagens (Vercel / Netlify)
+
+Defina as variáveis `VITE_NEON_AUTH_URL`, `VITE_NEON_DATA_API_URL` (e `VITE_UPLOAD_FUNCTION_URL`, se usar) e `VITE_BASE_PATH=/` no painel da hospedagem. O `vercel.json` já redireciona todas as rotas para o `index.html`. Adicione o domínio da hospedagem nos domínios confiáveis do Neon Auth e no `ALLOWED_ORIGINS` da função. As migrations continuam rodando pelo workflow ou pelo `yarn db:migrate`.
 
 ---
 
 ## Estrutura
 
 ```
+.github/workflows/   (hoje em workflows-para-ativar/, veja o passo 0 do deploy)
+  ci.yml             lint, build e teste das migrations em todo PR
+  deploy.yml         migrations + build + GitHub Pages ao entrar na main
 database/
-  schema.sql         tabelas, RLS e funções (pedidos, estoque, painel admin)
-  seed.sql           dados de exemplo
+  migrations/        0001_schema.sql (tabelas, RLS, funções), 0002_seed.sql...
+  ci/neon-stub.sql   simula o Neon Auth/Data API no Postgres do CI
+scripts/
+  migrate.mjs        aplica as migrations pendentes (yarn db:migrate)
 functions/
   product-images.ts  Neon Function opcional para upload de imagens
 neon.ts              configuração da Neon CLI (bucket + função)
@@ -145,7 +195,7 @@ src/
   pages/
     auth/            login, cadastro, recuperar e redefinir senha
     account/         área do cliente
-    admin/           painel administrativo
+    admin/           painel administrativo (layout próprio, fora da loja)
 ```
 
 ## Scripts
@@ -156,4 +206,4 @@ src/
 | `yarn build` | Build de produção em `dist/` |
 | `yarn preview` | Testa o build localmente |
 | `yarn lint` | ESLint |
-| `yarn deploy` | Build + publicação no GitHub Pages |
+| `yarn db:migrate` | Aplica as migrations pendentes (`--status` só lista, `--baseline` marca como aplicadas) |

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Clock, Receipt, ShoppingBagOpen, Truck, Wallet } from '@phosphor-icons/react'
 import { CardTitle, DashHeader, Stat, StatGrid } from '../../components/DashboardLayout'
 import { OrderList } from '../../components/OrderList'
 import { ButtonLink, Card, EmptyState, ErrorState, Loader } from '../../components/ui'
@@ -36,14 +37,15 @@ export function Overview() {
             {orders.loading ? <Loader /> : orders.error ? <ErrorState error={orders.error} onRetry={orders.reload} /> : (
                 <>
                     <StatGrid>
-                        <Stat label="Pedidos realizados" value={list.length} />
-                        <Stat label="Em andamento" value={active.length} tone="info" />
+                        <Stat icon={Receipt} label="Pedidos realizados" value={list.length} />
+                        <Stat icon={Truck} label="Em andamento" value={active.length} tone="info" />
                         <Stat
+                            icon={Clock}
                             label="Aguardando pagamento"
                             value={awaitingPayment}
                             tone={awaitingPayment ? 'warning' : 'success'}
                         />
-                        <Stat label="Total em compras" value={formatBRL(spent)} hint={`${wishlist.count} na lista de desejos`} tone="success" />
+                        <Stat icon={Wallet} label="Total em compras" value={formatBRL(spent)} hint={`${wishlist.count} na lista de desejos`} tone="success" />
                     </StatGrid>
 
                     <Card>
@@ -53,6 +55,7 @@ export function Overview() {
                         </CardTitle>
                         {list.length === 0 ? (
                             <EmptyState
+                                icon={ShoppingBagOpen}
                                 title="Você ainda não fez pedidos"
                                 description="Quando fizer sua primeira compra, ela aparece aqui."
                                 action={<ButtonLink to="/">Ir às compras</ButtonLink>}
