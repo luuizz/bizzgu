@@ -42,13 +42,13 @@ export function Register() {
         if (!validate()) return
         setSubmitting(true)
         try {
-            const { session } = await signUp({ name: form.name.trim(), email: form.email.trim(), password: form.password })
-            if (session) {
-                navigate(destination, { replace: true })
-            } else {
+            const result = await signUp({ name: form.name.trim(), email: form.email.trim(), password: form.password })
+            if (result.needsConfirmation) {
                 // Projeto com confirmação de e-mail ativa
                 setNeedsConfirmation(true)
                 setSubmitting(false)
+            } else {
+                navigate(destination, { replace: true })
             }
         } catch (err) {
             setError(err.message)

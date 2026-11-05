@@ -1,17 +1,17 @@
 import styled from 'styled-components'
 import logo from '/src/assets/logo-theme-light.svg'
 
-// Exibido quando o .env ainda não tem as chaves do Supabase
+// Exibido quando o .env ainda não tem os endereços do Neon
 export function SetupNotice() {
     return (
         <Wrapper>
             <div className="box">
                 <img src={logo} alt="Bizzgu" />
-                <h1>Falta conectar o Supabase</h1>
-                <p>Crie um arquivo <code>.env.local</code> na raiz do projeto com as chaves do seu projeto Supabase e reinicie o servidor:</p>
-                <pre>{`VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=sua-chave-publica`}</pre>
-                <p>O passo a passo completo (tabelas, dados de exemplo e usuário admin) está no <strong>README.md</strong>.</p>
+                <h1>Falta conectar o Neon</h1>
+                <p>Crie um arquivo <code>.env.local</code> na raiz do projeto com os endereços do Neon Auth e da Data API do seu projeto e reinicie o servidor:</p>
+                <pre>{`VITE_NEON_AUTH_URL=https://ep-xxx.neonauth.../neondb/auth
+VITE_NEON_DATA_API_URL=https://ep-xxx.apirest.../neondb/rest/v1`}</pre>
+                <p>O passo a passo completo (ativar Auth e Data API, tabelas, dados de exemplo e usuário admin) está no <strong>README.md</strong>.</p>
             </div>
         </Wrapper>
     )

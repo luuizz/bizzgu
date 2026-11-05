@@ -1,25 +1,25 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { AuthLayout } from './AuthLayout'
-import { Alert, Button, Field, Input, Loader, Spinner } from '../../components/ui'
+import { Alert, Button, Field, Input, Spinner } from '../../components/ui'
 import { useAuth } from '../../hooks/useAuth'
-import { useToast } from '../../hooks/useToast'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 
-// Página aberta pelo link do e-mail de recuperação (o Supabase cria a sessão)
+// Página aberta pelo link do e-mail de recuperação: o Neon Auth envia ?token=...
 export function ResetPassword() {
     useDocumentTitle('Nova senha')
-    const { user, loading, updatePassword } = useAuth()
-    const toast = useToast()
+    const { resetPassword } = useAuth()
     const navigate = useNavigate()
+    const [params] = useSearchParams()
+    const token = params.get('token')
+    const linkError = params.get('error')
+
     const [password, setPassword] = useState('')
     const [confirm, setConfirm] = useState('')
     const [error, setError] = useState('')
     const [submitting, setSubmitting] = useState(false)
 
-    if (loading) return <Loader />
-
-    if (!user) {
+    if (!token || linkError) {
         return (
             <AuthLayout
                 title="Link inválido ou expirado"
@@ -36,9 +36,8 @@ export function ResetPassword() {
         if (password !== confirm) return setError('As senhas não conferem.')
         setSubmitting(true)
         try {
-            await updatePassword(password)
-            toast.show('Senha alterada com sucesso!', 'success')
-            navigate('/minha-conta', { replace: true })
+            await resetPassword(token, password)
+            navigate('/login', { replace: true, state: { passwordReset: true } })
         } catch (err) {
             setError(err.message)
             setSubmitting(false)
@@ -46,7 +45,7 @@ export function ResetPassword() {
     }
 
     return (
-        <AuthLayout title="Criar nova senha" subtitle={`Conta: ${user.email}`}>
+        <AuthLayout title="Criar nova senha" subtitle="Escolha uma senha nova para a sua conta.">
             <form onSubmit={handleSubmit}>
                 {error && <Alert $tone="danger">{error}</Alert>}
                 <Field label="Nova senha" htmlFor="password" hint="Mínimo de 8 caracteres">

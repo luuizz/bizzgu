@@ -10,7 +10,7 @@ import { formatDate, maskPhone, onlyDigits } from '../../lib/format'
 
 export function Profile() {
     useDocumentTitle('Meus dados')
-    const { user, profile, refreshProfile, updatePassword } = useAuth()
+    const { user, profile, refreshProfile, changePassword } = useAuth()
     const toast = useToast()
 
     const [form, setForm] = useState({
@@ -20,7 +20,7 @@ export function Profile() {
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState('')
 
-    const [passwords, setPasswords] = useState({ password: '', confirm: '' })
+    const [passwords, setPasswords] = useState({ current: '', password: '', confirm: '' })
     const [passwordError, setPasswordError] = useState('')
     const [changing, setChanging] = useState(false)
 
@@ -40,15 +40,16 @@ export function Profile() {
         }
     }
 
-    const changePassword = async (event) => {
+    const handlePasswordChange = async (event) => {
         event.preventDefault()
         setPasswordError('')
+        if (!passwords.current) return setPasswordError('Informe a senha atual.')
         if (passwords.password.length < 8) return setPasswordError('Use pelo menos 8 caracteres.')
         if (passwords.password !== passwords.confirm) return setPasswordError('As senhas não conferem.')
         setChanging(true)
         try {
-            await updatePassword(passwords.password)
-            setPasswords({ password: '', confirm: '' })
+            await changePassword(passwords.current, passwords.password)
+            setPasswords({ current: '', password: '', confirm: '' })
             toast.show('Senha alterada!', 'success')
         } catch (err) {
             setPasswordError(err.message)
@@ -86,8 +87,11 @@ export function Profile() {
 
                 <Card>
                     <CardTitle>Alterar senha</CardTitle>
-                    <form onSubmit={changePassword}>
+                    <form onSubmit={handlePasswordChange}>
                         {passwordError && <Alert $tone="danger">{passwordError}</Alert>}
+                        <Field label="Senha atual" htmlFor="current-password">
+                            <Input id="current-password" type="password" autoComplete="current-password" value={passwords.current} onChange={(e) => setPasswords({ ...passwords, current: e.target.value })} />
+                        </Field>
                         <Field label="Nova senha" htmlFor="new-password" hint="Mínimo de 8 caracteres">
                             <Input id="new-password" type="password" autoComplete="new-password" value={passwords.password} onChange={(e) => setPasswords({ ...passwords, password: e.target.value })} />
                         </Field>

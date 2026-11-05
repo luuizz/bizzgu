@@ -10,10 +10,10 @@ import { AuthProvider } from './context/AuthProvider'
 import { CartProvider } from './context/CartProvider'
 import { WishlistProvider } from './context/WishlistProvider'
 import { ToastProvider } from './context/ToastProvider'
-import { isSupabaseConfigured } from './lib/supabase'
+import { isApiConfigured } from './lib/api'
 
 function App() {
-    if (!isSupabaseConfigured) {
+    if (!isApiConfigured) {
         return (
             <>
                 <GlobalStyle />

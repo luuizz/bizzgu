@@ -1,8 +1,26 @@
 -- =============================================================================
--- Bizzgu — schema do e-commerce (Supabase / PostgreSQL)
+-- Bizzgu — schema do e-commerce (Neon / PostgreSQL)
 -- Tabelas, segurança por linha (RLS) e funções de negócio.
--- Rode este arquivo no SQL Editor do Supabase (ou via `supabase db push`).
+--
+-- ANTES de rodar: no Console do Neon, ative o Neon Auth e a Data API do
+-- projeto. Eles criam os papéis `authenticated`/`anonymous` e a função
+-- auth.user_id(), que este arquivo usa. Depois rode tudo no SQL Editor.
 -- =============================================================================
+
+do $$
+begin
+  if not exists (select 1 from pg_roles where rolname = 'authenticated')
+     or not exists (select 1 from pg_roles where rolname = 'anonymous') then
+    raise exception 'Ative a Data API no Console do Neon antes de rodar este arquivo (papéis authenticated/anonymous não encontrados).';
+  end if;
+  if to_regprocedure('auth.user_id()') is null then
+    raise exception 'Ative o Neon Auth e a Data API no Console do Neon antes de rodar este arquivo (função auth.user_id() não encontrada).';
+  end if;
+  if to_regclass('neon_auth."user"') is null then
+    raise exception 'Ative o Neon Auth no Console do Neon antes de rodar este arquivo (tabela neon_auth.user não encontrada).';
+  end if;
+end;
+$$;
 
 -- -----------------------------------------------------------------------------
 -- Utilitários
@@ -18,10 +36,10 @@ end;
 $$;
 
 -- -----------------------------------------------------------------------------
--- Perfis (1:1 com auth.users)
+-- Perfis (1:1 com neon_auth.user, criados no primeiro acesso)
 -- -----------------------------------------------------------------------------
 create table public.profiles (
-  id          uuid primary key references auth.users (id) on delete cascade,
+  id          text primary key,  -- mesmo id do usuário no Neon Auth (claim sub do JWT)
   email       text,
   full_name   text,
   phone       text,
@@ -34,23 +52,37 @@ create trigger profiles_updated_at
   before update on public.profiles
   for each row execute function public.set_updated_at();
 
--- Cria o perfil automaticamente quando alguém se cadastra
-create or replace function public.handle_new_user()
-returns trigger
+-- Garante que o usuário logado tem perfil, copiando nome e e-mail do Neon Auth.
+-- O site chama no login; as funções de pedido também chamam por segurança.
+create or replace function public.ensure_profile()
+returns public.profiles
 language plpgsql
 security definer
 set search_path = ''
 as $$
+declare
+  v_user    text := auth.user_id();
+  v_profile public.profiles;
 begin
+  if v_user is null then
+    raise exception 'Faça login para continuar.' using errcode = '42501';
+  end if;
+
   insert into public.profiles (id, email, full_name)
-  values (new.id, new.email, nullif(new.raw_user_meta_data ->> 'full_name', ''));
-  return new;
+  select u.id::text, u.email, nullif(u.name, '')
+    from neon_auth."user" u
+   where u.id::text = v_user
+  on conflict (id) do update
+    set email = excluded.email  -- mantém o e-mail igual ao da conta
+  returning * into v_profile;
+
+  if v_profile.id is null then
+    raise exception 'Conta não encontrada.' using errcode = 'P0001';
+  end if;
+
+  return v_profile;
 end;
 $$;
-
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute function public.handle_new_user();
 
 -- O usuário logado é admin?
 create or replace function public.is_admin()
@@ -62,7 +94,7 @@ set search_path = ''
 as $$
   select exists (
     select 1 from public.profiles
-    where id = auth.uid() and role = 'admin'
+    where id = auth.user_id() and role = 'admin'
   );
 $$;
 
@@ -106,7 +138,7 @@ create trigger products_updated_at
 -- -----------------------------------------------------------------------------
 create table public.orders (
   id                bigint generated always as identity primary key,
-  user_id           uuid not null references public.profiles (id) on delete cascade,
+  user_id           text not null references public.profiles (id) on delete cascade,
   status            text not null default 'pending'
                     check (status in ('pending', 'paid', 'shipped', 'delivered', 'canceled')),
   payment_method    text not null check (payment_method in ('pix', 'credit_card', 'boleto')),
@@ -150,7 +182,7 @@ create index order_items_product_idx on public.order_items (product_id);
 -- Lista de desejos
 -- -----------------------------------------------------------------------------
 create table public.wishlist_items (
-  user_id     uuid not null references public.profiles (id) on delete cascade,
+  user_id     text not null default auth.user_id() references public.profiles (id) on delete cascade,
   product_id  bigint not null references public.products (id) on delete cascade,
   created_at  timestamptz not null default now(),
   primary key (user_id, product_id)
@@ -158,8 +190,9 @@ create table public.wishlist_items (
 
 -- =============================================================================
 -- Permissões e RLS
--- O Supabase concede tudo a anon/authenticated por padrão; aqui restringimos
--- explicitamente e deixamos as regras finas para as policies.
+-- Ao ativar a Data API, o Neon concede tudo ao papel authenticated por padrão;
+-- aqui restringimos explicitamente e deixamos as regras finas para as policies.
+-- Visitantes sem login usam o papel anonymous.
 -- =============================================================================
 alter table public.profiles       enable row level security;
 alter table public.categories     enable row level security;
@@ -170,7 +203,7 @@ alter table public.wishlist_items enable row level security;
 
 revoke all on public.profiles, public.categories, public.products,
               public.orders, public.order_items, public.wishlist_items
-  from anon, authenticated;
+  from anonymous, authenticated;
 
 -- Perfis: cada um vê o seu (admin vê todos) e só pode editar nome e telefone.
 -- O papel (role) só muda pela função admin_set_role.
@@ -179,19 +212,19 @@ grant update (full_name, phone) on public.profiles to authenticated;
 
 create policy "perfil: ler o próprio ou admin" on public.profiles
   for select to authenticated
-  using (id = auth.uid() or public.is_admin());
+  using (id = auth.user_id() or public.is_admin());
 
 create policy "perfil: editar o próprio" on public.profiles
   for update to authenticated
-  using (id = auth.uid())
-  with check (id = auth.uid());
+  using (id = auth.user_id())
+  with check (id = auth.user_id());
 
 -- Categorias: leitura pública, escrita só admin
-grant select on public.categories to anon, authenticated;
+grant select on public.categories to anonymous, authenticated;
 grant insert, update, delete on public.categories to authenticated;
 
 create policy "categorias: leitura pública" on public.categories
-  for select to anon, authenticated
+  for select to anonymous, authenticated
   using (true);
 
 create policy "categorias: admin insere" on public.categories
@@ -202,11 +235,11 @@ create policy "categorias: admin exclui" on public.categories
   for delete to authenticated using (public.is_admin());
 
 -- Produtos: público vê os ativos; admin vê e altera tudo
-grant select on public.products to anon, authenticated;
+grant select on public.products to anonymous, authenticated;
 grant insert, update, delete on public.products to authenticated;
 
 create policy "produtos: leitura dos ativos" on public.products
-  for select to anon, authenticated
+  for select to anonymous, authenticated
   using (active or public.is_admin());
 
 create policy "produtos: admin insere" on public.products
@@ -222,24 +255,24 @@ grant select on public.orders, public.order_items to authenticated;
 
 create policy "pedidos: dono ou admin" on public.orders
   for select to authenticated
-  using (user_id = auth.uid() or public.is_admin());
+  using (user_id = auth.user_id() or public.is_admin());
 
 create policy "itens: dono do pedido ou admin" on public.order_items
   for select to authenticated
   using (
     public.is_admin()
-    or exists (select 1 from public.orders o where o.id = order_id and o.user_id = auth.uid())
+    or exists (select 1 from public.orders o where o.id = order_id and o.user_id = auth.user_id())
   );
 
 -- Lista de desejos: cada um mexe só na sua
 grant select, insert, delete on public.wishlist_items to authenticated;
 
 create policy "desejos: ler os próprios" on public.wishlist_items
-  for select to authenticated using (user_id = auth.uid());
+  for select to authenticated using (user_id = auth.user_id());
 create policy "desejos: adicionar aos próprios" on public.wishlist_items
-  for insert to authenticated with check (user_id = auth.uid());
+  for insert to authenticated with check (user_id = auth.user_id());
 create policy "desejos: remover dos próprios" on public.wishlist_items
-  for delete to authenticated using (user_id = auth.uid());
+  for delete to authenticated using (user_id = auth.user_id());
 
 -- =============================================================================
 -- Funções de negócio (RPC)
@@ -271,7 +304,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_user     uuid := auth.uid();
+  v_user     text := auth.user_id();
   v_order_id bigint;
   v_subtotal numeric(10, 2) := 0;
   v_item     record;
@@ -281,6 +314,8 @@ begin
   if v_user is null then
     raise exception 'Faça login para finalizar a compra.' using errcode = '42501';
   end if;
+
+  perform public.ensure_profile();
 
   if p_items is null or jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items) = 0 then
     raise exception 'O carrinho está vazio.' using errcode = '22023';
@@ -382,7 +417,7 @@ as $$
 begin
   update public.orders
      set status = 'paid', paid_at = now()
-   where id = p_order_id and user_id = auth.uid() and status = 'pending';
+   where id = p_order_id and user_id = auth.user_id() and status = 'pending';
 
   if not found then
     raise exception 'Pedido não encontrado ou já pago.' using errcode = 'P0001';
@@ -400,7 +435,7 @@ as $$
 begin
   update public.orders
      set status = 'canceled', canceled_at = now()
-   where id = p_order_id and user_id = auth.uid() and status = 'pending';
+   where id = p_order_id and user_id = auth.user_id() and status = 'pending';
 
   if not found then
     raise exception 'Só é possível cancelar pedidos aguardando pagamento.' using errcode = 'P0001';
@@ -457,7 +492,7 @@ end;
 $$;
 
 -- Admin: promove/rebaixa usuários
-create or replace function public.admin_set_role(p_user_id uuid, p_role text)
+create or replace function public.admin_set_role(p_user_id text, p_role text)
 returns void
 language plpgsql
 security definer
@@ -472,7 +507,7 @@ begin
     raise exception 'Papel inválido.' using errcode = '22023';
   end if;
 
-  if p_user_id = auth.uid() and p_role <> 'admin' then
+  if p_user_id = auth.user_id() and p_role <> 'admin' then
     raise exception 'Você não pode remover o seu próprio acesso de admin.' using errcode = 'P0001';
   end if;
 
@@ -545,21 +580,23 @@ $$;
 
 -- Funções: só usuários logados podem chamar (cada uma valida o resto)
 revoke execute on function
+  public.ensure_profile(),
   public.create_order(jsonb, jsonb, jsonb, text),
   public.pay_order(bigint),
   public.cancel_order(bigint),
   public.restock_order(bigint),
   public.admin_update_order_status(bigint, text),
-  public.admin_set_role(uuid, text),
+  public.admin_set_role(text, text),
   public.admin_dashboard()
-  from public, anon;
+  from public, anonymous;
 
 grant execute on function
+  public.ensure_profile(),
   public.create_order(jsonb, jsonb, jsonb, text),
   public.pay_order(bigint),
   public.cancel_order(bigint),
   public.admin_update_order_status(bigint, text),
-  public.admin_set_role(uuid, text),
+  public.admin_set_role(text, text),
   public.admin_dashboard()
   to authenticated;
 

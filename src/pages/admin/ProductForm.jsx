@@ -7,7 +7,7 @@ import { Alert, Button, Card, Checkbox, ErrorState, Field, Input, Loader, Select
 import { useCategories } from '../../hooks/useCategories'
 import { useToast } from '../../hooks/useToast'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
-import { deleteProduct, getProductById, removeProductImages, saveProduct, uploadProductImage } from '../../services/admin'
+import { canUploadImages, deleteProduct, getProductById, removeProductImages, saveProduct, uploadProductImage } from '../../services/admin'
 import { slugify } from '../../lib/format'
 
 const empty = {
@@ -42,6 +42,7 @@ export function ProductForm() {
     const [saving, setSaving] = useState(false)
     const [uploading, setUploading] = useState(0)
     const [removedUploads, setRemovedUploads] = useState([])
+    const [imageLink, setImageLink] = useState('')
 
     useDocumentTitle(isNew ? 'Novo produto · Admin' : 'Editar produto · Admin')
 
@@ -95,6 +96,17 @@ export function ProductForm() {
                 setUploading((count) => count - 1)
             }
         }
+    }
+
+    const addImageLink = () => {
+        const url = imageLink.trim()
+        if (!/^https?:\/\/\S+$/.test(url)) {
+            toast.show('Cole um link começando com https://', 'danger')
+            return
+        }
+        if (form.images.includes(url)) return setImageLink('')
+        setForm((prev) => ({ ...prev, images: [...prev.images, url].slice(0, MAX_IMAGES) }))
+        setImageLink('')
     }
 
     const removeImage = (url) => {
@@ -217,7 +229,7 @@ export function ProductForm() {
                             {Array.from({ length: uploading }, (_, index) => (
                                 <li key={`up-${index}`} className="uploading"><Spinner $size={2.4} /></li>
                             ))}
-                            {form.images.length + uploading < MAX_IMAGES && (
+                            {canUploadImages && form.images.length + uploading < MAX_IMAGES && (
                                 <li>
                                     <button
                                         type="button"
@@ -232,8 +244,28 @@ export function ProductForm() {
                                 </li>
                             )}
                         </Gallery>
-                        <input ref={fileInput} type="file" accept="image/*" multiple hidden onChange={(event) => { handleFiles(event.target.files); event.target.value = '' }} />
-                        <p className="help">Até {MAX_IMAGES} imagens (JPG, PNG ou WebP, máx. 5 MB). A primeira é a capa. Arraste arquivos para o botão ou clique nele.</p>
+                        {canUploadImages && (
+                            <input ref={fileInput} type="file" accept="image/*" multiple hidden onChange={(event) => { handleFiles(event.target.files); event.target.value = '' }} />
+                        )}
+                        {form.images.length < MAX_IMAGES && (
+                            <LinkRow>
+                                <Input
+                                    type="url"
+                                    placeholder="https://... (link de uma imagem)"
+                                    aria-label="Link da imagem"
+                                    value={imageLink}
+                                    onChange={(event) => setImageLink(event.target.value)}
+                                    onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); addImageLink() } }}
+                                />
+                                <Button type="button" $variant="secondary" onClick={addImageLink}>Adicionar link</Button>
+                            </LinkRow>
+                        )}
+                        <p className="help">
+                            Até {MAX_IMAGES} imagens. A primeira é a capa.{' '}
+                            {canUploadImages
+                                ? 'Envie arquivos (JPG, PNG ou WebP, máx. 5 MB) ou cole o link de uma imagem.'
+                                : 'Cole o link de uma imagem já publicada. Para enviar arquivos, configure a função de upload (veja o README).'}
+                        </p>
                     </Card>
                 </div>
 
@@ -291,6 +323,14 @@ const Form = styled.form`
         grid-template-columns: 1fr;
         .side { position: static; }
     }
+`
+
+const LinkRow = styled.div`
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.6rem;
+    input { flex: 1; }
+    @media (max-width: 600px) { flex-direction: column; }
 `
 
 const Gallery = styled.ul`
