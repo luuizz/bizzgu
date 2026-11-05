@@ -4,7 +4,10 @@
 --
 -- ANTES de rodar: no Console do Neon, ative o Neon Auth e a Data API do
 -- projeto. Eles criam os papéis `authenticated`/`anonymous` e a função
--- auth.user_id(), que este arquivo usa. Depois rode tudo no SQL Editor.
+-- auth.user_id(), que este arquivo usa.
+--
+-- Aplicado pelo `yarn db:migrate` (local) e pelo deploy da main (GitHub Actions).
+-- Não edite migrations já aplicadas: crie um novo arquivo (0003_...sql).
 -- =============================================================================
 
 do $$

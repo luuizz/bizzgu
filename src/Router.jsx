@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { RequireAuth, RequireAdmin } from './components/RouteGuards'
 import { Loader } from './components/ui'
+import { StoreLayout } from './components/StoreLayout'
 import { Home } from './pages/Home'
 import { Categoria } from './pages/Categoria'
 import { ItemDetail } from './pages/ItemDetail'
@@ -31,35 +32,14 @@ const AdminOrderDetail = lazy(() => import('./pages/admin/OrderDetail').then((m)
 const AdminProducts = lazy(() => import('./pages/admin/Products').then((m) => ({ default: m.Products })))
 const AdminProductForm = lazy(() => import('./pages/admin/ProductForm').then((m) => ({ default: m.ProductForm })))
 const AdminCategories = lazy(() => import('./pages/admin/Categories').then((m) => ({ default: m.Categories })))
+const AdminNotFound = lazy(() => import('./pages/admin/AdminNotFound').then((m) => ({ default: m.AdminNotFound })))
 const AdminCustomers = lazy(() => import('./pages/admin/Customers').then((m) => ({ default: m.Customers })))
 
 export function Router() {
     return (
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<Loader fullScreen />}>
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/categoria/:slug" element={<Categoria />} />
-                <Route path="/produto/:slug" element={<ItemDetail />} />
-                <Route path="/busca" element={<Search />} />
-                <Route path="/carrinho-compras" element={<Chart />} />
-                <Route path="/institucional/:slug" element={<Institutional />} />
-
-                <Route path="/login" element={<Login />} />
-                <Route path="/cadastro" element={<Register />} />
-                <Route path="/recuperar-senha" element={<ForgotPassword />} />
-                <Route path="/redefinir-senha" element={<ResetPassword />} />
-
-                <Route element={<RequireAuth />}>
-                    <Route path="/lista-desejos" element={<WishList />} />
-                    <Route path="/checkout" element={<Checkout />} />
-                    <Route path="/minha-conta" element={<AccountLayout />}>
-                        <Route index element={<AccountOverview />} />
-                        <Route path="pedidos" element={<AccountOrders />} />
-                        <Route path="pedidos/:id" element={<AccountOrderDetail />} />
-                        <Route path="dados" element={<AccountProfile />} />
-                    </Route>
-                </Route>
-
+                {/* Painel administrativo: layout próprio, fora da moldura da loja */}
                 <Route element={<RequireAdmin />}>
                     <Route path="/admin" element={<AdminLayout />}>
                         <Route index element={<AdminDashboard />} />
@@ -70,10 +50,37 @@ export function Router() {
                         <Route path="produtos/:id" element={<AdminProductForm />} />
                         <Route path="categorias" element={<AdminCategories />} />
                         <Route path="clientes" element={<AdminCustomers />} />
+                        <Route path="*" element={<AdminNotFound />} />
                     </Route>
                 </Route>
 
-                <Route path="*" element={<NotFound />} />
+                {/* Loja: cabeçalho, menu e rodapé */}
+                <Route element={<StoreLayout />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/categoria/:slug" element={<Categoria />} />
+                    <Route path="/produto/:slug" element={<ItemDetail />} />
+                    <Route path="/busca" element={<Search />} />
+                    <Route path="/carrinho-compras" element={<Chart />} />
+                    <Route path="/institucional/:slug" element={<Institutional />} />
+
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/cadastro" element={<Register />} />
+                    <Route path="/recuperar-senha" element={<ForgotPassword />} />
+                    <Route path="/redefinir-senha" element={<ResetPassword />} />
+
+                    <Route element={<RequireAuth />}>
+                        <Route path="/lista-desejos" element={<WishList />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/minha-conta" element={<AccountLayout />}>
+                            <Route index element={<AccountOverview />} />
+                            <Route path="pedidos" element={<AccountOrders />} />
+                            <Route path="pedidos/:id" element={<AccountOrderDetail />} />
+                            <Route path="dados" element={<AccountProfile />} />
+                        </Route>
+                    </Route>
+
+                    <Route path="*" element={<NotFound />} />
+                </Route>
             </Routes>
         </Suspense>
     )

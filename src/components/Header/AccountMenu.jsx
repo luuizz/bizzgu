@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { Gauge, Heart, Receipt, SignOut, SquaresFour, UserCircle } from '@phosphor-icons/react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { useAuth } from '../../hooks/useAuth'
-import iconAccount from '/src/assets/icon-account.svg'
 
 export function AccountMenu() {
     const { user, profile, isAdmin, signOut } = useAuth()
@@ -28,7 +28,7 @@ export function AccountMenu() {
     if (!user) {
         return (
             <Link to="/login" state={{ from: location }} title="Entrar">
-                <img src={iconAccount} alt="Entrar na conta" />
+                <UserCircle size={28} aria-label="Entrar na conta" />
             </Link>
         )
     }
@@ -43,7 +43,7 @@ export function AccountMenu() {
     return (
         <Wrapper ref={ref}>
             <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-haspopup="menu" title="Minha conta">
-                <img src={iconAccount} alt="" />
+                <UserCircle size={28} />
                 <span className="greeting">Olá, {firstName}</span>
             </button>
             {open && (
@@ -52,11 +52,11 @@ export function AccountMenu() {
                         <strong>{profile?.full_name || 'Minha conta'}</strong>
                         <span>{user.email}</span>
                     </div>
-                    <Link role="menuitem" to="/minha-conta">Minha conta</Link>
-                    <Link role="menuitem" to="/minha-conta/pedidos">Meus pedidos</Link>
-                    <Link role="menuitem" to="/lista-desejos">Lista de desejos</Link>
-                    {isAdmin && <Link role="menuitem" to="/admin" className="admin">Painel administrativo</Link>}
-                    <button role="menuitem" type="button" onClick={handleSignOut}>Sair</button>
+                    <Link role="menuitem" to="/minha-conta"><SquaresFour size={20} /> Minha conta</Link>
+                    <Link role="menuitem" to="/minha-conta/pedidos"><Receipt size={20} /> Meus pedidos</Link>
+                    <Link role="menuitem" to="/lista-desejos"><Heart size={20} /> Lista de desejos</Link>
+                    {isAdmin && <Link role="menuitem" to="/admin" className="admin"><Gauge size={20} /> Painel administrativo</Link>}
+                    <button role="menuitem" type="button" onClick={handleSignOut}><SignOut size={20} /> Sair</button>
                 </div>
             )}
         </Wrapper>
@@ -69,7 +69,6 @@ const Wrapper = styled.div`
         display: flex;
         align-items: center;
         gap: 0.8rem;
-        img { width: 2.4rem; }
         .greeting {
             font-family: var(--font-red-hat);
             font-weight: 600;
@@ -95,6 +94,9 @@ const Wrapper = styled.div`
         display: flex;
         flex-direction: column;
         a, button {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             text-align: left;
             padding: 1rem 1.2rem;
             border-radius: 0.8rem;

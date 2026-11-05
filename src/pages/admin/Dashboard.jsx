@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ArrowRight, CurrencyCircleDollar, Package, Plus, Receipt, Tag, UsersThree } from '@phosphor-icons/react'
 import styled from 'styled-components'
 import { CardTitle, DashHeader, Stat, StatGrid } from '../../components/DashboardLayout'
 import { SalesChart } from '../../components/SalesChart'
@@ -26,21 +27,22 @@ export function Dashboard() {
                     <p>Visão geral da loja.</p>
                 </div>
                 <div className="actions">
-                    <ButtonLink to="/admin/produtos/novo">Novo produto</ButtonLink>
+                    <ButtonLink to="/admin/produtos/novo"><Plus size={20} weight="bold" /> Novo produto</ButtonLink>
                 </div>
             </DashHeader>
 
             <StatGrid>
-                <Stat label="Faturamento" value={formatBRL(s.revenue)} hint="Pedidos pagos, enviados e entregues" tone="success" />
-                <Stat label="Ticket médio" value={formatBRL(s.average_ticket)} />
-                <Stat label="Pedidos" value={s.orders_count} hint={`${s.orders_pending} aguardando pagamento`} tone="info" />
-                <Stat label="Clientes" value={s.customers_count} hint={`${s.products_active} produtos ativos`} />
+                <Stat icon={CurrencyCircleDollar} label="Faturamento" value={formatBRL(s.revenue)} hint="Pedidos pagos, enviados e entregues" tone="success" />
+                <Stat icon={Tag} label="Ticket médio" value={formatBRL(s.average_ticket)} />
+                <Stat icon={Receipt} label="Pedidos" value={s.orders_count} hint={`${s.orders_pending} aguardando pagamento`} tone="info" />
+                <Stat icon={UsersThree} label="Clientes" value={s.customers_count} hint={`${s.products_active} produtos ativos`} />
             </StatGrid>
 
             {s.orders_to_ship > 0 && (
                 <ShipBanner to="/admin/pedidos?status=paid">
+                    <Package size={28} className="ico" />
                     <strong>{s.orders_to_ship} {s.orders_to_ship === 1 ? 'pedido pago aguarda' : 'pedidos pagos aguardam'} envio</strong>
-                    <span>Ver pedidos →</span>
+                    <span>Ver pedidos <ArrowRight size={18} weight="bold" /></span>
                 </ShipBanner>
             )}
 
@@ -169,5 +171,7 @@ const ShipBanner = styled(Link)`
     border-radius: 1.2rem;
     padding: 1.6rem 2rem;
     font-size: 1.5rem;
-    span { font-weight: 600; white-space: nowrap; }
+    .ico { flex-shrink: 0; }
+    strong { flex: 1; }
+    span { font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.4rem; }
 `

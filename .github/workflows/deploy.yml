@@ -1,0 +1,84 @@
+# Produção: tudo que entra na main (via PR da dev) é publicado.
+# 1. aplica as migrations pendentes no banco do Neon
+# 2. gera o build com os endereços do Neon
+# 3. publica no GitHub Pages
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    name: Banco (migrations)
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confere a connection string
+        id: check
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::warning::Secret NEON_DATABASE_URL não configurado: migrations não foram aplicadas. Veja o README (Deploy automático)."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.skip != 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - if: steps.check.outputs.skip != 'true'
+        run: yarn install --frozen-lockfile
+      - if: steps.check.outputs.skip != 'true'
+        run: yarn db:migrate
+
+  build:
+    name: Build
+    needs: migrate
+    runs-on: ubuntu-latest
+    env:
+      VITE_NEON_AUTH_URL: ${{ vars.VITE_NEON_AUTH_URL }}
+      VITE_NEON_DATA_API_URL: ${{ vars.VITE_NEON_DATA_API_URL }}
+      VITE_UPLOAD_FUNCTION_URL: ${{ vars.VITE_UPLOAD_FUNCTION_URL }}
+      VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
+    steps:
+      - name: Confere as variáveis do Neon
+        run: |
+          if [ -z "$VITE_NEON_AUTH_URL" ] || [ -z "$VITE_NEON_DATA_API_URL" ]; then
+            echo "::error::Configure as variáveis VITE_NEON_AUTH_URL e VITE_NEON_DATA_API_URL (Settings → Secrets and variables → Actions → Variables). Sem elas o site publicado não conecta ao banco."
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Publicar no GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

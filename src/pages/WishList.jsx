@@ -1,4 +1,5 @@
 import { Page } from '../components/layout'
+import { Heart } from '@phosphor-icons/react'
 import { ProductGrid } from '../components/product/ProductGrid'
 import { ButtonLink, EmptyState, ErrorState, PageTitle } from '../components/ui'
 import { useAsync } from '../hooks/useAsync'
@@ -23,6 +24,7 @@ export function WishList() {
                 {products.error && <ErrorState error={products.error} onRetry={products.reload} />}
                 {!products.error && !products.loading && list.length === 0 ? (
                     <EmptyState
+                        icon={Heart}
                         title="Sua lista está vazia"
                         description="Salve produtos tocando no coração para encontrá-los depois."
                         action={<ButtonLink to="/">Explorar produtos</ButtonLink>}

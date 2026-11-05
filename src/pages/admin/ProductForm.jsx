@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ArrowLeft, ArrowRight, ArrowSquareOut, LinkSimple, Trash, UploadSimple } from '@phosphor-icons/react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { CardTitle, DashHeader } from '../../components/DashboardLayout'
@@ -180,12 +181,12 @@ export function ProductForm() {
         <>
             <DashHeader>
                 <div>
-                    <Link to="/admin/produtos" className="back">← Produtos</Link>
+                    <Link to="/admin/produtos" className="back"><ArrowLeft size={18} /> Produtos</Link>
                     <h1>{isNew ? 'Novo produto' : form.name}</h1>
                 </div>
                 {!isNew && form.active && (
                     <div className="actions">
-                        <Button as={Link} to={`/produto/${form.slug}`} target="_blank" $variant="ghost">Ver na loja ↗</Button>
+                        <Button as={Link} to={`/produto/${form.slug}`} target="_blank" $variant="ghost"><ArrowSquareOut size={20} /> Ver na loja</Button>
                     </div>
                 )}
             </DashHeader>
@@ -220,9 +221,9 @@ export function ProductForm() {
                                     <div className="img"><ProductImage src={url} alt={`Imagem ${index + 1}`} /></div>
                                     {index === 0 && <span className="cover">Capa</span>}
                                     <div className="tools">
-                                        <button type="button" onClick={() => moveImage(index, -1)} disabled={index === 0} aria-label="Mover para a esquerda">←</button>
-                                        <button type="button" onClick={() => removeImage(url)} aria-label="Remover imagem">✕</button>
-                                        <button type="button" onClick={() => moveImage(index, 1)} disabled={index === form.images.length - 1} aria-label="Mover para a direita">→</button>
+                                        <button type="button" onClick={() => moveImage(index, -1)} disabled={index === 0} aria-label="Mover para a esquerda"><ArrowLeft size={16} weight="bold" /></button>
+                                        <button type="button" onClick={() => removeImage(url)} aria-label="Remover imagem"><Trash size={16} /></button>
+                                        <button type="button" onClick={() => moveImage(index, 1)} disabled={index === form.images.length - 1} aria-label="Mover para a direita"><ArrowRight size={16} weight="bold" /></button>
                                     </div>
                                 </li>
                             ))}
@@ -238,7 +239,7 @@ export function ProductForm() {
                                         onDragOver={(event) => event.preventDefault()}
                                         onDrop={(event) => { event.preventDefault(); handleFiles(event.dataTransfer.files) }}
                                     >
-                                        <strong>+</strong>
+                                        <UploadSimple size={32} />
                                         <span>Adicionar imagens</span>
                                     </button>
                                 </li>
@@ -257,7 +258,7 @@ export function ProductForm() {
                                     onChange={(event) => setImageLink(event.target.value)}
                                     onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); addImageLink() } }}
                                 />
-                                <Button type="button" $variant="secondary" onClick={addImageLink}>Adicionar link</Button>
+                                <Button type="button" $variant="secondary" onClick={addImageLink}><LinkSimple size={20} /> Adicionar link</Button>
                             </LinkRow>
                         )}
                         <p className="help">
@@ -375,7 +376,8 @@ const Gallery = styled.ul`
             border-radius: 50%;
             background: var(--white);
             color: var(--gray-700);
-            font-size: 1.4rem;
+            display: grid;
+            place-items: center;
             &:disabled { opacity: 0.4; }
         }
         @media (hover: none) { opacity: 1; }
@@ -392,7 +394,6 @@ const Gallery = styled.ul`
         gap: 0.4rem;
         color: var(--gray-300);
         transition: border-color .2s ease, color .2s ease;
-        strong { font-size: 3rem; font-weight: 400; line-height: 1; }
         span { font-size: 1.3rem; }
         &:hover { border-color: var(--primary); color: var(--primary); }
     }

@@ -16,7 +16,7 @@ export function RequireAdmin() {
     const { user, isAdmin, loading } = useAuth()
     const location = useLocation()
 
-    if (loading) return <Loader />
+    if (loading) return <Loader fullScreen />
     if (!user) return <Navigate to="/login" replace state={{ from: location }} />
     if (!isAdmin) return <Forbidden />
     return <Outlet />
