@@ -1,9 +1,9 @@
+import styled from 'styled-components'
 import { useState } from 'react'
 import { UsersThree } from '@phosphor-icons/react'
 import { DashHeader } from '../../components/DashboardLayout'
 import { Badge, Card, EmptyState, ErrorState, Input, Loader, Table, TableScroll } from '../../components/ui'
 import { Toolbar } from './Orders'
-import { RowActions } from './Categories'
 import { useAsync } from '../../hooks/useAsync'
 import { useAuth } from '../../hooks/useAuth'
 import { useToast } from '../../hooks/useToast'
@@ -89,3 +89,10 @@ export function Customers() {
         </>
     )
 }
+
+const RowActions = styled.div`
+    display: inline-flex;
+    gap: 1.6rem;
+    a, button { font-size: 1.4rem; font-weight: 600; color: var(--primary); }
+    .danger { color: var(--danger); }
+`

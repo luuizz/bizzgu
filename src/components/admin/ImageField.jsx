@@ -10,7 +10,7 @@ const MAX_SIZE = 4 * 1024 * 1024
 const isImageLink = (value) => /^https?:\/\/\S+$/i.test(value)
 
 // Campo de uma imagem: envio para o Vercel Blob (no site publicado) ou link.
-// `folder` define a pasta no Blob: 'banners' | 'blog' | 'products'.
+// `folder` define a pasta no Blob: 'products' | 'banners' | 'categories' | 'blog'.
 export function ImageField({ id, value, onChange, folder, ratio = '16 / 9', hint, onRemoved }) {
     const toast = useToast()
     const inputRef = useRef(null)

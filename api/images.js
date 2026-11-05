@@ -1,7 +1,7 @@
 // Vercel Function: upload e remoção de imagens de produtos no Vercel Blob.
 //
 // POST   /api/images?pasta=products  (corpo = o arquivo, Content-Type = tipo da imagem) → { url }
-//        pastas permitidas: products, banners, blog
+//        pastas permitidas: products, banners, categories, blog
 // DELETE /api/images  (corpo = { "url": "..." })                         → { ok: true }
 //
 // Só administradores da loja podem usar. Quem decide é o próprio banco: a função
@@ -23,7 +23,7 @@ const TYPES = {
     'image/gif': 'gif',
 }
 
-const FOLDERS = ['products', 'banners', 'blog']
+const FOLDERS = ['products', 'banners', 'categories', 'blog']
 
 const json = (status, body) => Response.json(body, { status })
 
