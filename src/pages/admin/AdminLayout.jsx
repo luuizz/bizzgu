@@ -8,6 +8,7 @@ import {
     ChartPieSlice,
     List,
     Package,
+    PresentationChart,
     Receipt,
     SignOut,
     SquaresFour,
@@ -39,6 +40,10 @@ const groups = [
         ],
     },
     {
+        title: 'Loja',
+        links: [{ to: '/admin/banners', label: 'Banners', icon: PresentationChart }],
+    },
+    {
         title: 'Pessoas',
         links: [{ to: '/admin/clientes', label: 'Clientes', icon: UsersThree }],
     },
@@ -50,7 +55,7 @@ const crumbLabels = {
     produtos: 'Produtos',
     categorias: 'Categorias',
     clientes: 'Clientes',
-    novo: 'Novo produto',
+    banners: 'Banners',
 }
 
 function useCrumbs(pathname) {
@@ -59,8 +64,12 @@ function useCrumbs(pathname) {
     parts.forEach((part, index) => {
         const to = `/admin/${parts.slice(0, index + 1).join('/')}`
         const parent = parts[index - 1]
-        const label = crumbLabels[part]
-            || (parent === 'pedidos' ? 'Detalhes do pedido' : parent === 'produtos' ? 'Editar produto' : part)
+        const isNew = part === 'novo'
+        const label = crumbLabels[part] || {
+            pedidos: 'Detalhes do pedido',
+            produtos: isNew ? 'Novo produto' : 'Editar produto',
+            banners: isNew ? 'Novo banner' : 'Editar banner',
+        }[parent] || part
         crumbs.push({ label, to })
     })
     return crumbs

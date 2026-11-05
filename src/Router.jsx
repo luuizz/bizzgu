@@ -32,6 +32,8 @@ const AdminOrderDetail = lazy(() => import('./pages/admin/OrderDetail').then((m)
 const AdminProducts = lazy(() => import('./pages/admin/Products').then((m) => ({ default: m.Products })))
 const AdminProductForm = lazy(() => import('./pages/admin/ProductForm').then((m) => ({ default: m.ProductForm })))
 const AdminCategories = lazy(() => import('./pages/admin/Categories').then((m) => ({ default: m.Categories })))
+const AdminBanners = lazy(() => import('./pages/admin/Banners').then((m) => ({ default: m.Banners })))
+const AdminBannerForm = lazy(() => import('./pages/admin/BannerForm').then((m) => ({ default: m.BannerForm })))
 const AdminNotFound = lazy(() => import('./pages/admin/AdminNotFound').then((m) => ({ default: m.AdminNotFound })))
 const AdminCustomers = lazy(() => import('./pages/admin/Customers').then((m) => ({ default: m.Customers })))
 
@@ -50,6 +52,9 @@ export function Router() {
                         <Route path="produtos/:id" element={<AdminProductForm />} />
                         <Route path="categorias" element={<AdminCategories />} />
                         <Route path="clientes" element={<AdminCustomers />} />
+                        <Route path="banners" element={<AdminBanners />} />
+                        <Route path="banners/novo" element={<AdminBannerForm />} />
+                        <Route path="banners/:id" element={<AdminBannerForm />} />
                         <Route path="*" element={<AdminNotFound />} />
                     </Route>
                 </Route>
