@@ -1,3 +1,6 @@
+// Tamanhos das artes: computador 1920x480 (4:1) e celular 1080x1080 (1:1)
+export const BANNER_SIZES = { desktop: '1920 × 480 px', mobile: '1080 × 1080 px' }
+
 const dateFormat = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
 
 // Situação do banner para quem visita a loja agora

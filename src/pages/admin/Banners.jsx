@@ -10,7 +10,6 @@ import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { listBanners, reorderBanners, saveBanner } from '../../services/admin'
 import { imageUrl } from '../../lib/format'
 import { bannerStatus } from '../../lib/banners'
-import bgSlide from '/src/assets/bg-slide-desktop.svg'
 
 export function Banners() {
     useDocumentTitle('Banners · Admin')
@@ -77,20 +76,12 @@ export function Banners() {
                                     <button type="button" onClick={() => move(index, 1)} disabled={index === rows.length - 1} aria-label="Descer"><ArrowDown size={16} weight="bold" /></button>
                                 </div>
                                 <Link to={`/admin/banners/${banner.id}`} className="thumb" aria-label={`Editar ${banner.title}`}>
-                                    {banner.layout === 'image'
-                                        ? <img src={imageUrl(banner.image)} alt="" />
-                                        : (
-                                            <div className="text-thumb" style={{ backgroundImage: `url(${bgSlide})` }}>
-                                                <strong>{banner.title}</strong>
-                                                {banner.image && <img src={imageUrl(banner.image)} alt="" />}
-                                            </div>
-                                        )}
+                                    <img src={imageUrl(banner.image)} alt="" />
                                 </Link>
                                 <div className="info">
                                     <Link to={`/admin/banners/${banner.id}`} className="title">{banner.title}</Link>
                                     <div className="meta">
                                         <Badge $tone={status.tone}>{status.label}</Badge>
-                                        <span>{banner.layout === 'image' ? 'Arte pronta' : 'Texto + imagem'}</span>
                                         {banner.link && <span className="link">{banner.link}</span>}
                                     </div>
                                 </div>
@@ -147,23 +138,12 @@ const List = styled.ul`
     }
     .thumb {
         display: block;
-        aspect-ratio: 4.4 / 1;
+        aspect-ratio: 4 / 1;
         border-radius: 0.8rem;
         overflow: hidden;
         background: var(--gray-500);
         transition: opacity .2s ease;
         > img { width: 100%; height: 100%; object-fit: cover; }
-    }
-    .text-thumb {
-        height: 100%;
-        background-size: cover;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.8rem;
-        padding: 0 1.2rem;
-        strong { color: var(--white); font-size: 1.1rem; line-height: 1.2; }
-        img { height: 85%; object-fit: contain; }
     }
     .info { min-width: 0; display: flex; flex-direction: column; gap: 0.6rem; }
     .title { font-size: 1.6rem; font-weight: 600; color: var(--gray-800); &:hover { color: var(--primary); } }
