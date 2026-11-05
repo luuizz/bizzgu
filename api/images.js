@@ -75,6 +75,14 @@ export async function POST(request) {
         addRandomSuffix: true,
         cacheControlMaxAge: 60 * 60 * 24 * 365,
     })
+
+    // Confere se a imagem abre sem login. Se não abrir (ex.: Blob Store criado
+    // como Private), apaga e avisa, em vez de salvar um link quebrado no produto.
+    const check = await fetch(blob.url, { method: 'HEAD' }).catch(() => null)
+    if (!check?.ok) {
+        await del(blob.url).catch(() => {})
+        return json(503, { error: 'A imagem foi enviada, mas não ficou pública. O Blob Store da Vercel precisa ser do tipo Public.' })
+    }
     return json(201, { url: blob.url })
 }
 

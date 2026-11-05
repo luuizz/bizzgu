@@ -41,6 +41,7 @@ export function friendlyError(error) {
         weak_password: 'A senha precisa ter pelo menos 8 caracteres.',
         email_address_invalid: 'E-mail inválido.',
         over_request_rate_limit: 'Muitas tentativas. Aguarde um pouco e tente de novo.',
+        INVALID_ORIGIN: 'Este endereço não está autorizado a fazer login. Adicione-o aos domínios confiáveis do Neon Auth.',
         // códigos crus do Better Auth (troca/redefinição de senha)
         INVALID_PASSWORD: 'Senha atual incorreta.',
         INVALID_TOKEN: 'O link expirou ou já foi usado. Peça um novo.',
@@ -55,6 +56,7 @@ export function friendlyError(error) {
         'Invalid password': 'Senha atual incorreta.',
         'User already exists': 'Já existe uma conta com este e-mail.',
         'Invalid token': 'O link expirou ou já foi usado. Peça um novo.',
+        'Invalid origin': 'Este endereço não está autorizado a fazer login. Adicione-o aos domínios confiáveis do Neon Auth.',
         'Failed to fetch': 'Não foi possível conectar ao servidor. Verifique sua internet.',
     }
     for (const [key, value] of Object.entries(byMessage)) {
