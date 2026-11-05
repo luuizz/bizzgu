@@ -2,73 +2,46 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { EffectFade, Navigation, Autoplay } from 'swiper/modules'
+import { EffectFade, Navigation, Autoplay, Pagination } from 'swiper/modules'
 import { StyleSlide } from './style'
 import { useAsync } from '../../hooks/useAsync'
 import { getHomeBanners } from '../../services/catalog'
 import { imageUrl } from '../../lib/format'
 import 'swiper/css'
 import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 import 'swiper/css/effect-fade'
 
 // Usados se o banco não responder ou não houver banner publicado
 const FALLBACK_BANNERS = [
-    {
-        id: 'fallback-1',
-        layout: 'text',
-        title: 'Seu smartphone vive travando?',
-        subtitle: 'Você merece um upgrade!',
-        cta_label: 'Faça o upgrade já!',
-        link: '/categoria/celulares',
-        image: 'banners/iphones.png',
-    },
-    {
-        id: 'fallback-2',
-        layout: 'text',
-        title: 'A nova geração dos games chegou',
-        subtitle: 'PlayStation 5 com frete grátis e até 10x sem juros.',
-        cta_label: 'Ver consoles',
-        link: '/categoria/games',
-    },
+    { id: 'f1', title: 'Seu smartphone vive travando? Faça o upgrade em até 10x sem juros.', link: '/categoria/celulares', image: 'banners/banner-celulares-desktop.webp', image_mobile: 'banners/banner-celulares-mobile.webp' },
+    { id: 'f2', title: 'PlayStation 5: a nova geração dos games chegou.', link: '/categoria/games', image: 'banners/banner-games-desktop.webp', image_mobile: 'banners/banner-games-mobile.webp' },
+    { id: 'f3', title: 'Frete grátis para todo o Brasil em compras acima de R$ 299.', link: '/busca?ofertas=1', image: 'banners/banner-frete-gratis-desktop.webp', image_mobile: 'banners/banner-frete-gratis-mobile.webp' },
 ]
 
 // Link interno (/categoria/x) usa o roteador; externo (https://) abre normalmente
-function BannerLink({ to, className, children, ...rest }) {
-    if (!to) return <div className={className}>{children}</div>
-    if (to.startsWith('/')) return <Link to={to} className={className} {...rest}>{children}</Link>
-    return <a href={to} className={className} rel="noreferrer" {...rest}>{children}</a>
+function BannerLink({ to, children, ...rest }) {
+    if (!to) return <div className="banner" {...rest}>{children}</div>
+    if (to.startsWith('/')) return <Link to={to} className="banner" {...rest}>{children}</Link>
+    return <a href={to} className="banner" rel="noreferrer" {...rest}>{children}</a>
 }
 
-// Conteúdo de um banner. Também usado na pré-visualização do painel.
-export function BannerContent({ banner, eager = false }) {
-    if (banner.layout === 'image') {
-        return (
-            <BannerLink to={banner.link} className="banner-image" aria-label={banner.title}>
-                <picture>
-                    {banner.image_mobile && <source media="(max-width: 700px)" srcSet={imageUrl(banner.image_mobile)} />}
-                    <img src={imageUrl(banner.image)} alt={banner.title} loading={eager ? 'eager' : 'lazy'} />
-                </picture>
-            </BannerLink>
-        )
-    }
-
+// Um banner: arte de celular até 700px de largura, de computador acima disso.
+// Também usado na pré-visualização do painel.
+export function BannerContent({ banner, eager = false, device }) {
+    const desktop = imageUrl(banner.image)
+    const mobile = imageUrl(banner.image_mobile || banner.image)
     return (
-        <div className="banner-text">
-            <div className="container">
-                <div className="left animeLeft">
-                    <h2>{banner.title}</h2>
-                    {banner.subtitle && <span>{banner.subtitle}</span>}
-                    {banner.cta_label && banner.link && (
-                        <BannerLink to={banner.link} className="btn-primary">{banner.cta_label}</BannerLink>
-                    )}
-                </div>
-                {banner.image && (
-                    <div className="right">
-                        <img src={imageUrl(banner.image)} alt="" loading={eager ? 'eager' : 'lazy'} />
-                    </div>
-                )}
-            </div>
-        </div>
+        <BannerLink to={banner.link} aria-label={banner.title}>
+            {device ? (
+                <img src={device === 'mobile' ? mobile : desktop} alt={banner.title} className={device} />
+            ) : (
+                <picture>
+                    <source media="(max-width: 700px)" srcSet={mobile} width="1080" height="1080" />
+                    <img src={desktop} alt={banner.title} width="1920" height="480" loading={eager ? 'eager' : 'lazy'} />
+                </picture>
+            )}
+        </BannerLink>
     )
 }
 
@@ -93,11 +66,12 @@ export function Slide() {
                     swiper.params.navigation.prevEl = prevRef.current
                     swiper.params.navigation.nextEl = nextRef.current
                 }}
+                pagination={several && { clickable: true }}
                 slidesPerView={1}
                 rewind={several}
                 allowTouchMove={several}
-                autoplay={several && { delay: 6000, disableOnInteraction: true }}
-                modules={[EffectFade, Navigation, Autoplay]}
+                autoplay={several && { delay: 6000, disableOnInteraction: true, pauseOnMouseEnter: true }}
+                modules={[EffectFade, Navigation, Autoplay, Pagination]}
                 effect="fade"
                 fadeEffect={{ crossFade: true }}
             >
@@ -110,10 +84,10 @@ export function Slide() {
             {several && (
                 <>
                     <button ref={prevRef} type="button" className="slider-nav prev" aria-label="Banner anterior">
-                        <CaretLeft size={28} weight="bold" />
+                        <CaretLeft size={24} weight="bold" />
                     </button>
                     <button ref={nextRef} type="button" className="slider-nav next" aria-label="Próximo banner">
-                        <CaretRight size={28} weight="bold" />
+                        <CaretRight size={24} weight="bold" />
                     </button>
                 </>
             )}
