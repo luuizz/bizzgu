@@ -1,12 +1,8 @@
-# Produção: tudo que entra na main (via PR da dev) é publicado na Vercel.
-# 1. aplica as migrations pendentes no banco do Neon
-# 2. gera o build com os endereços do Neon
-# 3. publica na Vercel (só depois que o banco estiver em dia)
 name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   workflow_dispatch:
 
 concurrency:
@@ -40,6 +36,18 @@ jobs:
         run: yarn install --frozen-lockfile
       - if: steps.check.outputs.skip != 'true'
         run: yarn db:migrate
+      - name: Recarrega o cache da Data API
+        if: steps.check.outputs.skip != 'true'
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+          NEON_BRANCH: ${{ vars.NEON_BRANCH || 'production' }}
+        run: |
+          if [ -z "$NEON_API_KEY" ] || [ -z "$NEON_PROJECT_ID" ]; then
+            echo "::warning::Sem NEON_API_KEY e NEON_PROJECT_ID: se a migration mudou tabelas, rode 'neon data-api refresh-schema --database neondb'."
+            exit 0
+          fi
+          npx -y neonctl@8 data-api refresh-schema --project-id "$NEON_PROJECT_ID" --branch "$NEON_BRANCH" --database neondb
 
   deploy:
     name: Publicar na Vercel
