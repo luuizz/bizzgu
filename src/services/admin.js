@@ -58,9 +58,9 @@ export async function deleteProduct(id) {
     return unwrap(await api.from('products').delete().eq('id', id))
 }
 
-// Upload pela Neon Function (functions/product-images.ts), que confere se o
-// usuário é admin e grava o arquivo no Object Storage. Opcional: sem a função
-// configurada, o painel aceita imagens por link.
+// Upload pela Vercel Function (api/images.js), que confere se o usuário é admin
+// e grava o arquivo no Vercel Blob. Sem ela (ex.: no `yarn dev`), o painel
+// aceita imagens por link.
 export const canUploadImages = Boolean(UPLOAD_FUNCTION_URL)
 
 async function callUploadFunction(method, body, contentType) {
@@ -80,10 +80,12 @@ export async function uploadProductImage(file) {
     return url
 }
 
-// Apaga do Object Storage imagens enviadas pelo painel (links externos e as de public/ ficam)
+// Apaga do Blob as imagens enviadas pelo painel (links externos e as de public/ ficam)
+const isUploadedImage = (url) => /^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\/products\//.test(url)
+
 export async function removeProductImages(urls) {
     if (!canUploadImages) return
-    const uploaded = urls.filter((url) => /^https?:/.test(url))
+    const uploaded = urls.filter(isUploadedImage)
     await Promise.allSettled(uploaded.map((url) => callUploadFunction('DELETE', JSON.stringify({ url }), 'application/json')))
 }
 

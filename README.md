@@ -22,7 +22,7 @@ E-commerce completo feito com **React + Vite** no front-end e **Neon** no back-e
 **Painel administrativo** (`/admin`): layout próprio de dashboard, separado da loja (menu lateral, barra superior com breadcrumb e menu do usuário, menu recolhível no celular)
 - Faturamento, ticket médio, gráfico de vendas dos últimos 30 dias, mais vendidos e estoque baixo
 - Pedidos: filtro por status, busca e avanço de status (pago → enviado → entregue, ou cancelado)
-- Produtos: cadastro e edição com imagens (por link ou, com a função opcional, por upload), além de ativar/desativar e destacar direto na tabela
+- Produtos: cadastro e edição com imagens (upload para o Vercel Blob ou link), além de ativar/desativar e destacar direto na tabela
 - Categorias: criar, editar, ordenar e excluir
 - Clientes: lista com nº de pedidos e promoção a administrador
 
@@ -98,18 +98,17 @@ update public.profiles set role = 'admin' where email = 'seu-email@exemplo.com';
 
 Recarregue a página: o menu da conta passa a mostrar **Painel administrativo** (`/admin`). Depois disso, novos admins podem ser promovidos pelo próprio painel, em **Clientes**.
 
-### 6. (Opcional) Upload de imagens pelo painel
+### 6. Upload de imagens pelo painel (Vercel Blob)
 
-Sem este passo, o admin adiciona imagens **colando o link** de uma imagem já publicada. Para enviar arquivos direto do computador, publique a Neon Function `functions/product-images.ts`. Ela confere se quem envia é admin e grava a imagem num bucket público do Object Storage do Neon.
+No site publicado, o admin pode enviar fotos direto do computador (JPG, PNG, WebP, AVIF ou GIF, até 4 MB). Quem recebe é a função `api/images.js`, que roda na Vercel: ela pergunta ao próprio banco (`is_admin()` pela Data API, com o token de quem está logado) se a pessoa é admin e grava o arquivo no **Vercel Blob**. A função não guarda senha do banco.
 
-1. Instale a [Neon CLI](https://neon.com/docs/reference/neon-cli) e rode `neon link` na pasta do projeto.
-2. Rode `neon deploy`. Isso cria o bucket `product-images` e a função `productimages`, conforme o `neon.ts`. A função só aceita envios dos endereços em `ALLOWED_ORIGINS` (no `neon.ts`): `https://bizzgu.vercel.app` e `http://localhost:5173`. Se o site mudar de endereço, edite essa linha e rode `neon deploy` de novo.
-3. Rode `neon functions get productimages`, copie o `invocation_url` e coloque no `.env.local`:
-   ```
-   VITE_UPLOAD_FUNCTION_URL=https://...
-   ```
+Configuração única, no projeto da Vercel:
 
-> O Object Storage e as Functions do Neon são recursos recentes. Se algum comando da CLI tiver mudado de nome, a [documentação do Neon](https://neon.com/docs/compute/functions/get-started) tem a versão atual.
+1. **Storage → Create → Blob**, dê um nome (ex.: `bizzgu-imagens`) e conecte ao projeto `bizzgu` no ambiente **Production**. A Vercel cria sozinha a variável `BLOB_READ_WRITE_TOKEN`.
+2. **Settings → Environment Variables → Add**: `NEON_DATA_API_URL` com o mesmo valor do `VITE_NEON_DATA_API_URL` (ambiente **Production**).
+3. Rode o deploy de novo (**Actions → Deploy → Run workflow**) para a função receber as variáveis.
+
+No `yarn dev` a função não existe, então o painel mostra só a opção de colar o link de uma imagem. Para testar o upload localmente, use `npx vercel@65 dev` em vez de `yarn dev`.
 
 ---
 
@@ -158,7 +157,6 @@ O `vercel.json` já define build, rotas, cache e headers de segurança, e deslig
 | Variables | `VITE_NEON_AUTH_URL` | Auth URL do Neon |
 | Variables | `VITE_NEON_DATA_API_URL` | API URL da Data API do Neon |
 | Variables | `VITE_SITE_URL` | opcional: endereço final do site, se não for `https://bizzgu.vercel.app` |
-| Variables | `VITE_UPLOAD_FUNCTION_URL` | opcional: só se usar o upload de imagens |
 | Secrets | `NEON_DATABASE_URL` | connection string do banco de produção (sem `-pooler`) |
 | Secrets | `VERCEL_TOKEN` | o token do passo 2 |
 | Secrets | `VERCEL_ORG_ID` | `orgId` do `.vercel/project.json` |
@@ -195,9 +193,8 @@ database/
   ci/neon-stub.sql   simula o Neon Auth/Data API no Postgres do CI
 scripts/
   migrate.mjs        aplica as migrations pendentes (yarn db:migrate)
-functions/
-  product-images.ts  Neon Function opcional para upload de imagens
-neon.ts              configuração da Neon CLI (bucket + função)
+api/
+  images.js          Vercel Function: upload de imagens (Vercel Blob), só para admins
 public/products/     fotos dos produtos de exemplo
 src/
   lib/               cliente Neon e formatação (moeda, CEP, telefone...)
