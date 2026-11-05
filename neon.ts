@@ -18,8 +18,9 @@ export default defineConfig({
             name: 'Upload de imagens de produtos',
             source: './functions/product-images.ts',
             env: {
-                // Endereço(s) do site, separados por vírgula. Ex.: https://bizzgu.vercel.app,http://localhost:5173
-                ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS!,
+                // Endereços do site que podem enviar imagens, separados por vírgula.
+                // Mudou o domínio do site? Troque aqui e rode `neon deploy` de novo.
+                ALLOWED_ORIGINS: 'https://bizzgu.vercel.app,http://localhost:5173',
                 BUCKET_NAME: 'product-images',
             },
         },

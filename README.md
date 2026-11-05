@@ -103,12 +103,8 @@ Recarregue a página: o menu da conta passa a mostrar **Painel administrativo** 
 Sem este passo, o admin adiciona imagens **colando o link** de uma imagem já publicada. Para enviar arquivos direto do computador, publique a Neon Function `functions/product-images.ts`. Ela confere se quem envia é admin e grava a imagem num bucket público do Object Storage do Neon.
 
 1. Instale a [Neon CLI](https://neon.com/docs/reference/neon-cli) e rode `neon link` na pasta do projeto.
-2. Crie um arquivo `.env.neon` com os endereços do site:
-   ```
-   ALLOWED_ORIGINS=http://localhost:5173,https://bizzgu.vercel.app
-   ```
-3. Rode `neon deploy --env .env.neon`. Isso cria o bucket `product-images` e a função `productimages`, conforme o `neon.ts`.
-4. Rode `neon functions get productimages`, copie o `invocation_url` e coloque no `.env.local`:
+2. Rode `neon deploy`. Isso cria o bucket `product-images` e a função `productimages`, conforme o `neon.ts`. A função só aceita envios dos endereços em `ALLOWED_ORIGINS` (no `neon.ts`): `https://bizzgu.vercel.app` e `http://localhost:5173`. Se o site mudar de endereço, edite essa linha e rode `neon deploy` de novo.
+3. Rode `neon functions get productimages`, copie o `invocation_url` e coloque no `.env.local`:
    ```
    VITE_UPLOAD_FUNCTION_URL=https://...
    ```
