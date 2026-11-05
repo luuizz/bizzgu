@@ -107,8 +107,8 @@ Sem este passo, o admin adiciona imagens **colando o link** de uma imagem já pu
    ```
    ALLOWED_ORIGINS=http://localhost:5173,https://bizzgu.vercel.app
    ```
-3. Rode `neon deploy --env .env.neon`. Isso cria o bucket `product-images` e a função, conforme o `neon.ts`.
-4. Rode `neon functions get product-images`, copie o `invocation_url` e coloque no `.env.local`:
+3. Rode `neon deploy --env .env.neon`. Isso cria o bucket `product-images` e a função `productimages`, conforme o `neon.ts`.
+4. Rode `neon functions get productimages`, copie o `invocation_url` e coloque no `.env.local`:
    ```
    VITE_UPLOAD_FUNCTION_URL=https://...
    ```
