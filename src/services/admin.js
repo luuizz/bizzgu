@@ -29,11 +29,24 @@ export async function updateOrderStatus(id, status) {
 }
 
 // ---------- Produtos ----------
-export async function listAllProducts({ search, categoryId } = {}) {
+// Ordenações da lista do painel. O desempate por id deixa a ordem estável:
+// editar um produto não muda a posição dele na lista.
+export const ADMIN_PRODUCT_SORTS = {
+    recent: { label: 'Mais recentes', column: 'created_at', ascending: false },
+    name: { label: 'Nome (A–Z)', column: 'name', ascending: true },
+    price_asc: { label: 'Menor preço', column: 'price', ascending: true },
+    price_desc: { label: 'Maior preço', column: 'price', ascending: false },
+    stock: { label: 'Menor estoque', column: 'stock', ascending: true },
+    updated: { label: 'Editados recentemente', column: 'updated_at', ascending: false },
+}
+
+export async function listAllProducts({ search, categoryId, sort = 'recent' } = {}) {
+    const order = ADMIN_PRODUCT_SORTS[sort] || ADMIN_PRODUCT_SORTS.recent
     let query = api
         .from('products')
         .select('id, name, slug, price, compare_at_price, stock, images, featured, active, category:categories(id, name)')
-        .order('created_at', { ascending: false })
+        .order(order.column, { ascending: order.ascending })
+        .order('id', { ascending: false })
 
     if (categoryId) query = query.eq('category_id', categoryId)
     if (search) {

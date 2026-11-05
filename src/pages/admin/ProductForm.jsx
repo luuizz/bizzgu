@@ -44,6 +44,8 @@ export function ProductForm() {
     const [uploading, setUploading] = useState(0)
     const [removedUploads, setRemovedUploads] = useState([])
     const [imageLink, setImageLink] = useState('')
+    // Versão salva no banco (é ela que o link de pré-visualização abre)
+    const [savedVersion, setSavedVersion] = useState(null)
 
     useDocumentTitle(isNew ? 'Novo produto · Admin' : 'Editar produto · Admin')
 
@@ -61,6 +63,7 @@ export function ProductForm() {
                     stock: String(product.stock),
                 })
                 setSlugTouched(true)
+                setSavedVersion({ slug: product.slug, active: product.active })
             })
             .catch(setLoadError)
             .finally(() => setLoading(false))
@@ -184,9 +187,18 @@ export function ProductForm() {
                     <Link to="/admin/produtos" className="back"><ArrowLeft size={18} /> Produtos</Link>
                     <h1>{isNew ? 'Novo produto' : form.name}</h1>
                 </div>
-                {!isNew && form.active && (
+                {!isNew && savedVersion && (
                     <div className="actions">
-                        <Button as={Link} to={`/produto/${form.slug}`} target="_blank" $variant="ghost"><ArrowSquareOut size={20} /> Ver na loja</Button>
+                        <Button
+                            as="a"
+                            href={`${import.meta.env.BASE_URL}produto/${savedVersion.slug}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            $variant="ghost"
+                            title="Abre a versão salva do produto numa nova aba"
+                        >
+                            <ArrowSquareOut size={20} /> {savedVersion.active ? 'Ver na loja' : 'Pré-visualizar'}
+                        </Button>
                     </div>
                 )}
             </DashHeader>

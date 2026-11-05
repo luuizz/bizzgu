@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Package } from '@phosphor-icons/react'
+import { Eye, Package, PencilSimple, Plus } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { DashHeader } from '../../components/DashboardLayout'
@@ -10,7 +10,7 @@ import { useAsync } from '../../hooks/useAsync'
 import { useCategories } from '../../hooks/useCategories'
 import { useToast } from '../../hooks/useToast'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
-import { listAllProducts, saveProduct } from '../../services/admin'
+import { ADMIN_PRODUCT_SORTS, listAllProducts, saveProduct } from '../../services/admin'
 import { formatBRL } from '../../lib/format'
 
 export function Products() {
@@ -19,7 +19,7 @@ export function Products() {
     const toast = useToast()
     const [search, setSearch] = useState('')
     const [categoryId, setCategoryId] = useState('')
-    const [query, setQuery] = useState({ search: '', categoryId: '' })
+    const [query, setQuery] = useState({ search: '', categoryId: '', sort: 'recent' })
 
     const products = useAsync(() => listAllProducts(query), [query])
     const rows = products.data || []
@@ -44,15 +44,15 @@ export function Products() {
                     <p>{products.loading ? ' ' : `${rows.length} ${rows.length === 1 ? 'produto' : 'produtos'}`}</p>
                 </div>
                 <div className="actions">
-                    <ButtonLink to="/admin/produtos/novo">Novo produto</ButtonLink>
+                    <ButtonLink to="/admin/produtos/novo"><Plus size={20} weight="bold" /> Novo produto</ButtonLink>
                 </div>
             </DashHeader>
 
             <Card>
-                <Toolbar onSubmit={(event) => { event.preventDefault(); setQuery({ search: search.trim(), categoryId }) }}>
+                <Toolbar onSubmit={(event) => { event.preventDefault(); setQuery((prev) => ({ ...prev, search: search.trim(), categoryId })) }}>
                     <Select
                         value={categoryId}
-                        onChange={(event) => { setCategoryId(event.target.value); setQuery({ search: search.trim(), categoryId: event.target.value }) }}
+                        onChange={(event) => { setCategoryId(event.target.value); setQuery((prev) => ({ ...prev, search: search.trim(), categoryId: event.target.value })) }}
                         aria-label="Filtrar por categoria"
                         style={{ maxWidth: '24rem', height: '4.2rem' }}
                     >
@@ -60,6 +60,14 @@ export function Products() {
                         {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
                     </Select>
                     <Input type="search" placeholder="Buscar por nome" value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Buscar produtos" />
+                    <Select
+                        value={query.sort}
+                        onChange={(event) => setQuery((prev) => ({ ...prev, sort: event.target.value }))}
+                        aria-label="Ordenar produtos"
+                        style={{ maxWidth: '22rem', height: '4.2rem' }}
+                    >
+                        {Object.entries(ADMIN_PRODUCT_SORTS).map(([value, { label }]) => <option key={value} value={value}>{label}</option>)}
+                    </Select>
                 </Toolbar>
 
                 {products.loading && !products.data ? <Loader /> : products.error ? <ErrorState error={products.error} onRetry={products.reload} /> : rows.length === 0 ? (
@@ -69,7 +77,7 @@ export function Products() {
                         <Table>
                             <thead>
                                 <tr>
-                                    <th>Produto</th><th>Categoria</th><th className="num">Preço</th><th className="num">Estoque</th><th>Destaque</th><th>Ativo</th>
+                                    <th>Produto</th><th>Categoria</th><th className="num">Preço</th><th className="num">Estoque</th><th>Destaque</th><th>Ativo</th><th><span className="sr-only">Ações</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -90,6 +98,22 @@ export function Products() {
                                         </td>
                                         <td><Switch checked={product.featured} onChange={() => toggle(product, 'featured')} label={`Destaque: ${product.name}`} /></td>
                                         <td><Switch checked={product.active} onChange={() => toggle(product, 'active')} label={`Ativo: ${product.name}`} /></td>
+                                        <td>
+                                            <RowActions>
+                                                <a
+                                                    href={`${import.meta.env.BASE_URL}produto/${product.slug}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    title={product.active ? 'Ver na loja' : 'Pré-visualizar (inativo)'}
+                                                    aria-label={`Ver ${product.name} na loja`}
+                                                >
+                                                    <Eye size={20} />
+                                                </a>
+                                                <Link to={`/admin/produtos/${product.id}`} title="Editar" aria-label={`Editar ${product.name}`}>
+                                                    <PencilSimple size={20} />
+                                                </Link>
+                                            </RowActions>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -140,6 +164,22 @@ const SwitchLabel = styled.label`
     input:checked + span { background: var(--primary); }
     input:checked + span::after { transform: translateX(1.8rem); }
     input:focus-visible + span { outline: 0.2rem solid var(--primary); outline-offset: 0.2rem; }
+`
+
+const RowActions = styled.div`
+    display: flex;
+    gap: 0.4rem;
+    justify-content: flex-end;
+    a {
+        display: grid;
+        place-items: center;
+        width: 3.6rem;
+        height: 3.6rem;
+        border-radius: 0.8rem;
+        color: var(--gray-300);
+        transition: background .2s ease, color .2s ease;
+        &:hover { background: var(--primary-50); color: var(--primary); }
+    }
 `
 
 const ProductCell = styled(Link)`
