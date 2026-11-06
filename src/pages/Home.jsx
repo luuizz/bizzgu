@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { AboutSection } from '../components/home/AboutSection'
 import { CreditCard, PixLogo, ShieldCheck, Truck } from '@phosphor-icons/react'
 import styled from 'styled-components'
 import { Slide } from '../components/Slider'
@@ -71,7 +72,7 @@ export function Home() {
             )}
 
             {(offers.loading || offers.data?.length > 0) && (
-                <Section style={{ paddingBottom: '8rem' }}>
+                <Section>
                     <div className="container">
                         <div className="section-head">
                             <SectionTitle>Ofertas</SectionTitle>
@@ -81,6 +82,8 @@ export function Home() {
                     </div>
                 </Section>
             )}
+
+            <AboutSection />
         </>
     )
 }

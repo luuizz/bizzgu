@@ -68,3 +68,8 @@ export async function getHomeBanners() {
     return banners.filter((banner) => (!banner.starts_at || new Date(banner.starts_at) <= now)
         && (!banner.ends_at || new Date(banner.ends_at) > now))
 }
+
+// ---------- Configurações da loja (Sobre, contatos, redes) ----------
+export async function getStoreSettings() {
+    return unwrap(await api.from('store_settings').select('*').eq('id', 1).maybeSingle())
+}

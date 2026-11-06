@@ -27,6 +27,7 @@ E-commerce completo feito com **React + Vite** no front-end e **Neon** no back-e
 - Tags no cadastro do produto (escolher ou criar na hora) e páginas `/tag/:slug` na loja
 - Banners da home: artes para computador (1920×480) e celular (1080×1080), com pré-visualização, link, ordem do carrossel e agendamento (início/fim)
 - Clientes: lista com nº de pedidos e promoção a administrador
+- Configurações da loja: texto e imagem do "Sobre" (seção na home e página `/sobre`), contatos (e-mail, WhatsApp, telefone, horário, endereço) e redes sociais do rodapé
 
 **Segurança (no banco de dados)**
 - Row Level Security em todas as tabelas: cada cliente só vê os próprios pedidos, dados e desejos
@@ -82,6 +83,7 @@ O comando aplica, em ordem, os arquivos de `database/migrations/` que ainda não
 | `0003_banners.sql` | Banners da home |
 | `0004_banners_so_imagem.sql` | Banners passam a ser só imagem; 3 banners iniciais com artes prontas |
 | `0005_taxonomia.sql` | Tags (e ligação com produtos) e imagem nas categorias, com 5 tags de exemplo |
+| `0006_configuracoes.sql` | Configurações da loja: Sobre, contatos e redes sociais |
 
 > Já rodou esses arquivos antes pelo SQL Editor? Use `yarn db:migrate --baseline` uma vez para marcá-los como aplicados sem rodar de novo.
 

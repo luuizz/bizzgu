@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Page } from '../components/layout'
 import { Breadcrumb, PageTitle } from '../components/ui'
@@ -7,13 +7,6 @@ import { FREE_SHIPPING_FROM, SHIPPING_FEE, formatBRL } from '../lib/format'
 import { NotFound } from './NotFound'
 
 const pages = {
-    sobre: {
-        title: 'Conheça a Bizzgu',
-        body: [
-            'A Bizzgu é um e-commerce de demonstração criado como projeto de portfólio. Nenhuma venda é real e nenhum valor é cobrado.',
-            'O projeto usa React com Vite no front-end e Neon (PostgreSQL, Neon Auth e Data API) no back-end, com regras de segurança aplicadas direto no banco de dados.',
-        ],
-    },
     entrega: {
         title: 'Política de Entrega',
         body: [
@@ -42,6 +35,8 @@ export function Institutional() {
     const page = pages[slug]
     useDocumentTitle(page?.title)
 
+    // O "Sobre" agora é editável no painel e mora em /sobre
+    if (slug === 'sobre') return <Navigate to="/sobre" replace />
     if (!page) return <NotFound />
 
     return (
