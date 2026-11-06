@@ -31,14 +31,12 @@ export const StyleSlide = styled.section`
         background: rgba(255, 255, 255, 0.85);
         box-shadow: 0 0.4rem 1.6rem rgba(16, 7, 23, 0.16);
         backdrop-filter: blur(0.4rem);
-        opacity: 0;
-        transition: opacity .2s ease, background .2s ease, color .2s ease;
+        transition: background .2s ease, color .2s ease, transform .2s ease;
         &:hover { background: var(--primary); color: var(--white); }
-        &:focus-visible { opacity: 1; }
+        &:active { transform: translateY(-50%) scale(0.94); }
         &.prev { left: 2.4rem; }
         &.next { right: 2.4rem; }
     }
-    &:hover .slider-nav { opacity: 1; }
 
     .swiper-pagination { bottom: 1.4rem; }
     .swiper-pagination-bullet {

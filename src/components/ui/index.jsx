@@ -1,3 +1,4 @@
+import { CaretRight, House } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import styled, { css, keyframes } from 'styled-components'
 import { ORDER_STATUS } from '../../lib/format'
@@ -267,27 +268,53 @@ export const PageTitle = styled.h1`
     @media (max-width: 600px) { font-size: 2.6rem; }
 `
 
-export const Breadcrumb = ({ items }) => (
-    <BreadcrumbNav aria-label="Navegação estrutural">
+// Breadcrumb: casinha no início, setas entre os níveis e nomes longos cortados.
+// $tone="light" para usar sobre fundo escuro (topo das categorias).
+export const Breadcrumb = ({ items, $tone }) => (
+    <BreadcrumbNav aria-label="Navegação estrutural" $tone={$tone}>
         <ol>
-            {items.map((item, index) => (
-                <li key={item.label}>
-                    {item.to && index < items.length - 1 ? <Link to={item.to}>{item.label}</Link> : <span>{item.label}</span>}
-                </li>
-            ))}
+            {items.map((item, index) => {
+                const last = index === items.length - 1
+                const content = index === 0 ? <><House size={16} /> <span>{item.label}</span></> : <span>{item.label}</span>
+                return (
+                    <li key={`${item.label}-${index}`}>
+                        {index > 0 && <CaretRight size={12} weight="bold" className="sep" aria-hidden="true" />}
+                        {item.to && !last
+                            ? <Link to={item.to}>{content}</Link>
+                            : <span className="current" aria-current={last ? 'page' : undefined}>{content}</span>}
+                    </li>
+                )
+            })}
         </ol>
     </BreadcrumbNav>
 )
 
 const BreadcrumbNav = styled.nav`
-    ol { display: flex; flex-wrap: wrap; gap: 0.8rem; }
-    li {
-        font-size: 1.35rem;
-        color: var(--gray-200);
-        &:not(:last-child)::after { content: '/'; margin-left: 0.8rem; color: var(--gray-100); }
-        a:hover { color: var(--primary); }
-        span { color: var(--gray-400); }
+    --crumb: ${({ $tone }) => ($tone === 'light' ? 'rgba(255, 255, 255, 0.72)' : 'var(--gray-200)')};
+    --crumb-current: ${({ $tone }) => ($tone === 'light' ? 'var(--white)' : 'var(--gray-700)')};
+    --crumb-hover-bg: ${({ $tone }) => ($tone === 'light' ? 'rgba(255, 255, 255, 0.12)' : 'var(--primary-50)')};
+    --crumb-hover: ${({ $tone }) => ($tone === 'light' ? 'var(--white)' : 'var(--primary)')};
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+    ol { display: flex; align-items: center; gap: 0.2rem; white-space: nowrap; }
+    li { display: flex; align-items: center; gap: 0.2rem; font-size: 1.35rem; min-width: 0; }
+    .sep { color: var(--crumb); opacity: 0.6; flex-shrink: 0; margin: 0 0.2rem; }
+    a, .current {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.8rem;
+        color: var(--crumb);
+        transition: background .2s ease, color .2s ease;
+        span { overflow: hidden; text-overflow: ellipsis; max-width: 28rem; }
     }
+    li:first-child a, li:first-child .current { padding-left: 0; }
+    a:hover { background: var(--crumb-hover-bg); color: var(--crumb-hover); padding-left: 0.8rem; }
+    .current { color: var(--crumb-current); font-weight: 600; }
+    @media (max-width: 600px) { a span, .current span { max-width: 18rem; } }
 `
 
 export const Table = styled.table`
