@@ -40,17 +40,18 @@ export const ADMIN_PRODUCT_SORTS = {
     updated: { label: 'Editados recentemente', column: 'updated_at', ascending: false },
 }
 
-export async function listAllProducts({ search, categoryId, tagId, sort = 'recent' } = {}) {
+// categoryIds/tagIds: listas (filtro com várias opções). Produto entra se bater com qualquer uma.
+export async function listAllProducts({ search, categoryIds = [], tagIds = [], sort = 'recent' } = {}) {
     const order = ADMIN_PRODUCT_SORTS[sort] || ADMIN_PRODUCT_SORTS.recent
     const fields = 'id, name, slug, price, compare_at_price, stock, images, featured, active, category:categories(id, name)'
     let query = api
         .from('products')
-        .select(tagId ? `${fields}, product_tags!inner(tag_id)` : fields)
+        .select(tagIds.length ? `${fields}, product_tags!inner(tag_id)` : fields)
         .order(order.column, { ascending: order.ascending })
         .order('id', { ascending: false })
 
-    if (categoryId) query = query.eq('category_id', categoryId)
-    if (tagId) query = query.eq('product_tags.tag_id', tagId)
+    if (categoryIds.length) query = query.in('category_id', categoryIds)
+    if (tagIds.length) query = query.in('product_tags.tag_id', tagIds)
     if (search) {
         const term = search.replace(/[,()%*\\:"]/g, ' ').trim()
         if (term) query = query.or(`name.ilike.%${term}%,slug.ilike.%${term}%`)

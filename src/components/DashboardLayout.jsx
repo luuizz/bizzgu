@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { AnimatedOutlet } from './AnimatedOutlet'
 import styled from 'styled-components'
 
 export function DashboardLayout({ title, subtitle, links, footer, variant = 'light' }) {
@@ -19,9 +20,7 @@ export function DashboardLayout({ title, subtitle, links, footer, variant = 'lig
                 </nav>
                 {footer && <div className="foot">{footer}</div>}
             </aside>
-            <div className="content">
-                <Outlet />
-            </div>
+            <AnimatedOutlet className="content" />
         </Wrapper>
     )
 }

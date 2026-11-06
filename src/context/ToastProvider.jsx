@@ -1,72 +1,101 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
-import styled, { keyframes } from 'styled-components'
+import { useMemo } from 'react'
+import { Toaster, toast } from 'sonner'
+import { createGlobalStyle } from 'styled-components'
+import { CheckCircle, Info, WarningCircle, XCircle } from '@phosphor-icons/react'
 import { ToastContext } from './contexts'
 
+// Avisos com Sonner. A API continua a mesma: toast.show(mensagem, tom, duração)
+// tom: 'success' | 'danger' | 'info' | 'warning' | 'neutral'
+const byTone = {
+    success: toast.success,
+    danger: toast.error,
+    info: toast.info,
+    warning: toast.warning,
+    neutral: toast,
+}
+
+const icons = {
+    success: <CheckCircle size={22} weight="fill" />,
+    error: <XCircle size={22} weight="fill" />,
+    info: <Info size={22} weight="fill" />,
+    warning: <WarningCircle size={22} weight="fill" />,
+}
+
 export function ToastProvider({ children }) {
-    const [toasts, setToasts] = useState([])
-    const nextId = useRef(0)
-
-    const dismiss = useCallback((id) => setToasts((prev) => prev.filter((toast) => toast.id !== id)), [])
-
-    const show = useCallback((message, tone = 'neutral', duration = 3500) => {
-        const id = ++nextId.current
-        setToasts((prev) => [...prev.slice(-3), { id, message, tone }])
-        setTimeout(() => dismiss(id), duration)
-    }, [dismiss])
-
-    const value = useMemo(() => ({ show }), [show])
+    const value = useMemo(() => ({
+        show: (message, tone = 'neutral', duration = 4000) => (byTone[tone] || toast)(message, { duration }),
+        promise: toast.promise,
+        dismiss: toast.dismiss,
+    }), [])
 
     return (
         <ToastContext.Provider value={value}>
             {children}
-            <ToastStack role="status" aria-live="polite">
-                {toasts.map((toast) => (
-                    <Toast key={toast.id} $tone={toast.tone} onClick={() => dismiss(toast.id)}>
-                        {toast.message}
-                    </Toast>
-                ))}
-            </ToastStack>
+            <ToastStyles />
+            <Toaster
+                position="bottom-right"
+                icons={icons}
+                closeButton
+                gap={10}
+                offset={24}
+                mobileOffset={16}
+                visibleToasts={4}
+                toastOptions={{ className: 'bz-toast' }}
+                containerAriaLabel="Avisos"
+            />
         </ToastContext.Provider>
     )
 }
 
-const slideIn = keyframes`
-    from { opacity: 0; transform: translateY(1rem); }
-    to { opacity: 1; transform: none; }
-`
-
-const tones = {
-    neutral: 'var(--gray-500)',
-    success: 'var(--success)',
-    danger: 'var(--danger)',
-    info: 'var(--primary)',
-}
-
-const ToastStack = styled.div`
-    position: fixed;
-    right: 2.4rem;
-    bottom: 2.4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    z-index: 100;
-    max-width: calc(100vw - 3.2rem);
-    @media (max-width: 600px) {
-        right: 1.6rem;
-        left: 1.6rem;
-        bottom: 1.6rem;
+// Visual dos avisos no padrão da loja (fundo claro, barra colorida por tom)
+const ToastStyles = createGlobalStyle`
+    [data-sonner-toaster] {
+        --width: 38rem;
+        font-family: 'Inter', sans-serif;
     }
-`
-
-const Toast = styled.div`
-    background: ${({ $tone }) => tones[$tone] || tones.neutral};
-    color: var(--white);
-    font-size: 1.5rem;
-    line-height: 1.4;
-    padding: 1.4rem 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 1rem 3rem rgba(16, 7, 23, 0.25);
-    max-width: 40rem;
-    cursor: pointer;
-    animation: ${slideIn} 0.25s ease;
+    [data-sonner-toast].bz-toast {
+        --tone: var(--gray-400);
+        align-items: flex-start;
+        gap: 1.2rem;
+        padding: 1.4rem 4rem 1.4rem 1.8rem;
+        border-radius: 1.2rem;
+        border: 0.1rem solid var(--white-500);
+        background: var(--white);
+        color: var(--gray-700);
+        font-size: 1.45rem;
+        line-height: 1.45;
+        box-shadow: 0 1.6rem 4rem rgba(16, 7, 23, 0.14), 0 0.2rem 0.6rem rgba(16, 7, 23, 0.06);
+        overflow: hidden;
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0.4rem;
+            background: var(--tone);
+        }
+        &[data-type='success'] { --tone: var(--success); }
+        &[data-type='error'] { --tone: var(--danger); }
+        &[data-type='info'] { --tone: var(--primary); }
+        &[data-type='warning'] { --tone: var(--warning); }
+        [data-icon] { color: var(--tone); width: 2.2rem; height: 2.2rem; margin: 0; flex-shrink: 0; }
+        [data-icon] svg { width: 2.2rem; height: 2.2rem; margin: 0; }
+        [data-title] { font-weight: 500; }
+        [data-close-button] {
+            left: auto;
+            right: 1rem;
+            top: 1.2rem;
+            transform: none;
+            width: 2.2rem;
+            height: 2.2rem;
+            background: transparent;
+            border: 0;
+            color: var(--gray-200);
+            opacity: 0;
+            transition: opacity .15s ease;
+        }
+        &:hover [data-close-button], [data-close-button]:focus-visible { opacity: 1; }
+        [data-close-button]:hover { background: var(--white-600); color: var(--gray-700); }
+    }
 `

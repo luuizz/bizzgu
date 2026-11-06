@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Article, Eye, PencilSimple, Plus } from '@phosphor-icons/react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { DashHeader } from '../../components/DashboardLayout'
 import { Badge, Button, ButtonLink, Card, EmptyState, ErrorState, Input, Loader, Select, Table, TableScroll } from '../../components/ui'
@@ -16,7 +16,8 @@ const dateFormat = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'sh
 export function Posts() {
     useDocumentTitle('Blog · Admin')
     const [search, setSearch] = useState('')
-    const [query, setQuery] = useState({ search: '', status: '' })
+    const [params] = useSearchParams()
+    const [query, setQuery] = useState({ search: '', status: params.get('status') || '' })
     const posts = useAsync(() => listPosts(query), [query])
     const rows = posts.data || []
 

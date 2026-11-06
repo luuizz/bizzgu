@@ -56,6 +56,10 @@ const GlobalStyle = createGlobalStyle`
         --font-red-hat: 'Red Hat Display', sans-serif;
 
         --radius: 1rem;
+        /* Foco: anel suave na cor da marca (campos e navegação por teclado) */
+        --focus-ring: 0 0 0 0.4rem rgba(105, 60, 234, 0.16);
+        --focus-ring-danger: 0 0 0 0.4rem rgba(209, 41, 61, 0.14);
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
         --shadow-sm: 0 0.1rem 0.3rem rgba(16, 7, 23, 0.06);
         --shadow: 0 0.8rem 2.4rem rgba(16, 7, 23, 0.08);
     }
@@ -139,6 +143,12 @@ const GlobalStyle = createGlobalStyle`
         outline-offset: 0.2rem;
         border-radius: 0.4rem;
     }
+    /* Campos já mostram o próprio anel de foco */
+    input:focus-visible, select:focus-visible, textarea:focus-visible, [contenteditable]:focus-visible {
+        outline: 0;
+    }
+
+    ::selection { background: var(--primary-100); color: var(--gray-800); }
 
     .sr-only {
         position: absolute;
