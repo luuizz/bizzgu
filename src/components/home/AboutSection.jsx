@@ -32,7 +32,7 @@ export function AboutSection() {
 }
 
 const Wrapper = styled.section`
-    padding-bottom: 8rem;
+    padding: 2.4rem 0 8rem;
     .card {
         display: grid;
         grid-template-columns: 38rem minmax(0, 1fr);

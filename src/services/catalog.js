@@ -73,3 +73,24 @@ export async function getHomeBanners() {
 export async function getStoreSettings() {
     return unwrap(await api.from('store_settings').select('*').eq('id', 1).maybeSingle())
 }
+
+// ---------- Blog ----------
+// O banco (RLS) só devolve aos visitantes posts publicados com data já passada
+const POST_LIST_FIELDS = 'id, title, slug, excerpt, cover_image, published_at, author_name'
+
+export async function getPosts({ limit, excludeId } = {}) {
+    let query = api
+        .from('posts')
+        .select(POST_LIST_FIELDS)
+        .eq('status', 'published')
+        .lte('published_at', new Date().toISOString())
+        .order('published_at', { ascending: false })
+    if (excludeId) query = query.neq('id', excludeId)
+    if (limit) query = query.limit(limit)
+    return unwrap(await query)
+}
+
+// Sem filtro de status: admins conseguem pré-visualizar rascunhos (o RLS esconde dos demais)
+export async function getPostBySlug(slug) {
+    return unwrap(await api.from('posts').select('*').eq('slug', slug).maybeSingle())
+}

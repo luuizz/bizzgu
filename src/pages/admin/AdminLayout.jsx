@@ -2,6 +2,7 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import {
+    Article,
     ArrowSquareOut,
     CaretDown,
     CaretRight,
@@ -43,6 +44,10 @@ const groups = [
         ],
     },
     {
+        title: 'Conteúdo',
+        links: [{ to: '/admin/blog', label: 'Blog', icon: Article }],
+    },
+    {
         title: 'Loja',
         links: [
             { to: '/admin/banners', label: 'Banners', icon: PresentationChart },
@@ -64,6 +69,7 @@ const crumbLabels = {
     banners: 'Banners',
     tags: 'Tags',
     configuracoes: 'Configurações',
+    blog: 'Blog',
 }
 
 function useCrumbs(pathname) {
@@ -79,6 +85,7 @@ function useCrumbs(pathname) {
             banners: isNew ? 'Novo banner' : 'Editar banner',
             categorias: isNew ? 'Nova categoria' : 'Editar categoria',
             tags: isNew ? 'Nova tag' : 'Editar tag',
+            blog: isNew ? 'Novo post' : 'Editar post',
         }[parent] || part
         crumbs.push({ label, to })
     })

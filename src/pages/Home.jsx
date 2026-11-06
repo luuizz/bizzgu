@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { BlogSection } from '../components/home/BlogSection'
 import { AboutSection } from '../components/home/AboutSection'
 import { CreditCard, PixLogo, ShieldCheck, Truck } from '@phosphor-icons/react'
 import styled from 'styled-components'
@@ -83,6 +84,7 @@ export function Home() {
                 </Section>
             )}
 
+            <BlogSection />
             <AboutSection />
         </>
     )
