@@ -204,7 +204,7 @@ const Wrapper = styled.div`
     border: 0.1rem solid var(--gray-50);
     border-radius: 1.2rem;
     background: var(--white);
-    &:focus-within { border-color: var(--primary); box-shadow: 0 0 0 0.3rem var(--primary-50); }
+    &:focus-within { border-color: var(--primary); box-shadow: var(--focus-ring); }
     .toolbar {
         position: sticky;
         top: 6.4rem;

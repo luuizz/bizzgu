@@ -97,18 +97,33 @@ const control = css`
     background: var(--white);
     color: var(--gray-700);
     font-size: 1.5rem;
-    transition: border-color .2s ease, box-shadow .2s ease;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
     &::placeholder { color: var(--gray-100); }
+    &:hover:not(:disabled):not(:focus) { border-color: var(--gray-100); }
     &:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 0.3rem var(--primary-100);
+        box-shadow: var(--focus-ring);
     }
-    &:disabled { background: var(--white-500); color: var(--gray-200); }
+    &:disabled { background: var(--white-500); color: var(--gray-200); cursor: not-allowed; }
     &[aria-invalid='true'] { border-color: var(--danger); }
+    &[aria-invalid='true']:focus { box-shadow: var(--focus-ring-danger); }
 `
 
+// Seta própria no select nativo (a do navegador muda de sistema para sistema)
+const caret = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path fill="#5f5964" d="M213.7 101.7l-80 80a8 8 0 0 1-11.4 0l-80-80a8 8 0 0 1 11.4-11.4L128 164.7l74.3-74.4a8 8 0 0 1 11.4 11.4Z"/></svg>')
+
 export const Input = styled.input`${control}`
-export const Select = styled.select`${control} padding-right: 3rem;`
+export const Select = styled.select`
+    ${control}
+    appearance: none;
+    padding-right: 4rem;
+    background-image: url("data:image/svg+xml,${caret}");
+    background-repeat: no-repeat;
+    background-position: right 1.4rem center;
+    background-size: 1.6rem;
+    cursor: pointer;
+    text-overflow: ellipsis;
+`
 export const Textarea = styled.textarea`
     ${control}
     height: auto;
@@ -132,7 +147,8 @@ const CheckboxLabel = styled.label`
     font-size: 1.5rem;
     color: var(--gray-400);
     cursor: pointer;
-    input { width: 1.8rem; height: 1.8rem; accent-color: var(--primary); }
+    input { width: 1.8rem; height: 1.8rem; accent-color: var(--primary); border-radius: 0.4rem; }
+    input:focus-visible { outline: 0.2rem solid var(--primary); outline-offset: 0.2rem; }
 `
 
 // ---------------------------------------------------------------- Blocos
@@ -355,3 +371,4 @@ export const TableScroll = styled.div`
     margin: 0 -2.4rem;
     padding: 0 2.4rem;
 `
+
