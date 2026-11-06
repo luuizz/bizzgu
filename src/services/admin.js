@@ -212,3 +212,8 @@ export async function deleteBanner(id) {
 export async function reorderBanners(ids) {
     await Promise.all(ids.map((id, index) => api.from('banners').update({ position: index + 1 }).eq('id', id).then(unwrap)))
 }
+
+// ---------- Configurações da loja ----------
+export async function saveStoreSettings(values) {
+    return unwrap(await api.from('store_settings').update(values).eq('id', 1).select().single())
+}

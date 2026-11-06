@@ -5,6 +5,7 @@ import {
     ArrowSquareOut,
     CaretDown,
     CaretRight,
+    GearSix,
     ChartPieSlice,
     List,
     Package,
@@ -43,7 +44,10 @@ const groups = [
     },
     {
         title: 'Loja',
-        links: [{ to: '/admin/banners', label: 'Banners', icon: PresentationChart }],
+        links: [
+            { to: '/admin/banners', label: 'Banners', icon: PresentationChart },
+            { to: '/admin/configuracoes', label: 'Configurações', icon: GearSix },
+        ],
     },
     {
         title: 'Pessoas',
@@ -59,6 +63,7 @@ const crumbLabels = {
     clientes: 'Clientes',
     banners: 'Banners',
     tags: 'Tags',
+    configuracoes: 'Configurações',
 }
 
 function useCrumbs(pathname) {
