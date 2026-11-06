@@ -1,4 +1,5 @@
 import { AnimatedOutlet } from './AnimatedOutlet'
+import { PageSkeleton, StoreSkeletonTheme } from './skeletons'
 import { Header } from './Header'
 import { NavBar } from './NavBar'
 import { Footer } from './Footer'
@@ -11,13 +12,13 @@ const storeRouteKey = (pathname) => (pathname.startsWith('/minha-conta') ? '/min
 
 export function StoreLayout() {
     return (
-        <>
+        <StoreSkeletonTheme>
             <Header />
             <NavBar />
             <main>
-                <AnimatedOutlet routeKey={storeRouteKey} />
+                <AnimatedOutlet routeKey={storeRouteKey} fallback={<PageSkeleton />} />
             </main>
             <Footer />
-        </>
+        </StoreSkeletonTheme>
     )
 }

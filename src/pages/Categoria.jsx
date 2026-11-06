@@ -3,7 +3,7 @@ import { Package } from '@phosphor-icons/react'
 import { Page } from '../components/layout'
 import { ProductGrid } from '../components/product/ProductGrid'
 import { SortSelect } from '../components/product/SortSelect'
-import { ButtonLink, EmptyState, ErrorState, Loader } from '../components/ui'
+import { ButtonLink, EmptyState, ErrorState } from '../components/ui'
 import { CatalogHero } from '../components/catalog/CatalogHero'
 import { useCategories } from '../hooks/useCategories'
 import { categoryIcon } from '../lib/categoryIcons'
@@ -26,7 +26,16 @@ export function Categoria() {
 
     useDocumentTitle(category.data?.name)
 
-    if (category.loading) return <Loader />
+    const siblings = categories.map((item) => ({ to: `/categoria/${item.slug}`, label: item.name }))
+
+    if (category.loading) {
+        return (
+            <>
+                <CatalogHero loading links={siblings} linksLabel="Outros departamentos" />
+                <Page><div className="container"><ProductGrid loading /></div></Page>
+            </>
+        )
+    }
     if (category.error) return <ErrorState error={category.error} onRetry={category.reload} />
     if (!category.data) return <NotFound />
 
@@ -42,7 +51,7 @@ export function Categoria() {
                 image={category.data.image}
                 icon={categoryIcon(category.data.slug)}
                 count={loadingProducts ? null : list.length}
-                links={categories.map((item) => ({ to: `/categoria/${item.slug}`, label: item.name }))}
+                links={siblings}
                 linksLabel="Outros departamentos"
             />
         <Page>

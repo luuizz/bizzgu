@@ -4,7 +4,8 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { CardTitle, DashHeader } from '../../components/DashboardLayout'
 import { OrderAddress, OrderItems, OrderPayment, OrderTimeline, OrderTotals } from '../../components/OrderParts'
-import { Alert, Button, Card, ErrorState, Loader, Spinner, StatusBadge } from '../../components/ui'
+import { Alert, Button, Card, ErrorState, Spinner, StatusBadge } from '../../components/ui'
+import { OrderDetailSkeleton } from '../../components/skeletons'
 import { useAsync } from '../../hooks/useAsync'
 import { useToast } from '../../hooks/useToast'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
@@ -22,7 +23,7 @@ export function OrderDetail() {
 
     useDocumentTitle(`Pedido ${formatOrderNumber(id)}`)
 
-    if (order.loading && !order.data) return <Loader />
+    if (order.loading && !order.data) return <OrderDetailSkeleton />
     if (order.error) return <ErrorState error={order.error} onRetry={order.reload} />
     if (!order.data) return <NotFound />
 

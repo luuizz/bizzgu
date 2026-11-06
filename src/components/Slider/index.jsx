@@ -10,6 +10,7 @@ import { imageUrl } from '../../lib/format'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-fade'
+import Skeleton from 'react-loading-skeleton'
 
 // Usados se o banco não responder ou não houver banner publicado
 const FALLBACK_BANNERS = [
@@ -50,7 +51,7 @@ export function Slide() {
     const [swiper, setSwiper] = useState(null)
     const banners = useAsync(() => getHomeBanners(), [])
 
-    if (banners.loading) return <StyleSlide aria-busy="true"><div className="skeleton" /></StyleSlide>
+    if (banners.loading) return <StyleSlide aria-busy="true" aria-label="Carregando destaques"><Skeleton className="skeleton" borderRadius={0} /></StyleSlide>
 
     const list = banners.data?.length ? banners.data : FALLBACK_BANNERS
     const several = list.length > 1

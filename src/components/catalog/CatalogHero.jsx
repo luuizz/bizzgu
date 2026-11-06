@@ -1,12 +1,42 @@
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { CreditCard, Package, Truck } from '@phosphor-icons/react'
+import Skeleton from 'react-loading-skeleton'
 import { Breadcrumb } from '../ui'
+import { DarkSkeletonTheme } from '../skeletons'
 import { formatBRL, FREE_SHIPPING_FROM, imageUrl } from '../../lib/format'
 
 // Topo das páginas de categoria e de tag: faixa com o fundo da marca, imagem ou
 // ícone, título, descrição, contagem, benefícios e atalhos para os irmãos.
-export function CatalogHero({ crumbs, title, description, image, icon: Icon, count, links = [], linksLabel }) {
+// loading: mostra o esqueleto (mesma faixa escura) enquanto a categoria/tag carrega
+export function CatalogHero({ crumbs, title, description, image, icon: Icon, count, links = [], linksLabel, loading = false }) {
+    if (loading) {
+        return (
+            <Hero aria-busy="true" aria-label="Carregando">
+                <DarkSkeletonTheme>
+                    <div className="container">
+                        <Skeleton width={160} height={14} />
+                        <div className="main">
+                            <Skeleton className="media" borderRadius={24} />
+                            <div className="text">
+                                <Skeleton width={280} height={46} />
+                                <Skeleton width="min(52rem, 80vw)" height={18} />
+                                <ul className="facts">
+                                    {[110, 230, 150].map((width) => <li key={width} className="ghost"><Skeleton width={width - 30} height={14} /></li>)}
+                                </ul>
+                            </div>
+                        </div>
+                        {links.length > 1 && (
+                            <nav className="links" aria-label={linksLabel}>
+                                {links.map((link) => <NavLink key={link.to} to={link.to}>{link.label}</NavLink>)}
+                            </nav>
+                        )}
+                    </div>
+                </DarkSkeletonTheme>
+            </Hero>
+        )
+    }
+
     return (
         <Hero>
             <div className="container">
@@ -70,6 +100,8 @@ const Hero = styled.section`
         img { width: 100%; height: 100%; object-fit: cover; }
     }
     .text { display: flex; flex-direction: column; gap: 1.2rem; min-width: 0; }
+    span.media { border: 0; display: block; line-height: 1; }
+    .facts li.ghost { line-height: 1; }
     h1 { font-size: 4.4rem; line-height: 1.05; letter-spacing: -0.02em; color: var(--white); }
     p { font-size: 1.7rem; line-height: 1.5; color: var(--gray-100); max-width: 70rem; }
     .facts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.4rem; }

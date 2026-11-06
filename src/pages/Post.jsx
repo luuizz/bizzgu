@@ -5,7 +5,8 @@ import { CalendarBlank, Clock, EyeSlash, PencilSimple, ShareNetwork, UserCircle 
 import { Page } from '../components/layout'
 import { PostCard, PostGrid } from '../components/blog/PostCard'
 import { PostContentStyles } from '../components/blog/PostContentStyles'
-import { Breadcrumb, ErrorState, Loader, SectionTitle } from '../components/ui'
+import { Breadcrumb, ErrorState, SectionTitle } from '../components/ui'
+import { PostSkeleton } from '../components/skeletons'
 import { useAsync } from '../hooks/useAsync'
 import { useToast } from '../hooks/useToast'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
@@ -25,7 +26,7 @@ export function Post() {
 
     useDocumentTitle(post.data?.title)
 
-    if (post.loading) return <Loader />
+    if (post.loading) return <PostSkeleton />
     if (post.error) return <ErrorState error={post.error} onRetry={post.reload} />
     if (!post.data) return <NotFound />
 
