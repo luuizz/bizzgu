@@ -1,14 +1,13 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { EffectFade, Navigation, Autoplay, Pagination } from 'swiper/modules'
+import { EffectFade, Autoplay, Pagination } from 'swiper/modules'
 import { StyleSlide } from './style'
 import { useAsync } from '../../hooks/useAsync'
 import { getHomeBanners } from '../../services/catalog'
 import { imageUrl } from '../../lib/format'
 import 'swiper/css'
-import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-fade'
 
@@ -46,8 +45,9 @@ export function BannerContent({ banner, eager = false, device }) {
 }
 
 export function Slide() {
-    const prevRef = useRef(null)
-    const nextRef = useRef(null)
+    // As setas comandam a instância do Swiper diretamente (sem o módulo Navigation,
+    // que dependia dos botões já existirem quando o carrossel era montado)
+    const [swiper, setSwiper] = useState(null)
     const banners = useAsync(() => getHomeBanners(), [])
 
     if (banners.loading) return <StyleSlide aria-busy="true"><div className="skeleton" /></StyleSlide>
@@ -59,19 +59,13 @@ export function Slide() {
         <StyleSlide aria-roledescription="carrossel" aria-label="Destaques da loja">
             <Swiper
                 key={list.map((banner) => banner.id).join('-')}
-                // Setas próprias (Phosphor) no lugar das padrão do Swiper
-                navigation={several && { prevEl: prevRef.current, nextEl: nextRef.current }}
-                onBeforeInit={(swiper) => {
-                    if (!several) return
-                    swiper.params.navigation.prevEl = prevRef.current
-                    swiper.params.navigation.nextEl = nextRef.current
-                }}
+                onSwiper={setSwiper}
                 pagination={several && { clickable: true }}
                 slidesPerView={1}
                 rewind={several}
                 allowTouchMove={several}
                 autoplay={several && { delay: 6000, disableOnInteraction: true, pauseOnMouseEnter: true }}
-                modules={[EffectFade, Navigation, Autoplay, Pagination]}
+                modules={[EffectFade, Autoplay, Pagination]}
                 effect="fade"
                 fadeEffect={{ crossFade: true }}
             >
@@ -83,10 +77,10 @@ export function Slide() {
             </Swiper>
             {several && (
                 <>
-                    <button ref={prevRef} type="button" className="slider-nav prev" aria-label="Banner anterior">
+                    <button type="button" className="slider-nav prev" aria-label="Banner anterior" onClick={() => swiper?.slidePrev()}>
                         <CaretLeft size={24} weight="bold" />
                     </button>
-                    <button ref={nextRef} type="button" className="slider-nav next" aria-label="Próximo banner">
+                    <button type="button" className="slider-nav next" aria-label="Próximo banner" onClick={() => swiper?.slideNext()}>
                         <CaretRight size={24} weight="bold" />
                     </button>
                 </>

@@ -3,19 +3,21 @@ import { Package } from '@phosphor-icons/react'
 import { Page } from '../components/layout'
 import { ProductGrid } from '../components/product/ProductGrid'
 import { SortSelect } from '../components/product/SortSelect'
-import { Breadcrumb, ButtonLink, EmptyState, ErrorState, Loader, PageTitle } from '../components/ui'
+import { ButtonLink, EmptyState, ErrorState, Loader } from '../components/ui'
+import { CatalogHero } from '../components/catalog/CatalogHero'
+import { useCategories } from '../hooks/useCategories'
+import { categoryIcon } from '../lib/categoryIcons'
 import { useAsync } from '../hooks/useAsync'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { getCategoryBySlug, getProducts } from '../services/catalog'
 import { NotFound } from './NotFound'
-import { imageUrl } from '../lib/format'
-import styled from 'styled-components'
 
 export function Categoria() {
     const { slug } = useParams()
     const [params, setParams] = useSearchParams()
     const sort = params.get('ordem') || 'relevance'
 
+    const categories = useCategories()
     const category = useAsync(() => getCategoryBySlug(slug), [slug])
     const products = useAsync(
         () => (category.data ? getProducts({ categoryId: category.data.id, sort }) : Promise.resolve(null)),
@@ -32,16 +34,19 @@ export function Categoria() {
     const loadingProducts = products.loading || products.data === null
 
     return (
+        <>
+            <CatalogHero
+                crumbs={[{ label: 'Início', to: '/' }, { label: category.data.name }]}
+                title={category.data.name}
+                description={category.data.description}
+                image={category.data.image}
+                icon={categoryIcon(category.data.slug)}
+                count={loadingProducts ? null : list.length}
+                links={categories.map((item) => ({ to: `/categoria/${item.slug}`, label: item.name }))}
+                linksLabel="Outros departamentos"
+            />
         <Page>
             <div className="container">
-                <Head className="page-head">
-                    {category.data.image && <img src={imageUrl(category.data.image)} alt="" className="cover" />}
-                    <div>
-                        <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: category.data.name }]} />
-                        <PageTitle>{category.data.name}</PageTitle>
-                        {category.data.description && <p>{category.data.description}</p>}
-                    </div>
-                </Head>
 
                 <SortSelect
                     count={loadingProducts ? null : list.length}
@@ -62,13 +67,7 @@ export function Categoria() {
                 )}
             </div>
         </Page>
+        </>
     )
 }
 
-const Head = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 2.4rem;
-    .cover { width: 9.6rem; height: 9.6rem; border-radius: 1.6rem; object-fit: cover; background: var(--white); flex-shrink: 0; }
-    @media (max-width: 600px) { .cover { width: 6.4rem; height: 6.4rem; } }
-`

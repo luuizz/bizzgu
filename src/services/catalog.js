@@ -94,3 +94,7 @@ export async function getPosts({ limit, excludeId } = {}) {
 export async function getPostBySlug(slug) {
     return unwrap(await api.from('posts').select('*').eq('slug', slug).maybeSingle())
 }
+
+export async function getTags() {
+    return unwrap(await api.from('tags').select('id, name, slug').order('name'))
+}

@@ -23,6 +23,20 @@ async function callBetterAuth(method, args, messages) {
     return result.data
 }
 
+// Depois do login/cadastro, a biblioteca guarda em cache a sessão da resposta do login,
+// que traz o token interno do Better Auth (não o JWT que a Data API aceita). Buscar a
+// sessão de novo no servidor, ignorando o cache, troca esse token pelo JWT. Sem isso,
+// as primeiras consultas (como o perfil com o papel de admin) falham até recarregar a página.
+async function refreshSessionJwt() {
+    try {
+        await api.auth.getBetterAuthInstance().getSession({ fetchOptions: { headers: { 'X-Force-Fetch': 'true' } } })
+    } catch {
+        // Se falhar, segue com a sessão atual; o próximo carregamento busca de novo
+    }
+    const { data } = await api.auth.getSession()
+    return data.session
+}
+
 export function AuthProvider({ children }) {
     const [session, setSession] = useState(null)
     const [profile, setProfile] = useState(null)
@@ -67,7 +81,12 @@ export function AuthProvider({ children }) {
         if (!user) return
         let active = true
         setLoading(true)
+        // Se falhar logo após o login (token ainda não trocado pelo JWT), renova e tenta de novo
         ensureProfile()
+            .catch(async () => {
+                await refreshSessionJwt()
+                return ensureProfile()
+            })
             .then((data) => active && setProfile(data))
             .catch(() => active && setProfile(null))
             .finally(() => active && setLoading(false))
@@ -84,7 +103,7 @@ export function AuthProvider({ children }) {
 
         signIn: async (email, password) => {
             const data = unwrap(await api.auth.signInWithPassword({ email, password }))
-            setSession(data.session)
+            setSession((await refreshSessionJwt()) || data.session)
             return data
         },
 
@@ -97,7 +116,7 @@ export function AuthProvider({ children }) {
             })
             if (result.error?.code === 'session_not_found') return { needsConfirmation: true }
             const data = unwrap(result)
-            setSession(data.session)
+            setSession((await refreshSessionJwt()) || data.session)
             return data
         },
 
