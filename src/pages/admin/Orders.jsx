@@ -114,6 +114,7 @@ export const Toolbar = styled.form`
     margin-bottom: 2rem;
     flex-wrap: wrap;
     > input { max-width: 30rem; height: 4.2rem; }
+    .filters { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
     @media (max-width: 700px) { > input { max-width: none; } }
 `
 

@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Eye, Package, PencilSimple, Plus } from '@phosphor-icons/react'
+import { Eye, Package, PencilSimple, Plus, SquaresFour, Tag as TagIcon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { DashHeader } from '../../components/DashboardLayout'
 import { ProductImage } from '../../components/product/ProductImage'
 import { Badge, ButtonLink, Card, EmptyState, ErrorState, Input, Loader, Select, Table, TableScroll } from '../../components/ui'
+import { MultiSelect } from '../../components/ui/MultiSelect'
 import { Toolbar } from './Orders'
 import { useAsync } from '../../hooks/useAsync'
 import { useCategories } from '../../hooks/useCategories'
@@ -14,28 +15,31 @@ import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { ADMIN_PRODUCT_SORTS, listAllProducts, listAllTags, saveProduct } from '../../services/admin'
 import { formatBRL } from '../../lib/format'
 
+const parseIds = (raw) => (raw || '').split(',').map(Number).filter(Boolean)
+
 export function Products() {
     useDocumentTitle('Produtos · Admin')
     const categories = useCategories()
     const toast = useToast()
-    // Filtros iniciais pela URL: /admin/produtos?categoria=3 ou ?tag=5 (links da taxonomia)
+    // Filtros na URL: /admin/produtos?categoria=3,5&tag=2 (os links da taxonomia usam o mesmo formato)
     const [params, setParams] = useSearchParams()
     const tags = useAsync(() => listAllTags(), [])
     const [search, setSearch] = useState('')
-    const [categoryId, setCategoryId] = useState(params.get('categoria') || '')
-    const [query, setQuery] = useState({ search: '', categoryId: params.get('categoria') || '', tagId: params.get('tag') || '', sort: 'recent' })
+    const categoryIds = parseIds(params.get('categoria'))
+    const tagIds = parseIds(params.get('tag'))
+    const [query, setQuery] = useState({ search: '', sort: 'recent' })
 
-    const setTag = (tagId) => {
-        setQuery((prev) => ({ ...prev, tagId }))
-        setParams((prev) => {
-            const next = new URLSearchParams(prev)
-            if (tagId) next.set('tag', tagId)
-            else next.delete('tag')
-            return next
-        }, { replace: true })
-    }
+    const setFilter = (key) => (ids) => setParams((prev) => {
+        const next = new URLSearchParams(prev)
+        if (ids.length) next.set(key, ids.join(','))
+        else next.delete(key)
+        return next
+    }, { replace: true })
 
-    const products = useAsync(() => listAllProducts(query), [query])
+    const filters = { ...query, categoryIds, tagIds }
+    const filterKey = JSON.stringify(filters)
+
+    const products = useAsync(() => listAllProducts(filters), [filterKey])
     const rows = products.data || []
 
     // Liga/desliga direto na tabela (com atualização otimista)
@@ -63,34 +67,39 @@ export function Products() {
             </DashHeader>
 
             <Card>
-                <Toolbar onSubmit={(event) => { event.preventDefault(); setQuery((prev) => ({ ...prev, search: search.trim(), categoryId })) }}>
-                    <Select
-                        value={categoryId}
-                        onChange={(event) => { setCategoryId(event.target.value); setQuery((prev) => ({ ...prev, search: search.trim(), categoryId: event.target.value })) }}
-                        aria-label="Filtrar por categoria"
-                        style={{ maxWidth: '24rem', height: '4.2rem' }}
-                    >
-                        <option value="">Todas as categorias</option>
-                        {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
-                    </Select>
-                    <Select
-                        value={query.tagId}
-                        onChange={(event) => setTag(event.target.value)}
-                        aria-label="Filtrar por tag"
-                        style={{ maxWidth: '20rem', height: '4.2rem' }}
-                    >
-                        <option value="">Todas as tags</option>
-                        {(tags.data || []).map((tag) => <option key={tag.id} value={tag.id}>{tag.name}</option>)}
-                    </Select>
+                <Toolbar onSubmit={(event) => { event.preventDefault(); setQuery((prev) => ({ ...prev, search: search.trim() })) }}>
+                    <div className="filters">
+                        <MultiSelect
+                            mode="filter"
+                            label="Filtrar por categoria"
+                            placeholder="Categorias"
+                            icon={SquaresFour}
+                            options={categories.map((category) => ({ value: category.id, label: category.name }))}
+                            value={categoryIds}
+                            onChange={setFilter('categoria')}
+                            searchPlaceholder="Buscar categoria"
+                        />
+                        <MultiSelect
+                            mode="filter"
+                            label="Filtrar por tag"
+                            placeholder="Tags"
+                            icon={TagIcon}
+                            options={(tags.data || []).map((tag) => ({ value: tag.id, label: tag.name }))}
+                            value={tagIds}
+                            onChange={setFilter('tag')}
+                            searchPlaceholder="Buscar tag"
+                            emptyText="Nenhuma tag"
+                        />
+                        <Select
+                            value={query.sort}
+                            onChange={(event) => setQuery((prev) => ({ ...prev, sort: event.target.value }))}
+                            aria-label="Ordenar produtos"
+                            style={{ width: 'auto', minWidth: '20rem', height: '4.2rem', fontSize: '1.45rem' }}
+                        >
+                            {Object.entries(ADMIN_PRODUCT_SORTS).map(([value, { label }]) => <option key={value} value={value}>{label}</option>)}
+                        </Select>
+                    </div>
                     <Input type="search" placeholder="Buscar por nome" value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Buscar produtos" />
-                    <Select
-                        value={query.sort}
-                        onChange={(event) => setQuery((prev) => ({ ...prev, sort: event.target.value }))}
-                        aria-label="Ordenar produtos"
-                        style={{ maxWidth: '22rem', height: '4.2rem' }}
-                    >
-                        {Object.entries(ADMIN_PRODUCT_SORTS).map(([value, { label }]) => <option key={value} value={value}>{label}</option>)}
-                    </Select>
                 </Toolbar>
 
                 {products.loading && !products.data ? <Loader /> : products.error ? <ErrorState error={products.error} onRetry={products.reload} /> : rows.length === 0 ? (

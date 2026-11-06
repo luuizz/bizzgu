@@ -87,9 +87,10 @@ export const StylesSearchHeader = styled.form`
             font-weight: 500;
             color: var(--gray-100);
         }
+        &:hover:not(:focus) { border-color: var(--gray-100); }
         &:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 0.3rem var(--primary-100);
+            box-shadow: var(--focus-ring);
         }
         &::-webkit-search-cancel-button { display: none; }
     }
