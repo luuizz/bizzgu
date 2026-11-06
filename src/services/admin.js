@@ -217,3 +217,31 @@ export async function reorderBanners(ids) {
 export async function saveStoreSettings(values) {
     return unwrap(await api.from('store_settings').update(values).eq('id', 1).select().single())
 }
+
+// ---------- Blog ----------
+export async function listPosts({ search, status } = {}) {
+    let query = api
+        .from('posts')
+        .select('id, title, slug, excerpt, cover_image, status, published_at, author_name, updated_at')
+        .order('published_at', { ascending: false, nullsFirst: true })
+        .order('updated_at', { ascending: false })
+    if (status) query = query.eq('status', status)
+    if (search) {
+        const term = search.replace(/[,()%*\\:"]/g, ' ').trim()
+        if (term) query = query.or(`title.ilike.%${term}%,slug.ilike.%${term}%`)
+    }
+    return unwrap(await query)
+}
+
+export async function getPostById(id) {
+    return unwrap(await api.from('posts').select('*').eq('id', id).maybeSingle())
+}
+
+export async function savePost(id, values) {
+    const query = id ? api.from('posts').update(values).eq('id', id) : api.from('posts').insert(values)
+    return unwrap(await query.select().single())
+}
+
+export async function deletePost(id) {
+    return unwrap(await api.from('posts').delete().eq('id', id))
+}

@@ -37,6 +37,10 @@ const AdminTermsList = lazy(() => import('./pages/admin/Taxonomy').then((m) => (
 const AdminTermForm = lazy(() => import('./pages/admin/Taxonomy').then((m) => ({ default: m.TermForm })))
 const AdminBanners = lazy(() => import('./pages/admin/Banners').then((m) => ({ default: m.Banners })))
 const AdminBannerForm = lazy(() => import('./pages/admin/BannerForm').then((m) => ({ default: m.BannerForm })))
+const AdminPosts = lazy(() => import('./pages/admin/Posts').then((m) => ({ default: m.Posts })))
+const AdminPostForm = lazy(() => import('./pages/admin/PostForm').then((m) => ({ default: m.PostForm })))
+const Blog = lazy(() => import('./pages/Blog').then((m) => ({ default: m.Blog })))
+const Post = lazy(() => import('./pages/Post').then((m) => ({ default: m.Post })))
 const AdminSettings = lazy(() => import('./pages/admin/Settings').then((m) => ({ default: m.Settings })))
 const AdminNotFound = lazy(() => import('./pages/admin/AdminNotFound').then((m) => ({ default: m.AdminNotFound })))
 const AdminCustomers = lazy(() => import('./pages/admin/Customers').then((m) => ({ default: m.Customers })))
@@ -63,6 +67,9 @@ export function Router() {
                         <Route path="clientes" element={<AdminCustomers />} />
                         <Route path="banners" element={<AdminBanners />} />
                         <Route path="configuracoes" element={<AdminSettings />} />
+                        <Route path="blog" element={<AdminPosts />} />
+                        <Route path="blog/novo" element={<AdminPostForm />} />
+                        <Route path="blog/:id" element={<AdminPostForm />} />
                         <Route path="banners/novo" element={<AdminBannerForm />} />
                         <Route path="banners/:id" element={<AdminBannerForm />} />
                         <Route path="*" element={<AdminNotFound />} />
@@ -78,6 +85,8 @@ export function Router() {
                     <Route path="/busca" element={<Search />} />
                     <Route path="/carrinho-compras" element={<Chart />} />
                     <Route path="/sobre" element={<About />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/blog/:slug" element={<Post />} />
                     <Route path="/institucional/:slug" element={<Institutional />} />
 
                     <Route path="/login" element={<Login />} />

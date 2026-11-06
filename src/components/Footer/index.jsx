@@ -30,6 +30,7 @@ const staticColumns = [
         title: 'Institucional',
         links: [
             { label: 'Sobre a loja', to: '/sobre' },
+            { label: 'Blog', to: '/blog' },
             { label: 'Ofertas', to: '/busca?ofertas=1' },
         ],
     },

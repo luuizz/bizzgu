@@ -28,6 +28,12 @@ E-commerce completo feito com **React + Vite** no front-end e **Neon** no back-e
 - Banners da home: artes para computador (1920×480) e celular (1080×1080), com pré-visualização, link, ordem do carrossel e agendamento (início/fim)
 - Clientes: lista com nº de pedidos e promoção a administrador
 - Configurações da loja: texto e imagem do "Sobre" (seção na home e página `/sobre`), contatos (e-mail, WhatsApp, telefone, horário, endereço) e redes sociais do rodapé
+- Blog: editor visual (títulos, negrito, listas, citações, links e imagens com upload), rascunho, publicação e agendamento, pré-visualização e capa
+
+**Blog** (`/blog`)
+- Lista com o post mais recente em destaque, página do post com tempo de leitura e "Leia também"
+- Seção "Do blog" na página inicial
+- Conteúdo sanitizado (DOMPurify) antes de ser exibido
 
 **Segurança (no banco de dados)**
 - Row Level Security em todas as tabelas: cada cliente só vê os próprios pedidos, dados e desejos
@@ -37,7 +43,7 @@ E-commerce completo feito com **React + Vite** no front-end e **Neon** no back-e
 
 ## Tecnologias
 
-React 18 · Vite 4 · React Router 6 · styled-components · Swiper · [Phosphor Icons](https://phosphoricons.com) (variante duotone) · Neon (`@neon/neon-js`: Neon Auth + Data API) · GitHub Actions + Vercel (Analytics e Speed Insights)
+React 18 · Vite 4 · React Router 6 · styled-components · Swiper · TipTap (editor do blog) · DOMPurify · [Phosphor Icons](https://phosphoricons.com) (variante duotone) · Neon (`@neon/neon-js`: Neon Auth + Data API) · GitHub Actions + Vercel (Analytics e Speed Insights)
 
 ---
 
@@ -84,6 +90,7 @@ O comando aplica, em ordem, os arquivos de `database/migrations/` que ainda não
 | `0004_banners_so_imagem.sql` | Banners passam a ser só imagem; 3 banners iniciais com artes prontas |
 | `0005_taxonomia.sql` | Tags (e ligação com produtos) e imagem nas categorias, com 5 tags de exemplo |
 | `0006_configuracoes.sql` | Configurações da loja: Sobre, contatos e redes sociais |
+| `0007_blog.sql` | Blog: posts (rascunho, publicado, agendado) com 3 posts iniciais |
 
 > Já rodou esses arquivos antes pelo SQL Editor? Use `yarn db:migrate --baseline` uma vez para marcá-los como aplicados sem rodar de novo.
 
