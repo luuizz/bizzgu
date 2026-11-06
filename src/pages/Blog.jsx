@@ -2,7 +2,8 @@ import styled from 'styled-components'
 import { Article } from '@phosphor-icons/react'
 import { Page } from '../components/layout'
 import { PostCard, PostGrid } from '../components/blog/PostCard'
-import { Breadcrumb, EmptyState, ErrorState, Loader, PageTitle } from '../components/ui'
+import { Breadcrumb, EmptyState, ErrorState, PageTitle } from '../components/ui'
+import { PostListSkeleton } from '../components/skeletons'
 import { useAsync } from '../hooks/useAsync'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { getPosts } from '../services/catalog'
@@ -22,7 +23,7 @@ export function Blog() {
                     <p>Guias de compra, dicas e novidades para escolher melhor.</p>
                 </div>
 
-                {posts.loading ? <Loader /> : posts.error ? <ErrorState error={posts.error} onRetry={posts.reload} /> : list.length === 0 ? (
+                {posts.loading ? <PostListSkeleton /> : posts.error ? <ErrorState error={posts.error} onRetry={posts.reload} /> : list.length === 0 ? (
                     <EmptyState icon={Article} title="Nenhum post publicado ainda" description="Volte em breve: estamos preparando conteúdo." />
                 ) : (
                     <Wrapper>

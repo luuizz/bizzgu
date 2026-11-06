@@ -8,11 +8,11 @@ import { Loader } from './ui'
 // a página anterior sair. Quem pede menos movimento no sistema não vê a animação.
 // routeKey: agrupa rotas que compartilham um layout próprio (ex.: /minha-conta/*),
 // para o layout não piscar ao trocar entre as subpáginas dele.
-export function AnimatedOutlet({ className, routeKey = (pathname) => pathname }) {
+export function AnimatedOutlet({ className, routeKey = (pathname) => pathname, fallback = <Loader /> }) {
     const { pathname } = useLocation()
     return (
         <Page key={routeKey(pathname)} className={className}>
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={fallback}>
                 <Outlet />
             </Suspense>
         </Page>

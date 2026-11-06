@@ -3,7 +3,8 @@ import { Receipt } from '@phosphor-icons/react'
 import styled from 'styled-components'
 import { DashHeader } from '../../components/DashboardLayout'
 import { OrderList } from '../../components/OrderList'
-import { ButtonLink, Card, EmptyState, ErrorState, Loader } from '../../components/ui'
+import { ButtonLink, Card, EmptyState, ErrorState } from '../../components/ui'
+import { OrderListSkeleton } from '../../components/skeletons'
 import { useAsync } from '../../hooks/useAsync'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { getMyOrders } from '../../services/orders'
@@ -48,7 +49,7 @@ export function Orders() {
                     ))}
                 </Tabs>
 
-                {orders.loading ? <Loader /> : orders.error ? <ErrorState error={orders.error} onRetry={orders.reload} /> : list.length === 0 ? (
+                {orders.loading ? <OrderListSkeleton rows={4} /> : orders.error ? <ErrorState error={orders.error} onRetry={orders.reload} /> : list.length === 0 ? (
                     <EmptyState
                         icon={Receipt}
                         title="Nenhum pedido por aqui"

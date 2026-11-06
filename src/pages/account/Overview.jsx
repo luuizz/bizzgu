@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { Clock, Receipt, ShoppingBagOpen, Truck, Wallet } from '@phosphor-icons/react'
 import { CardTitle, DashHeader, Stat, StatGrid } from '../../components/DashboardLayout'
 import { OrderList } from '../../components/OrderList'
-import { ButtonLink, Card, EmptyState, ErrorState, Loader } from '../../components/ui'
+import { ButtonLink, Card, EmptyState, ErrorState } from '../../components/ui'
+import { OrderListSkeleton, StatsSkeleton } from '../../components/skeletons'
 import { useAsync } from '../../hooks/useAsync'
 import { useAuth } from '../../hooks/useAuth'
 import { useWishlist } from '../../hooks/useWishlist'
@@ -34,7 +35,7 @@ export function Overview() {
                 </div>
             </DashHeader>
 
-            {orders.loading ? <Loader /> : orders.error ? <ErrorState error={orders.error} onRetry={orders.reload} /> : (
+            {orders.loading ? <><StatsSkeleton /><Card><OrderListSkeleton /></Card></> : orders.error ? <ErrorState error={orders.error} onRetry={orders.reload} /> : (
                 <>
                     <StatGrid>
                         <Stat icon={Receipt} label="Pedidos realizados" value={list.length} />

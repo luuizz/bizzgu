@@ -7,7 +7,7 @@ import { ProductImage } from '../components/product/ProductImage'
 import { ProductGrid } from '../components/product/ProductGrid'
 import { QuantityStepper } from '../components/product/QuantityStepper'
 import { WishlistButton } from '../components/product/WishlistButton'
-import { Badge, Breadcrumb, Button, ErrorState, Loader, SectionTitle } from '../components/ui'
+import { Badge, Breadcrumb, Button, ErrorState, SectionTitle } from '../components/ui'
 import { useAsync } from '../hooks/useAsync'
 import { useCart } from '../hooks/useCart'
 import { useToast } from '../hooks/useToast'
@@ -15,6 +15,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { getProductBySlug, getProducts } from '../services/catalog'
 import { FREE_SHIPPING_FROM, discountPercent, formatBRL, installments } from '../lib/format'
 import { NotFound } from './NotFound'
+import { ProductDetailSkeleton } from '../components/skeletons'
 
 export function ItemDetail() {
     const { slug } = useParams()
@@ -28,7 +29,7 @@ export function ItemDetail() {
 
     useDocumentTitle(product.data?.name)
 
-    if (product.loading) return <Loader />
+    if (product.loading) return <ProductDetailSkeleton />
     if (product.error) return <ErrorState error={product.error} onRetry={product.reload} />
     if (!product.data) return <NotFound />
 
