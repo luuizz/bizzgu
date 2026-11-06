@@ -49,8 +49,7 @@ export function Dashboard() {
             )}
 
             <Card>
-                <CardTitle>Vendas dos últimos 30 dias</CardTitle>
-                <SalesChart data={s.sales_by_day} />
+                <SalesChart title="Vendas dos últimos 30 dias" data={s.sales_by_day} />
             </Card>
 
             <Columns>

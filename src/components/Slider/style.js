@@ -8,7 +8,7 @@ export const StyleSlide = styled.section`
     z-index: 0;
     background: var(--white-600);
 
-    .skeleton { aspect-ratio: var(--banner-ratio); background: var(--white-500, #ebe9ef); }
+    .skeleton { display: block; aspect-ratio: var(--banner-ratio); line-height: 1; }
 
     .banner {
         display: block;

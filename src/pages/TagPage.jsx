@@ -3,7 +3,7 @@ import { Tag } from '@phosphor-icons/react'
 import { Page } from '../components/layout'
 import { ProductGrid } from '../components/product/ProductGrid'
 import { SortSelect } from '../components/product/SortSelect'
-import { ButtonLink, EmptyState, ErrorState, Loader } from '../components/ui'
+import { ButtonLink, EmptyState, ErrorState } from '../components/ui'
 import { CatalogHero } from '../components/catalog/CatalogHero'
 import { useAsync } from '../hooks/useAsync'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
@@ -25,7 +25,16 @@ export function TagPage() {
 
     useDocumentTitle(tag.data?.name)
 
-    if (tag.loading) return <Loader />
+    const siblings = (tags.data || []).map((item) => ({ to: `/tag/${item.slug}`, label: `#${item.name}` }))
+
+    if (tag.loading) {
+        return (
+            <>
+                <CatalogHero loading links={siblings} linksLabel="Outras tags" />
+                <Page><div className="container"><ProductGrid loading /></div></Page>
+            </>
+        )
+    }
     if (tag.error) return <ErrorState error={tag.error} onRetry={tag.reload} />
     if (!tag.data) return <NotFound />
 
@@ -40,7 +49,7 @@ export function TagPage() {
                 description={tag.data.description}
                 icon={Tag}
                 count={loadingProducts ? null : list.length}
-                links={(tags.data || []).map((item) => ({ to: `/tag/${item.slug}`, label: `#${item.name}` }))}
+                links={siblings}
                 linksLabel="Outras tags"
             />
         <Page>
