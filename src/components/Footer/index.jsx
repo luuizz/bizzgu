@@ -3,18 +3,12 @@ import { StyleFooter } from './style'
 import { ButtonContact } from './ButtonContact'
 import LogoThemeDark from '/src/assets/logo-theme-dark.svg'
 import LogoLuiz from '/src/assets/logo-luiz-ricardodsgn.svg'
-import { FacebookLogo, InstagramLogo, LinkedinLogo, XLogo, YoutubeLogo } from '@phosphor-icons/react'
+import { FacebookLogo, InstagramLogo, LinkedinLogo, TiktokLogo, XLogo, YoutubeLogo } from '@phosphor-icons/react'
+import { useCategories } from '../../hooks/useCategories'
+import { SOCIAL_FIELDS, useStoreSettings } from '../../hooks/useStoreSettings'
 
-const linksFooter = [
-    {
-        title: 'Departamentos',
-        links: [
-            { label: 'Celulares', to: '/categoria/celulares' },
-            { label: 'Games', to: '/categoria/games' },
-            { label: 'SmartTV', to: '/categoria/smarttv' },
-            { label: 'Eletrodomésticos', to: '/categoria/eletrodomesticos' },
-        ],
-    },
+// Departamentos vêm das categorias do banco; o resto é fixo
+const staticColumns = [
     {
         title: 'Minha conta',
         links: [
@@ -35,41 +29,40 @@ const linksFooter = [
     {
         title: 'Institucional',
         links: [
-            { label: 'Conheça a Bizzgu', to: '/institucional/sobre' },
+            { label: 'Sobre a loja', to: '/sobre' },
+            { label: 'Blog', to: '/blog' },
             { label: 'Ofertas', to: '/busca?ofertas=1' },
         ],
     },
 ]
 
-const SocialNetwork = [
-    {
-        title: 'Youtube',
-        icon: YoutubeLogo,
-        url: 'https://www.youtube.com/',
-    },
-    {
-        title: 'LinkedIn',
-        icon: LinkedinLogo,
-        url: 'https://www.linkedin.com/',
-    },
-    {
-        title: 'Facebook',
-        icon: FacebookLogo,
-        url: 'https://www.facebook.com/',
-    },
-    {
-        title: 'Instagram',
-        icon: InstagramLogo,
-        url: 'https://www.instagram.com/',
-    },
-    {
-        title: 'X (Twitter)',
-        icon: XLogo,
-        url: 'https://x.com/',
-    },
-]
+const socialIcons = {
+    instagram: InstagramLogo,
+    facebook: FacebookLogo,
+    youtube: YoutubeLogo,
+    linkedin: LinkedinLogo,
+    x: XLogo,
+    tiktok: TiktokLogo,
+}
 
 export function Footer() {
+    const categories = useCategories()
+    const settings = useStoreSettings()
+    const socials = SOCIAL_FIELDS.filter(({ key }) => settings[key])
+    const columns = [
+        {
+            title: 'Departamentos',
+            links: categories.slice(0, 5).map((category) => ({ label: category.name, to: `/categoria/${category.slug}` })),
+        },
+        ...staticColumns,
+    ]
+    const contacts = [
+        settings.support_email && { title: 'Atendimento:', txt: `${settings.support_email}${settings.business_hours ? ` (${settings.business_hours})` : ''}`, href: `mailto:${settings.support_email}` },
+        settings.whatsapp && { title: 'WhatsApp:', txt: formatWhatsapp(settings.whatsapp), href: `https://wa.me/${settings.whatsapp}` },
+        settings.phone && { title: 'Telefone:', txt: settings.phone, href: `tel:${settings.phone.replace(/[^\d+]/g, '')}` },
+        settings.press_email && { title: 'Imprensa:', txt: settings.press_email, href: `mailto:${settings.press_email}` },
+    ].filter(Boolean)
+
     return (
         <StyleFooter>
             <div className="container">
@@ -79,25 +72,28 @@ export function Footer() {
                             <img src={LogoThemeDark} alt="Bizzgu"/>
                         </Link>
                     </div>
-                    <div className="right-area">
-                        <span>Acompanhe nas redes</span>
-                        <ul>
-                        {
-                            SocialNetwork.map(({ title, url, icon: Icon }) => (
-                                <li key={title}>
-                                    <a href={url} target="_blank" rel="noreferrer" title={`Ir para ${title}`}>
-                                        <Icon size={28} aria-label={title} />
-                                    </a>
-                                </li>
-                            ))
-                        }
-                        </ul>
-                    </div>
+                    {socials.length > 0 && (
+                        <div className="right-area">
+                            <span>Acompanhe nas redes</span>
+                            <ul>
+                                {socials.map(({ key, label }) => {
+                                    const Icon = socialIcons[key]
+                                    return (
+                                        <li key={key}>
+                                            <a href={settings[key]} target="_blank" rel="noreferrer" title={`Ir para ${label}`}>
+                                                <Icon size={28} aria-label={label} />
+                                            </a>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        </div>
+                    )}
                 </div>
                 <div className="center">
                     <div className="links">
                         {
-                            linksFooter.map((items) => (
+                            columns.filter((column) => column.links.length).map((items) => (
                                 <div key={items.title} className="list-item">
                                     <h5>{items.title}</h5>
                                     <ul>
@@ -116,16 +112,7 @@ export function Footer() {
                         }
                     </div>
                     <div className="contact">
-                        <ButtonContact
-                        title="Atendimento:"
-                        txt="oi@bizzgu.com.br (24 horas)"
-                        href="mailto:oi@bizzgu.com.br"
-                        />
-                        <ButtonContact
-                        title="Imprensa:"
-                        txt="contato@bizzgu.com.br"
-                        href="mailto:contato@bizzgu.com.br"
-                        />
+                        {contacts.map((contact) => <ButtonContact key={contact.title} {...contact} />)}
                     </div>
                 </div>
                 <div className="bottom">
@@ -142,4 +129,10 @@ export function Footer() {
             </div>
         </StyleFooter>
     )
+}
+// 5511999998888 → (11) 99999-8888
+function formatWhatsapp(digits) {
+    const local = digits.startsWith('55') ? digits.slice(2) : digits
+    const match = local.match(/^(\d{2})(\d{4,5})(\d{4})$/)
+    return match ? `(${match[1]}) ${match[2]}-${match[3]}` : `+${digits}`
 }
